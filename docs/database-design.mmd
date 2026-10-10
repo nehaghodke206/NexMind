@@ -15,17 +15,13 @@ erDiagram
         string name
         text description
         string repository_url
+        string repository_root_name
+        string default_branch
+        string last_scanned_revision
         int created_by FK
         json settings_json
         datetime created_at
         datetime updated_at
-    }
-
-    PROJECT_MEMBERS {
-        int project_id PK, FK
-        int user_id PK, FK
-        string role
-        datetime joined_at
     }
 
     DEPENDENCIES {
@@ -57,15 +53,45 @@ erDiagram
 
     SCAN_RUNS {
         int id PK
+        int project_id FK
         int dependency_id FK
         int baseline_version_id FK
         int triggered_by FK
+        string scan_type
+        string repository_revision
+        string scanner_version
         string trigger_type
         string status
         datetime started_at
         datetime finished_at
         json summary_json
         text error_message
+        datetime created_at
+    }
+
+    REPOSITORY_NODES {
+        int id PK
+        int project_id FK
+        int scan_run_id FK
+        string node_type
+        string stable_key
+        string name
+        string relative_path
+        int start_line
+        int end_line
+        json metadata_json
+        datetime created_at
+    }
+
+    REPOSITORY_EDGES {
+        int id PK
+        int project_id FK
+        int scan_run_id FK
+        int source_node_id FK
+        int target_node_id FK
+        string edge_type
+        float confidence
+        json evidence_json
         datetime created_at
     }
 
@@ -88,18 +114,6 @@ erDiagram
         datetime updated_at
     }
 
-    INCIDENT_OBSERVATIONS {
-        int id PK
-        int incident_id FK
-        int scan_run_id FK
-        datetime observed_at
-        json change_details_json
-        json before_json
-        json after_json
-        string evidence_uri
-        datetime created_at
-    }
-
     REPAIR_PROPOSALS {
         int id PK
         int incident_id FK
@@ -109,7 +123,13 @@ erDiagram
         string patch_format
         text patch_content
         string target_ref
+        string base_revision
+        json target_file_paths_json
+        string patch_hash
         string status
+        json validation_summary_json
+        string applied_revision
+        datetime applied_at
         datetime created_at
         datetime updated_at
     }
@@ -129,66 +149,25 @@ erDiagram
         datetime created_at
     }
 
-    APPROVALS {
-        int id PK
-        int repair_id FK
-        int reviewer_id FK
-        string decision
-        text comment
-        datetime created_at
-    }
-
-    REPAIR_APPLICATIONS {
-        int id PK
-        int repair_id FK
-        int applied_by FK
-        string target_ref
-        string status
-        string base_revision
-        string result_revision
-        json result_json
-        text error_message
-        datetime started_at
-        datetime finished_at
-        datetime created_at
-    }
-
-    ACTIVITY_LOG {
-        int id PK
-        int project_id FK
-        int actor_id FK
-        int incident_id FK
-        string action
-        string entity_type
-        int entity_id
-        json details_json
-        datetime created_at
-    }
-
     USERS ||--o{ PROJECTS : creates
-    USERS ||--o{ PROJECT_MEMBERS : joins
-    PROJECTS ||--o{ PROJECT_MEMBERS : contains
-
     PROJECTS ||--o{ DEPENDENCIES : monitors
     DEPENDENCIES ||--o{ BASELINE_VERSIONS : has
-    DEPENDENCIES ||--o{ SCAN_RUNS : scanned_by
+
+    PROJECTS ||--o{ SCAN_RUNS : scanned_by
+    DEPENDENCIES o|--o{ SCAN_RUNS : checked_in
     BASELINE_VERSIONS o|--o{ SCAN_RUNS : used_by
-    USERS o|--o{ BASELINE_VERSIONS : captures
     USERS o|--o{ SCAN_RUNS : triggers
+    USERS o|--o{ BASELINE_VERSIONS : captures
+
+    SCAN_RUNS ||--o{ REPOSITORY_NODES : discovers
+    SCAN_RUNS ||--o{ REPOSITORY_EDGES : maps
+    PROJECTS ||--o{ REPOSITORY_NODES : contains
+    PROJECTS ||--o{ REPOSITORY_EDGES : contains
+    REPOSITORY_NODES ||--o{ REPOSITORY_EDGES : source
+    REPOSITORY_NODES ||--o{ REPOSITORY_EDGES : target
 
     DEPENDENCIES ||--o{ INCIDENTS : produces
     USERS o|--o{ INCIDENTS : assigned_to
-    INCIDENTS ||--o{ INCIDENT_OBSERVATIONS : has
-    SCAN_RUNS ||--o{ INCIDENT_OBSERVATIONS : records
-
     INCIDENTS ||--o{ REPAIR_PROPOSALS : has
     USERS o|--o{ REPAIR_PROPOSALS : proposes
     REPAIR_PROPOSALS ||--o{ VALIDATION_RUNS : validated_by
-    REPAIR_PROPOSALS ||--o{ APPROVALS : reviewed_by
-    USERS ||--o{ APPROVALS : reviews
-    REPAIR_PROPOSALS ||--o{ REPAIR_APPLICATIONS : attempts
-    USERS o|--o{ REPAIR_APPLICATIONS : executes
-
-    PROJECTS ||--o{ ACTIVITY_LOG : records
-    USERS o|--o{ ACTIVITY_LOG : performs
-    INCIDENTS o|--o{ ACTIVITY_LOG : relates_to

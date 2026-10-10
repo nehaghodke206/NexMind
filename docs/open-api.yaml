@@ -1,0 +1,1501 @@
+openapi: 3.0.3
+info:
+  title: Dependency Guardian API
+  version: 1.1.0
+  description: >
+    API contract for Dependency Guardian's shared backend. The API coordinates
+    projects, dependency baselines, scans, observations, incidents, repair
+    proposals, validation, human approvals, and local repair-application reports.
+    Patch application itself should happen in the developer's local environment;
+    the backend records the result reported by the local agent or extension.
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development
+tags:
+  - name: Health
+  - name: Projects
+  - name: Members
+  - name: Activity
+  - name: Dependencies
+  - name: Baselines
+  - name: Scans
+  - name: Observations
+  - name: Incidents
+  - name: Repairs
+  - name: Validation
+  - name: Approvals
+  - name: Applications
+  - name: Dashboard
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Check backend health
+      operationId: getHealth
+      responses:
+        '200':
+          description: Backend is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 1.1.0
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      operationId: listProjects
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Projects returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectList'
+    post:
+      tags: [Projects]
+      summary: Create a project
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /projects/{project_id}:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Projects]
+      summary: Get project details
+      operationId: getProject
+      responses:
+        '200':
+          description: Project returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /projects/{project_id}/members:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Members]
+      summary: List project members
+      operationId: listProjectMembers
+      responses:
+        '200':
+          description: Members returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectMember'
+    post:
+      tags: [Members]
+      summary: Add a member to a project
+      operationId: addProjectMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectMemberCreate'
+      responses:
+        '201':
+          description: Member added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectMember'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Member is already assigned to this project
+
+  /projects/{project_id}/activity:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Activity]
+      summary: Get project activity history
+      operationId: listProjectActivity
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Activity events returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityEventList'
+
+  /projects/{project_id}/dependencies:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Dependencies]
+      summary: List dependencies registered for a project
+      operationId: listDependencies
+      responses:
+        '200':
+          description: Dependencies returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dependency'
+    post:
+      tags: [Dependencies]
+      summary: Register a dependency
+      operationId: createDependency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DependencyCreate'
+      responses:
+        '201':
+          description: Dependency registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dependency'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /dependencies/{dependency_id}:
+    parameters:
+      - $ref: '#/components/parameters/DependencyId'
+    get:
+      tags: [Dependencies]
+      summary: Get dependency details
+      operationId: getDependency
+      responses:
+        '200':
+          description: Dependency returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dependency'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Dependencies]
+      summary: Update dependency metadata or configuration
+      operationId: updateDependency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DependencyUpdate'
+      responses:
+        '200':
+          description: Dependency updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dependency'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /dependencies/{dependency_id}/baselines:
+    parameters:
+      - $ref: '#/components/parameters/DependencyId'
+    get:
+      tags: [Baselines]
+      summary: List saved baselines for a dependency
+      operationId: listBaselines
+      responses:
+        '200':
+          description: Baselines returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Baseline'
+    post:
+      tags: [Baselines]
+      summary: Save a baseline for a dependency
+      description: Creates a new immutable baseline version; it does not silently overwrite an existing baseline.
+      operationId: createBaseline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaselineCreate'
+      responses:
+        '201':
+          description: Baseline saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Baseline'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /baselines/{baseline_id}:
+    parameters:
+      - $ref: '#/components/parameters/BaselineId'
+    get:
+      tags: [Baselines]
+      summary: Get baseline details and captured contract
+      operationId: getBaseline
+      responses:
+        '200':
+          description: Baseline returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Baseline'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /projects/{project_id}/scans:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Scans]
+      summary: List scans for a project
+      operationId: listScans
+      responses:
+        '200':
+          description: Scans returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScanRun'
+    post:
+      tags: [Scans]
+      summary: Start a dependency scan
+      operationId: startScan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanCreate'
+      responses:
+        '202':
+          description: Scan accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanRun'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /scans/{scan_id}:
+    parameters:
+      - $ref: '#/components/parameters/ScanId'
+    get:
+      tags: [Scans]
+      summary: Get scan status and summary
+      operationId: getScan
+      responses:
+        '200':
+          description: Scan returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanRun'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /scans/{scan_id}/observations:
+    parameters:
+      - $ref: '#/components/parameters/ScanId'
+    post:
+      tags: [Observations]
+      summary: Submit observations collected by a local scanner
+      operationId: submitObservations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [observations]
+              properties:
+                observations:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ObservationCreate'
+      responses:
+        '201':
+          description: Observations accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [accepted_count, observation_ids]
+                properties:
+                  accepted_count:
+                    type: integer
+                    minimum: 0
+                  observation_ids:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /scans/{scan_id}/complete:
+    parameters:
+      - $ref: '#/components/parameters/ScanId'
+    post:
+      tags: [Scans]
+      summary: Mark a scan as completed or failed
+      operationId: completeScan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [completed, failed]
+                summary:
+                  type: string
+                error_message:
+                  type: string
+      responses:
+        '200':
+          description: Scan status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanRun'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /projects/{project_id}/incidents:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Incidents]
+      summary: List project incidents
+      operationId: listIncidents
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/IncidentStatus'
+        - name: severity
+          in: query
+          schema:
+            $ref: '#/components/schemas/Severity'
+        - name: assignee_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Incidents returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentList'
+    post:
+      tags: [Incidents]
+      summary: Create an incident from a detected behavior change
+      operationId: createIncident
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentCreate'
+      responses:
+        '201':
+          description: Incident created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Incident'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /incidents/{incident_id}:
+    parameters:
+      - $ref: '#/components/parameters/IncidentId'
+    get:
+      tags: [Incidents]
+      summary: Get incident details
+      operationId: getIncident
+      responses:
+        '200':
+          description: Incident returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Incident'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Incidents]
+      summary: Update incident status, assignment, or review notes
+      operationId: updateIncident
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentUpdate'
+      responses:
+        '200':
+          description: Incident updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Incident'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /incidents/{incident_id}/observations:
+    parameters:
+      - $ref: '#/components/parameters/IncidentId'
+    get:
+      tags: [Observations]
+      summary: List evidence observations attached to an incident
+      operationId: listIncidentObservations
+      responses:
+        '200':
+          description: Incident evidence returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+
+  /incidents/{incident_id}/repair-proposals:
+    parameters:
+      - $ref: '#/components/parameters/IncidentId'
+    get:
+      tags: [Repairs]
+      summary: List repair proposals for an incident
+      operationId: listRepairProposals
+      responses:
+        '200':
+          description: Repair proposals returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RepairProposal'
+    post:
+      tags: [Repairs]
+      summary: Create a proposed compatibility repair
+      description: Proposal generation does not apply changes to a developer's workspace.
+      operationId: createRepairProposal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepairProposalCreate'
+      responses:
+        '201':
+          description: Repair proposal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairProposal'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /repair-proposals/{repair_id}:
+    parameters:
+      - $ref: '#/components/parameters/RepairId'
+    get:
+      tags: [Repairs]
+      summary: Get repair proposal and diff preview
+      operationId: getRepairProposal
+      responses:
+        '200':
+          description: Repair proposal returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairProposal'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /repair-proposals/{repair_id}/validation-runs:
+    parameters:
+      - $ref: '#/components/parameters/RepairId'
+    get:
+      tags: [Validation]
+      summary: List validation runs for a repair proposal
+      operationId: listValidationRuns
+      responses:
+        '200':
+          description: Validation runs returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationRun'
+    post:
+      tags: [Validation]
+      summary: Record or request validation for a repair proposal
+      operationId: createValidationRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRunCreate'
+      responses:
+        '201':
+          description: Validation run recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationRun'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /repair-proposals/{repair_id}/approvals:
+    parameters:
+      - $ref: '#/components/parameters/RepairId'
+    post:
+      tags: [Approvals]
+      summary: Approve a repair proposal
+      description: Requires explicit human approval. Approval does not itself prove that a local workspace was changed.
+      operationId: approveRepair
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepairApprovalCreate'
+      responses:
+        '201':
+          description: Approval recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairApproval'
+        '409':
+          description: Repair is not eligible for approval or is already decided
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /repair-proposals/{repair_id}/rejection:
+    parameters:
+      - $ref: '#/components/parameters/RepairId'
+    post:
+      tags: [Approvals]
+      summary: Reject a repair proposal
+      operationId: rejectRepair
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepairRejectionCreate'
+      responses:
+        '200':
+          description: Repair proposal rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairProposal'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Repair has already been decided
+
+  /repair-proposals/{repair_id}/applications:
+    parameters:
+      - $ref: '#/components/parameters/RepairId'
+    post:
+      tags: [Applications]
+      summary: Record local application result reported by the extension
+      description: The backend records a local agent's result; it does not remotely edit developer files.
+      operationId: recordRepairApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepairApplicationCreate'
+      responses:
+        '201':
+          description: Application result recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairApplication'
+        '409':
+          description: Repair has not been approved
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /projects/{project_id}/summary:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Dashboard]
+      summary: Get manager dashboard summary for a project
+      operationId: getProjectSummary
+      responses:
+        '200':
+          description: Project summary returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSummary'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    ProjectId:
+      name: project_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    DependencyId:
+      name: dependency_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BaselineId:
+      name: baseline_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ScanId:
+      name: scan_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IncidentId:
+      name: incident_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RepairId:
+      name: repair_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    BadRequest:
+      description: Invalid request payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: Resource was not found
+        details:
+          type: object
+          additionalProperties: true
+
+    Project:
+      type: object
+      required: [id, name, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Checkout Service
+        description:
+          type: string
+          nullable: true
+        repository_url:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProjectCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        repository_url:
+          type: string
+          format: uri
+
+    ProjectList:
+      type: object
+      required: [items, page, page_size, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total:
+          type: integer
+
+    ProjectMember:
+      type: object
+      required: [id, project_id, user_id, role, joined_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [owner, admin, developer, reviewer]
+        joined_at:
+          type: string
+          format: date-time
+
+    ProjectMemberCreate:
+      type: object
+      required: [user_id, role]
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [owner, admin, developer, reviewer]
+
+    Dependency:
+      type: object
+      required: [id, project_id, name, kind, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: users-service
+        kind:
+          type: string
+          enum: [rest_api, sdk, package, mcp_tool, other]
+        base_url:
+          type: string
+          format: uri
+          nullable: true
+        version:
+          type: string
+          nullable: true
+        configuration:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+
+    DependencyCreate:
+      type: object
+      required: [name, kind]
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+          enum: [rest_api, sdk, package, mcp_tool, other]
+        base_url:
+          type: string
+          format: uri
+        version:
+          type: string
+        configuration:
+          type: object
+          additionalProperties: true
+
+    DependencyUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+          enum: [rest_api, sdk, package, mcp_tool, other]
+        base_url:
+          type: string
+          format: uri
+          nullable: true
+        version:
+          type: string
+          nullable: true
+        configuration:
+          type: object
+          additionalProperties: true
+
+    Baseline:
+      type: object
+      required: [id, dependency_id, version, contract, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        dependency_id:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          minimum: 1
+        contract:
+          type: object
+          additionalProperties: true
+          description: Captured request/response shape, behavior, or tool contract.
+        source:
+          type: string
+          enum: [manual, scan, imported]
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    BaselineCreate:
+      type: object
+      required: [contract]
+      properties:
+        contract:
+          type: object
+          additionalProperties: true
+        source:
+          type: string
+          enum: [manual, scan, imported]
+          default: manual
+        created_by:
+          type: string
+          format: uuid
+
+    ScanRun:
+      type: object
+      required: [id, project_id, status, started_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        dependency_id:
+          type: string
+          format: uuid
+          nullable: true
+        initiated_by:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+          enum: [queued, running, completed, failed, cancelled]
+        summary:
+          type: string
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    ScanCreate:
+      type: object
+      properties:
+        dependency_id:
+          type: string
+          format: uuid
+        initiated_by:
+          type: string
+          format: uuid
+        scan_type:
+          type: string
+          enum: [full, targeted]
+          default: full
+
+    Observation:
+      type: object
+      required: [id, scan_id, dependency_id, observation_type, observed_at, payload]
+      properties:
+        id:
+          type: string
+          format: uuid
+        scan_id:
+          type: string
+          format: uuid
+        dependency_id:
+          type: string
+          format: uuid
+        observation_type:
+          type: string
+          enum: [response_shape, status_code, latency, pagination, tool_schema, semantic_change, other]
+        endpoint:
+          type: string
+          nullable: true
+        method:
+          type: string
+          nullable: true
+        observed_at:
+          type: string
+          format: date-time
+        payload:
+          type: object
+          additionalProperties: true
+        fingerprint:
+          type: string
+          nullable: true
+
+    ObservationCreate:
+      type: object
+      required: [dependency_id, observation_type, payload]
+      properties:
+        dependency_id:
+          type: string
+          format: uuid
+        observation_type:
+          type: string
+          enum: [response_shape, status_code, latency, pagination, tool_schema, semantic_change, other]
+        endpoint:
+          type: string
+        method:
+          type: string
+        observed_at:
+          type: string
+          format: date-time
+        payload:
+          type: object
+          additionalProperties: true
+        fingerprint:
+          type: string
+
+    Severity:
+      type: string
+      enum: [low, medium, high, critical]
+
+    IncidentStatus:
+      type: string
+      enum: [open, triaged, in_progress, awaiting_review, resolved, dismissed]
+
+    Incident:
+      type: object
+      required: [id, project_id, dependency_id, title, severity, status, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        dependency_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: Users response field changed from name to display_name
+        description:
+          type: string
+          nullable: true
+        change_type:
+          type: string
+          enum: [field_rename, field_removed, type_change, pagination_change, status_change, semantic_change, tool_schema_change, unknown]
+        severity:
+          $ref: '#/components/schemas/Severity'
+        status:
+          $ref: '#/components/schemas/IncidentStatus'
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        assignee_id:
+          type: string
+          format: uuid
+          nullable: true
+        review_notes:
+          type: string
+          nullable: true
+        affected_workflows:
+          type: array
+          items:
+            type: string
+        affected_files:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    IncidentCreate:
+      type: object
+      required: [dependency_id, title, severity, change_type]
+      properties:
+        dependency_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        change_type:
+          type: string
+          enum: [field_rename, field_removed, type_change, pagination_change, status_change, semantic_change, tool_schema_change, unknown]
+        severity:
+          $ref: '#/components/schemas/Severity'
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        observation_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        affected_workflows:
+          type: array
+          items:
+            type: string
+        affected_files:
+          type: array
+          items:
+            type: string
+
+    IncidentUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/IncidentStatus'
+        assignee_id:
+          type: string
+          format: uuid
+          nullable: true
+        review_notes:
+          type: string
+          nullable: true
+        severity:
+          $ref: '#/components/schemas/Severity'
+
+    IncidentList:
+      type: object
+      required: [items, page, page_size, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Incident'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total:
+          type: integer
+
+    RepairStatus:
+      type: string
+      enum: [proposed, validating, ready_for_review, approved, rejected, applied, failed]
+
+    RepairProposal:
+      type: object
+      required: [id, incident_id, status, rationale, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        incident_id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/RepairStatus'
+        rationale:
+          type: string
+        strategy:
+          type: string
+          enum: [compatibility_adapter, callsite_update, pagination_adapter, manual_review, other]
+        diff_preview:
+          type: string
+          description: Human-readable proposed diff; not proof of application.
+        proposed_changes:
+          type: object
+          additionalProperties: true
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    RepairProposalCreate:
+      type: object
+      required: [rationale, strategy]
+      properties:
+        rationale:
+          type: string
+        strategy:
+          type: string
+          enum: [compatibility_adapter, callsite_update, pagination_adapter, manual_review, other]
+        diff_preview:
+          type: string
+        proposed_changes:
+          type: object
+          additionalProperties: true
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        created_by:
+          type: string
+          format: uuid
+
+    ValidationStatus:
+      type: string
+      enum: [queued, running, passed, failed, blocked, error]
+
+    ValidationRun:
+      type: object
+      required: [id, repair_id, status, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        repair_id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ValidationStatus'
+        test_command:
+          type: string
+          nullable: true
+        output:
+          type: string
+          nullable: true
+        details:
+          type: object
+          additionalProperties: true
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    ValidationRunCreate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          $ref: '#/components/schemas/ValidationStatus'
+        test_command:
+          type: string
+        output:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    RepairApproval:
+      type: object
+      required: [id, repair_id, reviewer_id, decision, decided_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        repair_id:
+          type: string
+          format: uuid
+        reviewer_id:
+          type: string
+          format: uuid
+        decision:
+          type: string
+          enum: [approved, rejected]
+        comment:
+          type: string
+          nullable: true
+        decided_at:
+          type: string
+          format: date-time
+
+    RepairApprovalCreate:
+      type: object
+      required: [reviewer_id, decision]
+      properties:
+        reviewer_id:
+          type: string
+          format: uuid
+        decision:
+          type: string
+          enum: [approved]
+        comment:
+          type: string
+
+    RepairRejectionCreate:
+      type: object
+      required: [reviewer_id, reason]
+      properties:
+        reviewer_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          minLength: 1
+
+    RepairApplication:
+      type: object
+      required: [id, repair_id, status, reported_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        repair_id:
+          type: string
+          format: uuid
+        agent_id:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+          enum: [applied, failed, cancelled]
+        workspace_reference:
+          type: string
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        reported_at:
+          type: string
+          format: date-time
+
+    RepairApplicationCreate:
+      type: object
+      required: [status]
+      properties:
+        agent_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [applied, failed, cancelled]
+        workspace_reference:
+          type: string
+        message:
+          type: string
+
+    ActivityEvent:
+      type: object
+      required: [id, project_id, event_type, message, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        actor_id:
+          type: string
+          format: uuid
+          nullable: true
+        event_type:
+          type: string
+          example: incident.assigned
+        resource_type:
+          type: string
+          nullable: true
+        resource_id:
+          type: string
+          format: uuid
+          nullable: true
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+
+    ActivityEventList:
+      type: object
+      required: [items, page, page_size, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityEvent'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total:
+          type: integer
+
+    ProjectSummary:
+      type: object
+      required: [project_id, dependency_count, open_incident_count, pending_review_count, validation_pass_count, validation_fail_count]
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        dependency_count:
+          type: integer
+          minimum: 0
+        open_incident_count:
+          type: integer
+          minimum: 0
+        pending_review_count:
+          type: integer
+          minimum: 0
+        validation_pass_count:
+          type: integer
+          minimum: 0
+        validation_fail_count:
+          type: integer
+          minimum: 0
+        last_scan_at:
+          type: string
+          format: date-time
+          nullable: true
