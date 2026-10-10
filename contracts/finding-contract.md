@@ -48,6 +48,7 @@ The authoritative JSON Schema is defined at [`contracts/finding-v1.json`](./find
 - `RULE-PATH-REMOVED`: Entire API path deleted.
 - `RULE-METHOD-REMOVED`: HTTP operation removed from an existing path.
 - `RULE-RESPONSE-FIELD-REMOVED`: Existing property removed from a success response schema.
+- `RULE-REQUEST-FIELD-REMOVED`: Existing property removed from a request body schema.
 - `RULE-FIELD-TYPE-CHANGED`: Property datatype changed incompatibly.
 - `RULE-REQUIRED-PARAM-ADDED`: New parameter added with `required: true`.
 - `RULE-REQUIRED-FIELD-ADDED`: New schema property added to `required` list in request body.

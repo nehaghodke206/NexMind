@@ -36,6 +36,7 @@ class RuleId(str, Enum):
     PATH_REMOVED = "RULE-PATH-REMOVED"
     METHOD_REMOVED = "RULE-METHOD-REMOVED"
     RESPONSE_FIELD_REMOVED = "RULE-RESPONSE-FIELD-REMOVED"
+    REQUEST_FIELD_REMOVED = "RULE-REQUEST-FIELD-REMOVED"
     FIELD_TYPE_CHANGED = "RULE-FIELD-TYPE-CHANGED"
     REQUIRED_PARAM_ADDED = "RULE-REQUIRED-PARAM-ADDED"
     REQUIRED_FIELD_ADDED = "RULE-REQUIRED-FIELD-ADDED"
@@ -125,7 +126,7 @@ class Finding(BaseModel):
     ) -> Dict[str, Any]:
         """Map finding to the FastAPI IncidentCreate schema."""
         change_type = "unknown"
-        if "RESPONSE-FIELD-REMOVED" in self.rule_id:
+        if "FIELD-REMOVED" in self.rule_id:
             change_type = "field_removed"
         elif "TYPE-CHANGED" in self.rule_id:
             change_type = "type_change"

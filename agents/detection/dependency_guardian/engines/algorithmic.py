@@ -38,8 +38,10 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
         resolved_base = self._resolve_all_refs(baseline_spec)
         resolved_curr = self._resolve_all_refs(current_spec)
 
-        base_paths: Dict[str, Any] = resolved_base.get("paths") or {}
-        curr_paths: Dict[str, Any] = resolved_curr.get("paths") or {}
+        base_paths_raw = resolved_base.get("paths") if isinstance(resolved_base, dict) else None
+        curr_paths_raw = resolved_curr.get("paths") if isinstance(resolved_curr, dict) else None
+        base_paths: Dict[str, Any] = base_paths_raw if isinstance(base_paths_raw, dict) else {}
+        curr_paths: Dict[str, Any] = curr_paths_raw if isinstance(curr_paths_raw, dict) else {}
 
         # 1. Path removals
         for path, base_path_item in base_paths.items():
@@ -145,7 +147,7 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
             if isinstance(p, dict) and p.get("name") and p.get("in")
         }
 
-        # Check for newly required parameters in current
+        # Check for newly required or added optional parameters in current
         for (name, param_in), curr_p in curr_params.items():
             is_curr_req = bool(curr_p.get("required", False))
             if is_curr_req:
@@ -172,6 +174,34 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
                                 "in": param_in,
                                 "required": True,
                                 "previously_present": base_p is not None,
+                            },
+                            confidence=1.0,
+                            source=DetectionSource.ALGORITHMIC,
+                            review_required=False,
+                        )
+                    )
+            else:
+                if (name, param_in) not in base_params:
+                    # New optional parameter added
+                    rule = RuleId.FIELD_ADDED_OPTIONAL.value
+                    loc = f"paths.{path}.{method}.parameters.{name}"
+                    fingerprint = Finding.generate_fingerprint(path, method.upper(), loc, rule)
+                    findings.append(
+                        Finding(
+                            rule_id=rule,
+                            fingerprint=fingerprint,
+                            compatibility=CompatibilityClassification.NON_BREAKING,
+                            severity=SeverityLevel.LOW,
+                            path=path,
+                            method=method.upper(),
+                            schema_location=loc,
+                            previous_value=None,
+                            current_value=curr_p,
+                            message=f"New optional {param_in} parameter '{name}' was added to {method.upper()} {path}.",
+                            evidence={
+                                "parameter_name": name,
+                                "in": param_in,
+                                "required": False,
                             },
                             confidence=1.0,
                             source=DetectionSource.ALGORITHMIC,
@@ -436,20 +466,32 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
                     continue
                 loc = f"{location_prefix}.properties.{prop_name}"
                 if prop_name not in curr_props:
-                    rule = RuleId.RESPONSE_FIELD_REMOVED.value if not is_request else RuleId.PATH_REMOVED.value
+                    if not is_request:
+                        rule = RuleId.RESPONSE_FIELD_REMOVED.value
+                        compat = CompatibilityClassification.BREAKING
+                        sev = SeverityLevel.HIGH
+                        msg = f"Property '{prop_name}' was removed from response schema at {loc}."
+                        rev_req = False
+                    else:
+                        rule = RuleId.REQUEST_FIELD_REMOVED.value
+                        compat = CompatibilityClassification.POTENTIALLY_BREAKING
+                        sev = SeverityLevel.MEDIUM
+                        msg = f"Property '{prop_name}' was removed from request schema at {loc}."
+                        rev_req = True
+
                     fingerprint = Finding.generate_fingerprint(path, method, loc, rule)
                     findings.append(
                         Finding(
                             rule_id=rule,
                             fingerprint=fingerprint,
-                            compatibility=CompatibilityClassification.BREAKING,
-                            severity=SeverityLevel.HIGH,
+                            compatibility=compat,
+                            severity=sev,
                             path=path,
                             method=method,
                             schema_location=loc,
                             previous_value=base_p,
                             current_value=None,
-                            message=f"Property '{prop_name}' was removed at {loc}.",
+                            message=msg,
                             evidence={
                                 "removed_property": prop_name,
                                 "previous_definition": base_p,
@@ -457,7 +499,7 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
                             },
                             confidence=1.0,
                             source=DetectionSource.ALGORITHMIC,
-                            review_required=False,
+                            review_required=rev_req,
                         )
                     )
                 else:
@@ -551,9 +593,9 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
                 )
 
     def _resolve_all_refs(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """Deep copy and resolve internal $ref within specification."""
+        """Deep copy and resolve internal $ref within specification, guarding against cycles."""
         cloned = copy.deepcopy(spec)
-        visited_nodes: Set[int] = set()
+        active_refs: Set[str] = set()
 
         def _resolve_node(node: Any) -> Any:
             if not isinstance(node, dict):
@@ -561,21 +603,23 @@ class AlgorithmicDetectionEngine(BaseDetectionEngine):
                     return [_resolve_node(item) for item in node]
                 return node
 
-            node_id = id(node)
-            if node_id in visited_nodes:
-                return node
-            visited_nodes.add(node_id)
-
             if "$ref" in node and isinstance(node["$ref"], str):
                 ref = node["$ref"]
-                resolved = self._lookup_ref(cloned, ref)
-                if resolved is not None and isinstance(resolved, dict):
-                    # Merge properties in case there are sibling fields
-                    resolved_copy = copy.deepcopy(resolved)
-                    for k, v in node.items():
-                        if k != "$ref":
-                            resolved_copy[k] = v
-                    return _resolve_node(resolved_copy)
+                if ref in active_refs:
+                    # Circular reference cycle detected; return node without recursive expansion
+                    return {k: v for k, v in node.items()}
+
+                active_refs.add(ref)
+                try:
+                    resolved = self._lookup_ref(cloned, ref)
+                    if resolved is not None and isinstance(resolved, dict):
+                        resolved_copy = copy.deepcopy(resolved)
+                        for k, v in node.items():
+                            if k != "$ref":
+                                resolved_copy[k] = v
+                        return _resolve_node(resolved_copy)
+                finally:
+                    active_refs.remove(ref)
 
             return {k: _resolve_node(v) for k, v in node.items()}
 

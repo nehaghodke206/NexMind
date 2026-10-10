@@ -1,0 +1,90 @@
+{
+  "name": "dependency-guardian-vscode",
+  "displayName": "Dependency Guardian",
+  "description": "Proactive API breaking change detection and automated compatibility repair for VS Code.",
+  "version": "0.1.0",
+  "publisher": "dependency-guardian",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dependencyGuardian.runDetection",
+        "title": "Dependency Guardian: Run Specification Detection",
+        "category": "Dependency Guardian"
+      },
+      {
+        "command": "dependencyGuardian.changeDetectionMode",
+        "title": "Dependency Guardian: Change Detection Mode",
+        "category": "Dependency Guardian"
+      },
+      {
+        "command": "dependencyGuardian.checkBackendHealth",
+        "title": "Dependency Guardian: Check Backend Connection",
+        "category": "Dependency Guardian"
+      }
+    ],
+    "configuration": {
+      "title": "Dependency Guardian",
+      "properties": {
+        "dependencyGuardian.detectionMode": {
+          "type": "string",
+          "enum": [
+            "algorithmic",
+            "ai",
+            "hybrid"
+          ],
+          "default": "algorithmic",
+          "description": "Active detection mode: algorithmic (deterministic offline), ai, or hybrid."
+        },
+        "dependencyGuardian.aiProvider": {
+          "type": "string",
+          "enum": [
+            "mock",
+            "ollama",
+            "hosted"
+          ],
+          "default": "mock",
+          "description": "Configured AI provider for AI or hybrid mode analysis."
+        },
+        "dependencyGuardian.backendUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000/api/v1",
+          "description": "Base URL of the Dependency Guardian FastAPI backend service."
+        },
+        "dependencyGuardian.agentPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to the dependency-guardian agent binary or run script. Leave empty for auto-detection."
+        },
+        "dependencyGuardian.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Python command/path used if executing agent via Python module fallback."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "test": "node test/test-agent-runner.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.3"
+  }
+}
