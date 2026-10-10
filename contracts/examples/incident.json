@@ -1,0 +1,19 @@
+
+{
+  "dependency_id": "dep_demo_users",
+  "title": "Users API response field renamed",
+  "description": "Expected field name was not found; display_name was observed.",
+  "severity": "high",
+  "source": "detection-agent",
+  "fingerprint": "users-api:name-to-display_name",
+  "evidence": {
+    "removed_fields": ["name"],
+    "added_fields": ["display_name"],
+    "type_changes": [],
+    "baseline": {"name": "Ada Lovelace"},
+    "observed": {"display_name": "Ada Lovelace"}
+  },
+  "affected_files": ["src/users/client.ts"],
+  "affected_workflows": ["user profile display"]
+}
+

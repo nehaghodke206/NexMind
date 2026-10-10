@@ -1,0 +1,11 @@
+
+{
+  "proposed_by": "repair-agent",
+  "rationale": "Update the consumer mapping to use display_name.",
+  "patch": {
+    "format": "unified_diff",
+    "content": ""
+  },
+  "risk_level": "medium"
+}
+

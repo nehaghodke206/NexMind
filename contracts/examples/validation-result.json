@@ -1,0 +1,9 @@
+
+{
+  "result": "failed",
+  "tests_total": 3,
+  "tests_passed": 2,
+  "tests_failed": 1,
+  "summary": "One test still expects the old field."
+}
+
