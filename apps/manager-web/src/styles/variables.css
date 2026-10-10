@@ -1,0 +1,91 @@
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Color Palette - Neutral slate */
+  --bg-app: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-surface-hover: #334155;
+  --bg-surface-elevated: #1e293b;
+  --border-subtle: #334155;
+  --border-strong: #475569;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+
+  /* Primary Brand */
+  --brand-primary: #3b82f6;
+  --brand-primary-hover: #2563eb;
+  --brand-primary-focus: rgba(59, 130, 246, 0.4);
+  --brand-accent: #6366f1;
+
+  /* Severity Colors (Accessible, accompanied by text/icons) */
+  --sev-critical-bg: #450a0a;
+  --sev-critical-text: #fecaca;
+  --sev-critical-border: #dc2626;
+
+  --sev-high-bg: #431407;
+  --sev-high-text: #fed7aa;
+  --sev-high-border: #ea580c;
+
+  --sev-medium-bg: #422006;
+  --sev-medium-text: #fef08a;
+  --sev-medium-border: #d97706;
+
+  --sev-low-bg: #0c2a47;
+  --sev-low-text: #bae6fd;
+  --sev-low-border: #0284c7;
+
+  /* Status Colors */
+  --status-open-bg: #1e293b;
+  --status-open-text: #cbd5e1;
+  --status-open-border: #475569;
+
+  --status-detected-bg: #2e1065;
+  --status-detected-text: #e9d5ff;
+  --status-detected-border: #9333ea;
+
+  --status-analyzing-bg: #1e1b4b;
+  --status-analyzing-text: #c7d2fe;
+  --status-analyzing-border: #6366f1;
+
+  --status-review-bg: #042f2e;
+  --status-review-text: #99f6e4;
+  --status-review-border: #0d9488;
+
+  --status-approved-bg: #064e3b;
+  --status-approved-text: #a7f3d0;
+  --status-approved-border: #10b981;
+
+  --status-resolved-bg: #14532d;
+  --status-resolved-text: #bbf7d0;
+  --status-resolved-border: #22c55e;
+
+  --status-failed-bg: #450a0a;
+  --status-failed-text: #fecaca;
+  --status-failed-border: #ef4444;
+
+  --status-blocked-bg: #3f3f46;
+  --status-blocked-text: #f4f4f5;
+  --status-blocked-border: #71717a;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+}
