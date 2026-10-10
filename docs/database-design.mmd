@@ -1,0 +1,194 @@
+
+erDiagram
+    USERS {
+        int id PK
+        string name
+        string email UK
+        string external_auth_id UK
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+
+    PROJECTS {
+        int id PK
+        string name
+        text description
+        string repository_url
+        int created_by FK
+        json settings_json
+        datetime created_at
+        datetime updated_at
+    }
+
+    PROJECT_MEMBERS {
+        int project_id PK, FK
+        int user_id PK, FK
+        string role
+        datetime joined_at
+    }
+
+    DEPENDENCIES {
+        int id PK
+        int project_id FK
+        string name
+        string base_url
+        string http_method
+        string endpoint_path
+        string environment
+        json config_json
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+
+    BASELINE_VERSIONS {
+        int id PK
+        int dependency_id FK
+        int version_number
+        json schema_json
+        json sample_response_json
+        string content_hash
+        int created_by FK
+        boolean is_active
+        datetime created_at
+        text notes
+    }
+
+    SCAN_RUNS {
+        int id PK
+        int dependency_id FK
+        int baseline_version_id FK
+        int triggered_by FK
+        string trigger_type
+        string status
+        datetime started_at
+        datetime finished_at
+        json summary_json
+        text error_message
+        datetime created_at
+    }
+
+    INCIDENTS {
+        int id PK
+        int dependency_id FK
+        int assignee_id FK
+        string title
+        text description
+        string change_type
+        string severity
+        string status
+        string fingerprint
+        datetime first_detected_at
+        datetime last_observed_at
+        datetime resolved_at
+        text evidence_summary
+        json metadata_json
+        datetime created_at
+        datetime updated_at
+    }
+
+    INCIDENT_OBSERVATIONS {
+        int id PK
+        int incident_id FK
+        int scan_run_id FK
+        datetime observed_at
+        json change_details_json
+        json before_json
+        json after_json
+        string evidence_uri
+        datetime created_at
+    }
+
+    REPAIR_PROPOSALS {
+        int id PK
+        int incident_id FK
+        int proposed_by FK
+        string title
+        text rationale
+        string patch_format
+        text patch_content
+        string target_ref
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+
+    VALIDATION_RUNS {
+        int id PK
+        int repair_id FK
+        int run_number
+        string status
+        string validator_type
+        string input_revision
+        json results_json
+        string logs_uri
+        text error_message
+        datetime started_at
+        datetime finished_at
+        datetime created_at
+    }
+
+    APPROVALS {
+        int id PK
+        int repair_id FK
+        int reviewer_id FK
+        string decision
+        text comment
+        datetime created_at
+    }
+
+    REPAIR_APPLICATIONS {
+        int id PK
+        int repair_id FK
+        int applied_by FK
+        string target_ref
+        string status
+        string base_revision
+        string result_revision
+        json result_json
+        text error_message
+        datetime started_at
+        datetime finished_at
+        datetime created_at
+    }
+
+    ACTIVITY_LOG {
+        int id PK
+        int project_id FK
+        int actor_id FK
+        int incident_id FK
+        string action
+        string entity_type
+        int entity_id
+        json details_json
+        datetime created_at
+    }
+
+    USERS ||--o{ PROJECTS : creates
+    USERS ||--o{ PROJECT_MEMBERS : joins
+    PROJECTS ||--o{ PROJECT_MEMBERS : contains
+
+    PROJECTS ||--o{ DEPENDENCIES : monitors
+    DEPENDENCIES ||--o{ BASELINE_VERSIONS : has
+    DEPENDENCIES ||--o{ SCAN_RUNS : scanned_by
+    BASELINE_VERSIONS o|--o{ SCAN_RUNS : used_by
+    USERS o|--o{ BASELINE_VERSIONS : captures
+    USERS o|--o{ SCAN_RUNS : triggers
+
+    DEPENDENCIES ||--o{ INCIDENTS : produces
+    USERS o|--o{ INCIDENTS : assigned_to
+    INCIDENTS ||--o{ INCIDENT_OBSERVATIONS : has
+    SCAN_RUNS ||--o{ INCIDENT_OBSERVATIONS : records
+
+    INCIDENTS ||--o{ REPAIR_PROPOSALS : has
+    USERS o|--o{ REPAIR_PROPOSALS : proposes
+    REPAIR_PROPOSALS ||--o{ VALIDATION_RUNS : validated_by
+    REPAIR_PROPOSALS ||--o{ APPROVALS : reviewed_by
+    USERS ||--o{ APPROVALS : reviews
+    REPAIR_PROPOSALS ||--o{ REPAIR_APPLICATIONS : attempts
+    USERS o|--o{ REPAIR_APPLICATIONS : executes
+
+    PROJECTS ||--o{ ACTIVITY_LOG : records
+    USERS o|--o{ ACTIVITY_LOG : performs
+    INCIDENTS o|--o{ ACTIVITY_LOG : relates_to
