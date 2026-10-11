@@ -234,13 +234,13 @@ class DocumentationGenerator:
 
         for ep in endpoints:
             anchor = f"{ep.http_method.lower()}-{ep.route_path.lower().replace('/', '').replace('{', '').replace('}', '').replace(':', '')}"
-            lines.append(f"- [`{ep.http_method}` {ep.route_path}](#{anchor})")
+            lines.append(f"- [`{ep.http_method} {ep.route_path}`](#{anchor})")
 
         lines.extend(["", "---", ""])
 
         for ep in endpoints:
             anchor = f"{ep.http_method.lower()}-{ep.route_path.lower().replace('/', '').replace('{', '').replace('}', '').replace(':', '')}"
-            lines.append(f"### <a id=\"{anchor}\"></a>`{ep.http_method}` {ep.route_path}")
+            lines.append(f"### <a id=\"{anchor}\"></a>`{ep.http_method} {ep.route_path}`")
             lines.append("")
 
             # Summary and Description

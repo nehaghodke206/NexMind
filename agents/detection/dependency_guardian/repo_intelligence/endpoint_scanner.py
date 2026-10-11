@@ -707,8 +707,8 @@ class EndpointScanner:
         side_effects: List[SideEffectDoc] = []
         for node in ast.walk(func_node):
             if isinstance(node, ast.Call):
-                call_repr = self._ast_call_repr(node)
-                if any(k in call_repr for k in ["db.commit", "db.add", "session.commit", "session.add", "execute("]):
+                call_repr = self._ast_call_repr(node).lower()
+                if any(k in call_repr for k in [".commit", ".execute", ".add", "commit", "execute"]):
                     side_effects.append(
                         SideEffectDoc(
                             effect_type="database_write",
@@ -724,7 +724,7 @@ class EndpointScanner:
                             description=f"Dispatches outbound call: {call_repr[:60]}",
                         )
                     )
-                elif any(k in call_repr for k in ["publish(", "delay(", "apply_async("]):
+                elif any(k in call_repr for k in [".publish", "publish", "delay", "apply_async"]):
                     side_effects.append(
                         SideEffectDoc(
                             effect_type="message_publish",
@@ -855,6 +855,13 @@ class EndpointScanner:
                 merged.side_effects = in_code.side_effects
                 merged.relevant_dependencies = in_code.relevant_dependencies
                 merged.confidence_level = 1.0
+
+                if not merged.auth_and_authz and in_code.auth_and_authz:
+                    merged.auth_and_authz = in_code.auth_and_authz
+                    merged.auth_inferred = in_code.auth_inferred
+
+                if not merged.request_body and in_code.request_body:
+                    merged.request_body = in_code.request_body
 
                 # Merge parameters if code has extras
                 spec_param_names = {p.name for p in merged.parameters}

@@ -671,51 +671,113 @@ class DependencyScanner:
                 if ext in {".py", ".js", ".ts", ".jsx", ".tsx"}:
                     try:
                         content = file_path.read_text(encoding="utf-8", errors="replace")
+
+                        # For Python, use AST to reliably extract multiline calls
+                        if ext == ".py":
+                            try:
+                                tree = ast.parse(content)
+                                for node in ast.walk(tree):
+                                    if isinstance(node, ast.Call):
+                                        if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+                                            caller = node.func.value.id.lower()
+                                            method = node.func.attr.lower()
+
+                                            # HTTP client: httpx or requests
+                                            if caller in {"httpx", "requests"} and method in {"get", "post", "put", "delete", "patch", "options", "head"}:
+                                                raw_url = None
+                                                if node.args and isinstance(node.args[0], ast.Constant):
+                                                    raw_url = str(node.args[0].value)
+                                                elif node.keywords:
+                                                    for kw in node.keywords:
+                                                        if kw.arg in ["url", "target"] and isinstance(kw.value, ast.Constant):
+                                                            raw_url = str(kw.value.value)
+                                                            break
+                                                if raw_url:
+                                                    clean_url, secrets_count = self._sanitize_url(raw_url)
+                                                    self.integrations.append(
+                                                        ExternalIntegrationDoc(
+                                                            integration_type="http_service",
+                                                            service_name=self._extract_service_name_from_url(clean_url),
+                                                            target_url_or_host=clean_url,
+                                                            file_path=rel_path,
+                                                            line_number=node.lineno,
+                                                            code_snippet=self._sanitize_string(f"{caller}.{method}(\"{clean_url}\")"),
+                                                            operations=[method.upper()],
+                                                            config_references=[c for c in config_refs if c in content],
+                                                            redacted_secrets_count=secrets_count,
+                                                        )
+                                                    )
+                                            # Database: psycopg2
+                                            elif caller == "psycopg2" and method == "connect":
+                                                self.integrations.append(
+                                                    ExternalIntegrationDoc(
+                                                        integration_type="database",
+                                                        service_name="PostgreSQL (psycopg2)",
+                                                        target_url_or_host=None,
+                                                        file_path=rel_path,
+                                                        line_number=node.lineno,
+                                                        code_snippet=self._sanitize_string("psycopg2.connect(...)"),
+                                                        operations=["connect", "query"],
+                                                        config_references=[c for c in config_refs if c in content],
+                                                    )
+                                                )
+                                            # Cache / Broker: redis
+                                            elif caller == "redis" and method in {"redis", "from_url"}:
+                                                self.integrations.append(
+                                                    ExternalIntegrationDoc(
+                                                        integration_type="cache",
+                                                        service_name="Redis Client",
+                                                        target_url_or_host=None,
+                                                        file_path=rel_path,
+                                                        line_number=node.lineno,
+                                                        code_snippet=self._sanitize_string(f"redis.{method}(...)"),
+                                                        operations=["connect", "publish", "query"],
+                                                        config_references=[c for c in config_refs if c in content],
+                                                    )
+                                                )
+                            except Exception:
+                                pass
+
+                        # General regex fallback for lines
                         lines = content.splitlines()
-
                         for line_idx, line in enumerate(lines, 1):
-                            # Check outbound HTTP
-                            for pat, p_type in http_patterns:
-                                m = pat.search(line)
-                                if m:
-                                    if p_type == "python_http":
-                                        op, raw_url = m.group(1).upper(), m.group(2).strip("\"'")
-                                    elif p_type == "node_axios":
-                                        op, raw_url = m.group(1).upper(), m.group(2).strip("\"'")
-                                    else:
-                                        op, raw_url = "GET", m.group(1).strip("\"'")
-
-                                    # Sanitize and extract host/target
-                                    clean_url, secrets_count = self._sanitize_url(raw_url)
-                                    self.integrations.append(
-                                        ExternalIntegrationDoc(
-                                            integration_type="http_service",
-                                            service_name=self._extract_service_name_from_url(clean_url),
-                                            target_url_or_host=clean_url,
-                                            file_path=rel_path,
-                                            line_number=line_idx,
-                                            code_snippet=self._sanitize_string(line.strip()),
-                                            operations=[op],
-                                            config_references=[c for c in config_refs if c in line],
-                                            redacted_secrets_count=secrets_count,
+                            # Check outbound HTTP (JS/other)
+                            if ext != ".py":
+                                for pat, p_type in http_patterns:
+                                    m = pat.search(line)
+                                    if m:
+                                        op, raw_url = (m.group(1).upper(), m.group(2).strip("\"'")) if p_type == "node_axios" else ("GET", m.group(1).strip("\"'"))
+                                        clean_url, secrets_count = self._sanitize_url(raw_url)
+                                        self.integrations.append(
+                                            ExternalIntegrationDoc(
+                                                integration_type="http_service",
+                                                service_name=self._extract_service_name_from_url(clean_url),
+                                                target_url_or_host=clean_url,
+                                                file_path=rel_path,
+                                                line_number=line_idx,
+                                                code_snippet=self._sanitize_string(line.strip()),
+                                                operations=[op],
+                                                config_references=[c for c in config_refs if c in line],
+                                                redacted_secrets_count=secrets_count,
+                                            )
                                         )
-                                    )
 
-                            # Check databases
-                            for pat, db_name, itype in db_patterns:
-                                if pat.search(line):
-                                    self.integrations.append(
-                                        ExternalIntegrationDoc(
-                                            integration_type=itype,
-                                            service_name=db_name,
-                                            target_url_or_host=None,
-                                            file_path=rel_path,
-                                            line_number=line_idx,
-                                            code_snippet=self._sanitize_string(line.strip()),
-                                            operations=["connect", "query"],
-                                            config_references=[c for c in config_refs if c in line],
+                            # Check databases (JS/other)
+                            if ext != ".py":
+                                for pat, db_name, itype in db_patterns:
+                                    if pat.search(line):
+                                        self.integrations.append(
+                                            ExternalIntegrationDoc(
+                                                integration_type=itype,
+                                                service_name=db_name,
+                                                target_url_or_host=None,
+                                                file_path=rel_path,
+                                                line_number=line_idx,
+                                                code_snippet=self._sanitize_string(line.strip()),
+                                                operations=["connect", "query"],
+                                                config_references=[c for c in config_refs if c in line],
+                                            )
                                         )
-                                    )
 
                             # Check SDKs and message brokers
                             for pat, sdk_name, itype in sdk_patterns:

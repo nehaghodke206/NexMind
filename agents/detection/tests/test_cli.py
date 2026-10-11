@@ -17,6 +17,22 @@ def test_cli_help(capsys):
     assert "Dependency Guardian Detection Agent CLI" in captured.out
 
 
+def test_cli_version(capsys):
+    with pytest.raises(SystemExit) as exc:
+        run(["--version"])
+    assert exc.value.code == 0
+    captured = capsys.readouterr()
+    assert "dependency-guardian 0.1.0" in captured.out
+
+
+def test_cli_scan_repo_version(capsys):
+    with pytest.raises(SystemExit) as exc:
+        run(["scan-repo", "--version"])
+    assert exc.value.code == 0
+    captured = capsys.readouterr()
+    assert "dependency-guardian scan-repo 0.1.0" in captured.out
+
+
 def test_cli_missing_arguments(capsys):
     ret = run([])
     assert ret == 2

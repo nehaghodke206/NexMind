@@ -1,3 +1,4 @@
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
@@ -21,3 +22,7 @@ dependency-guardian = "dependency_guardian.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["dependency_guardian*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["fixtures", ".venv", "venv", "__pycache__"]

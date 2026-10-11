@@ -19,6 +19,11 @@ from .orchestrator import DetectionOrchestrator
 from .client.backend import BackendClient
 from .insights import format_insights_text
 from .test_generator import RegressionTestGenerator, TestCaseModel, TestExecutionSummary
+from .repo_intelligence import (
+    DocumentationGenerator,
+    RepositoryIntelligenceScanner,
+    RepositoryInventory,
+)
 
 logger = logging.getLogger("dependency_guardian.cli")
 
@@ -120,6 +125,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dependency-guardian",
         description="Dependency Guardian Detection Agent CLI for OpenAPI specifications",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s 0.1.0",
+        help="Show program version number and exit",
     )
     parser.add_argument(
         "baseline_pos",
@@ -299,8 +310,208 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def build_scan_repo_parser() -> argparse.ArgumentParser:
+    """Build argument parser for repository intelligence scanning."""
+    parser = argparse.ArgumentParser(
+        prog="dependency-guardian scan-repo",
+        description="Dependency Guardian Repository Intelligence & API Documentation Agent",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s 0.1.0",
+        help="Show program version number and exit",
+    )
+    parser.add_argument(
+        "repository_path",
+        help="Path to repository directory to scan",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default="reports/repository-inventory",
+        help="Output directory or file path for inventory and documentation (default: reports/repository-inventory)",
+    )
+    parser.add_argument(
+        "--format",
+        "-f",
+        choices=["summary", "json", "both"],
+        default="summary",
+        help="Console output format: summary (default), json, or both",
+    )
+    parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["algorithmic", "ai", "hybrid"],
+        default="algorithmic",
+        help="Scanning mode: algorithmic (default offline AST/manifest), ai, or hybrid",
+    )
+    parser.add_argument(
+        "--provider",
+        dest="ai_provider",
+        choices=["mock", "ollama", "hosted"],
+        default=None,
+        help="AI provider identifier for hybrid/ai explanation",
+    )
+    parser.add_argument(
+        "--model",
+        dest="ai_model",
+        default=None,
+        help="Target model identifier for AI provider",
+    )
+    parser.add_argument(
+        "--base-url",
+        dest="ai_base_url",
+        default=None,
+        help="Custom base URL for AI provider endpoint",
+    )
+    parser.add_argument(
+        "--api-key",
+        dest="ai_api_key",
+        default=None,
+        help="API key for hosted AI provider",
+    )
+    parser.add_argument(
+        "--timeout",
+        dest="ai_timeout_seconds",
+        type=float,
+        default=None,
+        help="AI request timeout in seconds",
+    )
+    parser.add_argument(
+        "--no-enrichment",
+        dest="enrich_openapi",
+        action="store_false",
+        default=True,
+        help="Disable OpenAPI specification enrichment",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable debug logging output",
+    )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        action="store_true",
+        help="Suppress informational console output",
+    )
+    return parser
+
+
+def _format_scan_repo_summary(inventory: RepositoryInventory, written_files: Dict[str, Path]) -> str:
+    """Format repository inventory summary table for terminal display."""
+    meta = inventory.metadata
+    cov = inventory.test_coverage
+    deps = inventory.dependencies
+    used_deps = sum(1 for d in deps if d.is_used)
+
+    lines = [
+        "=" * 76,
+        " DEPENDENCY GUARDIAN — REPOSITORY INTELLIGENCE & API INVENTORY SUMMARY",
+        "=" * 76,
+        f" Repository Path:       {meta.scanned_path}",
+        f" Languages Detected:   {', '.join(meta.languages_detected) if meta.languages_detected else 'None'}",
+        f" Frameworks Detected:  {', '.join(meta.frameworks_detected) if meta.frameworks_detected else 'None'}",
+        f" Source Files Scanned: {meta.total_files_scanned}",
+        "-" * 76,
+        f" Dependencies:         {len(deps)} total ({used_deps} used in code, {len(inventory.unused_dependencies)} declared but unused)",
+        f" External Integrations: {len(inventory.integrations)} (Databases, Queues, HTTP calls, Cloud SDKs)",
+        f" Discovered Endpoints: {len(inventory.endpoints)}",
+        f"   - Framework AST:     {sum(1 for e in inventory.endpoints if e.discovery_method == 'framework_ast')}",
+        f"   - OpenAPI Spec:      {sum(1 for e in inventory.endpoints if e.discovery_method == 'openapi_spec')}",
+        f"   - Hybrid (Both):     {sum(1 for e in inventory.endpoints if e.discovery_method == 'hybrid')}",
+        f" Spec Discrepancies:   {len(inventory.discrepancies)} ({sum(1 for d in inventory.discrepancies if d.discrepancy_type == 'undocumented_endpoint')} undocumented, {sum(1 for d in inventory.discrepancies if d.discrepancy_type == 'ghost_endpoint')} ghost)",
+        f" API Test Coverage:    {cov.coverage_percentage}% ({cov.tested_endpoints}/{cov.total_endpoints} endpoints tested, {cov.untested_endpoints} gaps)",
+        "-" * 76,
+        " Generated Documentation Deliverables:",
+    ]
+    for key, path in written_files.items():
+        lines.append(f"   [+] {path.name:<25} -> {path}")
+    lines.append("=" * 76)
+    return "\n".join(lines)
+
+
+def run_scan_repo(scan_args: List[str]) -> int:
+    """Execute repository intelligence scanning and documentation generation."""
+    parser = build_scan_repo_parser()
+    args = parser.parse_args(scan_args)
+
+    log_level = logging.DEBUG if args.verbose else (logging.ERROR if args.quiet else logging.INFO)
+    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
+    repo_path = Path(args.repository_path)
+    if not repo_path.exists() or not repo_path.is_dir():
+        sys.stderr.write(f"Error: Repository path does not exist or is not a directory: {args.repository_path}\n")
+        return 2
+
+    # Determine output directory
+    raw_output = Path(args.output)
+    if raw_output.suffix.lower() == ".json":
+        output_dir = raw_output.parent
+    else:
+        output_dir = raw_output
+
+    # Optional AI provider setup if mode is ai or hybrid
+    ai_provider = None
+    if args.mode in ["ai", "hybrid"] and args.ai_provider:
+        cli_overrides: Dict[str, Any] = {
+            "ai_provider": args.ai_provider,
+        }
+        if args.ai_model:
+            cli_overrides["ai_model"] = args.ai_model
+        if args.ai_base_url:
+            cli_overrides["ai_base_url"] = args.ai_base_url
+        if args.ai_api_key:
+            cli_overrides["ai_api_key"] = args.ai_api_key
+        if args.ai_timeout_seconds is not None:
+            cli_overrides["ai_timeout_seconds"] = args.ai_timeout_seconds
+
+        try:
+            config = load_configuration(workspace_dir=repo_path, cli_overrides=cli_overrides)
+            orchestrator = DetectionOrchestrator(config=config)
+            ai_provider = orchestrator.ai_provider
+        except Exception as exc:
+            logger.warning(f"Failed to initialize AI provider '{args.ai_provider}': {exc}. Proceeding with deterministic scan.")
+
+    try:
+        scanner = RepositoryIntelligenceScanner(repo_path=repo_path, ai_provider=ai_provider)
+        inventory = scanner.scan(output_dir=output_dir, enrich_openapi=args.enrich_openapi)
+    except Exception as exc:
+        sys.stderr.write(f"Repository scanning failed: {exc}\n")
+        return 1
+
+    written_files = {
+        "repository-inventory.json": output_dir / "repository-inventory.json",
+        "DEPENDENCY_REPORT.md": output_dir / "DEPENDENCY_REPORT.md",
+        "API_REFERENCE.md": output_dir / "API_REFERENCE.md",
+        "INTEGRATION_MAP.md": output_dir / "INTEGRATION_MAP.md",
+        "TEST_COVERAGE.md": output_dir / "TEST_COVERAGE.md",
+        "openapi.enriched.json": output_dir / "openapi.enriched.json",
+    }
+
+    if args.format == "json":
+        inv_dict = inventory.model_dump(mode="json")
+        print(json.dumps(inv_dict, indent=2))
+    elif args.format == "summary":
+        if not args.quiet:
+            print(_format_scan_repo_summary(inventory, written_files))
+    elif args.format == "both":
+        if not args.quiet:
+            print(_format_scan_repo_summary(inventory, written_files))
+        inv_dict = inventory.model_dump(mode="json")
+        print(json.dumps(inv_dict, indent=2))
+
+    return 0
+
+
 def run(argv: Optional[List[str]] = None) -> int:
     """Execute detection CLI command."""
+    effective_argv = list(sys.argv[1:]) if argv is None else list(argv)
+    if effective_argv and effective_argv[0] == "scan-repo":
+        return run_scan_repo(effective_argv[1:])
+
     parser = build_parser()
     args = parser.parse_args(argv)
 

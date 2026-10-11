@@ -17,6 +17,7 @@ logger = logging.getLogger("dependency_guardian.repo_intelligence.test_coverage_
 
 class TestCoverageScanner:
     """Discovers tests and computes endpoint and integration coverage."""
+    __test__ = False
 
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root.resolve()

@@ -1,0 +1,145 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Fixture User Service API",
+    "version": "1.0.0",
+    "description": "Baseline API contract for repository scanner tests"
+  },
+  "paths": {
+    "/api/v1/users": {
+      "get": {
+        "summary": "List all active users",
+        "description": "Retrieve paginated list of registered users.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Maximum number of items to return"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter users by role"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved users list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new user",
+        "description": "Create a new user record in the database.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/legacy-analytics": {
+      "get": {
+        "summary": "Legacy analytics summary (Ghost Endpoint)",
+        "description": "Deprecated endpoint documented in spec but no longer implemented in code.",
+        "responses": {
+          "200": {
+            "description": "Analytics summary"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserCreate": {
+        "type": "object",
+        "required": ["username", "email"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "description": "Unique username"
+          },
+          "email": {
+            "type": "string",
+            "description": "User primary email address"
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 18,
+            "maximum": 120,
+            "description": "User age in years"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "pending", "suspended"],
+            "default": "pending",
+            "description": "Account status"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "required": ["id", "username", "email", "created_at"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique user ID"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Account creation timestamp"
+          }
+        }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ Modern applications depend on external HTTP/JSON APIs whose behaviors often chan
 - `apps/manager-web/` — Manager dashboard web interface (React + Vite)
 - `vscode-extension/` (and `apps/vscode-extension/`) — VS Code extension for developers
 - `services/backend/` & `backend/` — FastAPI backend services
-- `agents/detection/` — API change detection agent
+- `agents/detection/` — API change detection & repository intelligence agent ([Complete User Guide & CLI Reference](agents/detection/README.md))
 - `agents/repair/` — Impact analysis and repair proposal component
 - `contracts/` — Shared API contracts and example payloads
 - `demo/` & `demo-app/` — Simulated APIs, sample applications, and contract tests
@@ -94,6 +94,29 @@ python scripts/test_e2e.py
 ```bash
 python scripts/demo_runner.py
 ```
+
+### 7. Repository Intelligence & API Documentation CLI
+Dependency Guardian features an automated Repository Intelligence and API Documentation engine with local Ollama AI support:
+```bash
+# Activate virtual environment
+cd agents/detection && source .venv/bin/activate
+
+# Scan repository and generate 6 evidence-backed deliverables
+dependency-guardian scan-repo tests/fixtures/fixture_repo --output reports/repository-inventory --format summary
+
+# Proactively detect API contract breaking changes in CI/CD pipelines
+dependency-guardian baseline.json current.json --mode algorithmic --fail-on-breaking
+```
+
+Generated deliverables include:
+- `repository-inventory.json` — Machine-readable single-source-of-truth inventory.
+- `DEPENDENCY_REPORT.md` — Manifest vs lockfile dependencies, usage, CVEs, and external integrations.
+- `API_REFERENCE.md` — Full endpoint documentation with parameters, schemas, constraints, auth, and error cases.
+- `INTEGRATION_MAP.md` — Endpoint-to-dependency, database, queue, and external HTTP topology.
+- `TEST_COVERAGE.md` — Endpoint test coverage percentage and gap analysis.
+- `openapi.enriched.json` — Enriched OpenAPI 3.1.0 document.
+
+👉 **For complete command references, copy-paste examples, Ollama configuration, and regression test workflows, read the [Dependency Guardian User Guide](agents/detection/README.md).**
 
 ---
 

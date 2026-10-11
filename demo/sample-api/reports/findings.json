@@ -3,7 +3,7 @@
   "mode": "algorithmic",
   "findings": [
     {
-      "id": "find_1a1194ac-4bbe-4dbc-8b05-b97270da48ad",
+      "id": "find_33c699ac-dd2d-41e6-b299-b475b6454c89",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:22663834207a46e2",
       "compatibility": "non_breaking",
@@ -47,10 +47,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959612Z"
+      "created_at": "2026-10-11T07:57:20.228445Z"
     },
     {
-      "id": "find_75515f69-5fb1-4c7c-adf2-97b113f2703c",
+      "id": "find_01c32081-39d1-438b-9bd3-4df08235e64e",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e2ea2f4c52368a15",
       "compatibility": "non_breaking",
@@ -94,10 +94,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959659Z"
+      "created_at": "2026-10-11T07:57:20.228558Z"
     },
     {
-      "id": "find_584f5ed2-ffe4-4a2b-980b-f836525d243a",
+      "id": "find_e5ae8ae2-2673-46c2-b77e-636cc6ce1cae",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:cf92810f63463ccf",
       "compatibility": "non_breaking",
@@ -141,10 +141,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959699Z"
+      "created_at": "2026-10-11T07:57:20.228668Z"
     },
     {
-      "id": "find_13419858-8eb7-4d08-a7e4-e17b5562f811",
+      "id": "find_f4bedf69-17ba-4d61-8d43-3ccba5602810",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2dddf5a6f772e73f",
       "compatibility": "non_breaking",
@@ -188,10 +188,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959740Z"
+      "created_at": "2026-10-11T07:57:20.228785Z"
     },
     {
-      "id": "find_268653c9-33e7-4b8c-9ec0-cf7e24d5284d",
+      "id": "find_bc949608-bd49-4d5a-88e9-c6e33943bb34",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:5f19bb342f44fa3c",
       "compatibility": "non_breaking",
@@ -223,10 +223,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959780Z"
+      "created_at": "2026-10-11T07:57:20.228927Z"
     },
     {
-      "id": "find_e8d66ca1-b83b-4f54-8aff-6d0ebcf89447",
+      "id": "find_942ca418-a691-4304-9194-8000dfe3957a",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:2bf0d6a6a70681dc",
       "compatibility": "breaking",
@@ -256,10 +256,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959771Z"
+      "created_at": "2026-10-11T07:57:20.228888Z"
     },
     {
-      "id": "find_4d2ea948-7ae2-43d2-848c-f6e9c44a0a64",
+      "id": "find_81ab7d9b-3f9f-42d1-9668-09c471659343",
       "rule_id": "RULE-REQUIRED-FIELD-ADDED",
       "fingerprint": "dg:rule-required-field-added:081743be0365cb6d",
       "compatibility": "breaking",
@@ -278,10 +278,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959790Z"
+      "created_at": "2026-10-11T07:57:20.228961Z"
     },
     {
-      "id": "find_ccc94529-6749-48e1-9207-48f6bfee29cd",
+      "id": "find_7a7af853-16cb-4dd9-94e7-f390309f83eb",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:add00f9dae7c178e",
       "compatibility": "breaking",
@@ -301,10 +301,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959808Z"
+      "created_at": "2026-10-11T07:57:20.229016Z"
     },
     {
-      "id": "find_caebe665-2a03-4a9e-acf1-100e00adfb48",
+      "id": "find_1155b858-3b12-473d-8c21-776c27ea8da4",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:d4219cfd1f2cbe48",
       "compatibility": "non_breaking",
@@ -334,10 +334,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959834Z"
+      "created_at": "2026-10-11T07:57:20.229115Z"
     },
     {
-      "id": "find_85779796-08af-4f27-bf1e-4575756765cd",
+      "id": "find_43a7d386-828f-4000-80a0-fab0a629bb49",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:a4bcecee92b7e009",
       "compatibility": "potentially_breaking",
@@ -367,10 +367,10 @@
       "source": "algorithmic",
       "review_required": true,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959820Z"
+      "created_at": "2026-10-11T07:57:20.229065Z"
     },
     {
-      "id": "find_66e1a1c8-5602-4973-9f8d-d3f51b7b71e6",
+      "id": "find_90d8049f-d517-4d68-b222-13959ba4cce8",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:f7ace9b2f17f4d40",
       "compatibility": "breaking",
@@ -390,10 +390,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959869Z"
+      "created_at": "2026-10-11T07:57:20.229207Z"
     },
     {
-      "id": "find_a647d9e7-e39f-41e6-9933-a2e1a6fd3a35",
+      "id": "find_97bf1862-3934-47fc-a7f6-b18fca3dd293",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:744ba98b47c293e2",
       "compatibility": "non_breaking",
@@ -423,10 +423,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959890Z"
+      "created_at": "2026-10-11T07:57:20.229299Z"
     },
     {
-      "id": "find_cf595383-cca5-45e6-a25e-e83ca9db76ea",
+      "id": "find_bd6fdec6-d875-434c-928c-87c46328f821",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:245a9cddcedf3dcd",
       "compatibility": "potentially_breaking",
@@ -456,10 +456,10 @@
       "source": "algorithmic",
       "review_required": true,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959879Z"
+      "created_at": "2026-10-11T07:57:20.229242Z"
     },
     {
-      "id": "find_f74d1950-87cc-44e9-acd0-e171499fdbd4",
+      "id": "find_73c5d64e-08c3-4c97-8d9f-4adb2a801376",
       "rule_id": "RULE-PATH-REMOVED",
       "fingerprint": "dg:rule-path-removed:1ad5b95ab2b40db9",
       "compatibility": "breaking",
@@ -484,10 +484,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959914Z"
+      "created_at": "2026-10-11T07:57:20.229385Z"
     },
     {
-      "id": "find_7d521d0b-eaa4-4e86-8260-7f7d8e362393",
+      "id": "find_cb3749d4-a134-4242-851a-4bfb9a2ad961",
       "rule_id": "RULE-REQUIRED-PARAM-ADDED",
       "fingerprint": "dg:rule-required-param-added:68f33c3dc19dd594",
       "compatibility": "breaking",
@@ -512,10 +512,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959337Z"
+      "created_at": "2026-10-11T07:57:20.227681Z"
     },
     {
-      "id": "find_488bfc40-4db6-4e01-9774-31308e2258d5",
+      "id": "find_f129be9a-8612-4db9-b653-8f6ef06d526f",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:56b2cdaea4e00d72",
       "compatibility": "non_breaking",
@@ -557,10 +557,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959376Z"
+      "created_at": "2026-10-11T07:57:20.227756Z"
     },
     {
-      "id": "find_8e0e0cf9-c16a-4815-beef-d48d8a7f1d2b",
+      "id": "find_ec1b7f32-d5d7-498b-bbfa-d53aeb1e74a0",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:21ae22555c945a2a",
       "compatibility": "breaking",
@@ -588,10 +588,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959365Z"
+      "created_at": "2026-10-11T07:57:20.227739Z"
     },
     {
-      "id": "find_a8f6aa99-7e13-4bbd-9b9c-5c7ec411bed0",
+      "id": "find_6846d2ac-43f5-44b1-94ca-56f10597f901",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2c726225cd1ccbb8",
       "compatibility": "non_breaking",
@@ -622,10 +622,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959403Z"
+      "created_at": "2026-10-11T07:57:20.227806Z"
     },
     {
-      "id": "find_53b6f723-ab73-4810-9b33-9e695e851eee",
+      "id": "find_539d827b-afbb-4bba-bf43-250bc1c10e3d",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:44eb5d55af457f77",
       "compatibility": "non_breaking",
@@ -667,10 +667,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959422Z"
+      "created_at": "2026-10-11T07:57:20.227840Z"
     },
     {
-      "id": "find_28d361fc-d492-4067-bff5-abb1040e653f",
+      "id": "find_e3ce6596-2336-4f81-b6dd-e05bb5bd32b4",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:42a30a123e2f6037",
       "compatibility": "non_breaking",
@@ -712,10 +712,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959450Z"
+      "created_at": "2026-10-11T07:57:20.228037Z"
     },
     {
-      "id": "find_c1e67832-ee58-4cd5-96f2-47f6587e3e8a",
+      "id": "find_1b2b19a1-046a-40c6-adb6-4a9f1e9c12f0",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:6d1726e4a3e2e419",
       "compatibility": "breaking",
@@ -743,10 +743,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959441Z"
+      "created_at": "2026-10-11T07:57:20.228007Z"
     },
     {
-      "id": "find_cf1a03f7-3514-4fdd-8ab4-20661d8249a2",
+      "id": "find_b1ea7435-9753-4c85-84b9-545505907bf6",
       "rule_id": "RULE-METHOD-REMOVED",
       "fingerprint": "dg:rule-method-removed:df468951ca058ba4",
       "compatibility": "breaking",
@@ -767,10 +767,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959577Z"
+      "created_at": "2026-10-11T07:57:20.228352Z"
     },
     {
-      "id": "find_e0b9fcfb-8bc4-4584-bf4e-6eabe8cd58a3",
+      "id": "find_23c2ada3-4849-4ca5-8d39-595539b9a332",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e1908b6c907aab97",
       "compatibility": "non_breaking",
@@ -812,10 +812,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959500Z"
+      "created_at": "2026-10-11T07:57:20.228149Z"
     },
     {
-      "id": "find_5a2c589d-4b59-4810-9b4c-60a5fdcbf178",
+      "id": "find_373808b7-c33d-4d0d-a321-26ad9880e4be",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:d911fd76cb98be39",
       "compatibility": "breaking",
@@ -843,10 +843,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959491Z"
+      "created_at": "2026-10-11T07:57:20.228121Z"
     },
     {
-      "id": "find_f71e5f26-6d8f-4303-ad2b-de7e6ab86cd0",
+      "id": "find_ff6c6a26-dafe-4153-97c1-7df7f60fba77",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:b66b579349776fcf",
       "compatibility": "non_breaking",
@@ -888,10 +888,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959531Z"
+      "created_at": "2026-10-11T07:57:20.228217Z"
     },
     {
-      "id": "find_1f457dd5-c57f-4ff5-b19b-40cca65d7ed2",
+      "id": "find_f5789842-9f8c-445c-a6c7-9402b40776dd",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:1dad56b95732c644",
       "compatibility": "non_breaking",
@@ -933,10 +933,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959556Z"
+      "created_at": "2026-10-11T07:57:20.228285Z"
     },
     {
-      "id": "find_f65c0b36-7ed5-4c4f-b49d-e313d136fe38",
+      "id": "find_277049d0-3cd2-467e-82c4-3e2777658bd2",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:72c50e236592a891",
       "compatibility": "breaking",
@@ -964,10 +964,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959548Z"
+      "created_at": "2026-10-11T07:57:20.228258Z"
     },
     {
-      "id": "find_baddf7bd-6c67-4d95-a49e-162050feb9ed",
+      "id": "find_13b1564a-47da-4523-8e24-79cb926fa7b8",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:371d3ac92e04e012",
       "compatibility": "non_breaking",
@@ -1004,10 +1004,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959068Z"
+      "created_at": "2026-10-11T07:57:20.227161Z"
     },
     {
-      "id": "find_a56a884f-cf75-446d-b8d3-0003bcda1a83",
+      "id": "find_04c9d09b-64cb-4043-94ac-cf99e8ca78e4",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6581398a269eca8",
       "compatibility": "non_breaking",
@@ -1049,10 +1049,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959142Z"
+      "created_at": "2026-10-11T07:57:20.227255Z"
     },
     {
-      "id": "find_d96e143e-f561-4906-a792-cef107971b76",
+      "id": "find_ddffa69d-a7b5-4365-a6e1-5e1272196a3f",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2beccc594b89a7c8",
       "compatibility": "non_breaking",
@@ -1094,10 +1094,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959208Z"
+      "created_at": "2026-10-11T07:57:20.227388Z"
     },
     {
-      "id": "find_0408a8f6-2e4c-425f-8a9a-cdf8d3f303d2",
+      "id": "find_20b33a86-57dd-4c72-af1d-b7e603e0b16c",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:288b2c45b4917842",
       "compatibility": "non_breaking",
@@ -1139,10 +1139,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959250Z"
+      "created_at": "2026-10-11T07:57:20.227493Z"
     },
     {
-      "id": "find_fe3aa86a-9d0d-4118-8d50-78c48622f8f6",
+      "id": "find_ef9f2203-ebe3-47de-8463-b8d2c0b0c1ec",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6dad80d42ec2b64",
       "compatibility": "non_breaking",
@@ -1184,7 +1184,7 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T06:57:43.959290Z"
+      "created_at": "2026-10-11T07:57:20.227587Z"
     }
   ],
   "summary": {
@@ -1203,8 +1203,8 @@
   "ai_status": "skipped",
   "ai_error": null,
   "fallback_triggered": false,
-  "execution_time_ms": 4.11,
-  "timestamp": "2026-10-11T06:57:43.960052Z",
+  "execution_time_ms": 7.41,
+  "timestamp": "2026-10-11T07:57:20.229698Z",
   "ai_insights": null,
   "ai_provider": null,
   "ai_model": null

@@ -1,0 +1,10 @@
+{
+  "name": "fixture-service",
+  "version": "1.0.0",
+  "description": "Fixture service for multi-language repository scanning",
+  "main": "web/server.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  }
+}
