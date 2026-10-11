@@ -1,0 +1,106 @@
+{
+  "name": "dependency-guardian",
+  "displayName": "Dependency Guardian",
+  "description": "Detecting, explaining, and safely adapting external dependency changes",
+  "version": "1.1.0",
+  "publisher": "dependency-guardian",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nehaghodke206/NexMind"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Testing",
+    "Linters"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dependencyGuardian.openDashboard",
+        "title": "Dependency Guardian: Open Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "dependencyGuardian.scanDependencies",
+        "title": "Dependency Guardian: Scan Dependencies",
+        "icon": "$(search)"
+      },
+      {
+        "command": "dependencyGuardian.createBaseline",
+        "title": "Dependency Guardian: Create Baseline",
+        "icon": "$(bookmark)"
+      },
+      {
+        "command": "dependencyGuardian.initialize",
+        "title": "Dependency Guardian: Initialize Project"
+      },
+      {
+        "command": "dependencyGuardian.resetDemo",
+        "title": "Dependency Guardian: Reset Demo"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dependency-guardian-sidebar",
+          "title": "Dependency Guardian",
+          "icon": "resources/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "dependency-guardian-sidebar": [
+        {
+          "id": "dependencyGuardian.services",
+          "name": "Configured Dependencies"
+        },
+        {
+          "id": "dependencyGuardian.changes",
+          "name": "Detected Changes"
+        },
+        {
+          "id": "dependencyGuardian.workflows",
+          "name": "Affected Workflows"
+        },
+        {
+          "id": "dependencyGuardian.repairs",
+          "name": "Repair Proposals"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "dependencyGuardian.scanDependencies",
+          "when": "view == dependencyGuardian.changes",
+          "group": "navigation"
+        },
+        {
+          "command": "dependencyGuardian.createBaseline",
+          "when": "view == dependencyGuardian.services",
+          "group": "navigation"
+        },
+        {
+          "command": "dependencyGuardian.openDashboard",
+          "when": "view == dependencyGuardian.services",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.4.0"
+  }
+}
