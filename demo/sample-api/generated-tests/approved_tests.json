@@ -1,0 +1,98 @@
+[
+  {
+    "test_id": "test_regression_enum_value_removed_api_v1_payments",
+    "target_endpoint": "/api/v1/payments",
+    "target_method": "POST",
+    "related_rule_id": "RULE-ENUM-VALUE-REMOVED",
+    "description": "Regression test verifying removed enum value 'crypto' causes 422 rejection.",
+    "test_purpose": "Detect enum value deprecation impact on callers",
+    "expected_outcome": "422 Unprocessable Entity when submitting removed enum value on v2",
+    "target_version": "v2",
+    "test_code": "def test_regression_enum_value_removed_api_v1_payments(client):\n    \"\"\"Verify removed enum value 'crypto' causes 422 rejection on v2.\"\"\"\n    payload_removed_enum = {\n        \"order_id\": 1,\n        \"amount\": 289.49,\n        \"currency\": \"USD\",\n        \"payment_method\": \"crypto\",\n    }\n    resp = client.post(\"/api/v1/payments\", json=payload_removed_enum)\n    assert resp.status_code == 422, f\"Expected 422 for removed enum 'crypto', got {resp.status_code}\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_required_request_field_api_v1_payments",
+    "target_endpoint": "/api/v1/payments",
+    "target_method": "POST",
+    "related_rule_id": "RULE-REQUIRED-FIELD-ADDED",
+    "description": "Regression test verifying legacy payload lacking newly required field triggers 422.",
+    "test_purpose": "Detect breaking payload requirement additions",
+    "expected_outcome": "422 Unprocessable Entity when legacy payload is sent on v2",
+    "target_version": "v2",
+    "test_code": "def test_regression_required_request_field_api_v1_payments(client):\n    \"\"\"Verify newly required payload field causes 422 if omitted by legacy client.\"\"\"\n    legacy_payload = {\n        \"order_id\": 1,\n        \"amount\": 289.49,\n        \"payment_method\": \"credit_card\",\n    }\n    resp = client.post(\"/api/v1/payments\", json=legacy_payload)\n    # Expected outcome on v2: 422 Unprocessable Entity due to missing required 'currency' field\n    assert resp.status_code == 422, f\"Expected 422 for legacy payload lacking new required field, got {resp.status_code}\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_field_type_amount_changed",
+    "target_endpoint": "/api/v1/payments",
+    "target_method": "GET",
+    "related_rule_id": "RULE-FIELD-TYPE-CHANGED",
+    "description": "Regression test verifying field 'amount' is serialized as string instead of number.",
+    "test_purpose": "Detect incompatible data type changes in API responses",
+    "expected_outcome": "'amount' is str on v2 (was float in v1)",
+    "target_version": "v2",
+    "test_code": "def test_regression_field_type_amount_changed(client):\n    \"\"\"Verify response field 'amount' type is string (decimal format) on v2.\"\"\"\n    resp = client.get(\"/api/v1/payments/1\")\n    assert resp.status_code == 200\n    data = resp.json()\n    # Legacy consumer expecting float/int will encounter type error when parsing\n    assert isinstance(data[\"amount\"], str), f\"Expected 'amount' to be string in v2, got {type(data['amount'])}\"\n    assert data[\"amount\"] == \"289.49\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_path_removed_api_v1_payments__payment_id__receipt",
+    "target_endpoint": "/api/v1/payments/{payment_id}/receipt",
+    "target_method": "GET",
+    "related_rule_id": "RULE-PATH-REMOVED",
+    "description": "Regression test verifying consumer calling removed path '/api/v1/payments/{payment_id}/receipt' fails with 404.",
+    "test_purpose": "Detect breaking path removal for legacy callers",
+    "expected_outcome": "Returns 404 Not Found on v2 (was available in v1)",
+    "target_version": "v2",
+    "test_code": "def test_regression_path_removed_api_v1_payments__payment_id__receipt(client):\n    \"\"\"Verify removed path '/api/v1/payments/{payment_id}/receipt' returns 404 on v2.\"\"\"\n    test_path = \"/api/v1/payments/{payment_id}/receipt\".replace(\"{payment_id}\", \"1\").replace(\"{user_id}\", \"1\").replace(\"{product_id}\", \"1\").replace(\"{order_id}\", \"1\")\n    resp = client.get(test_path)\n    # Expected regression outcome on v2: removed endpoint returns 404 Not Found\n    assert resp.status_code == 404, f\"Expected 404 for removed endpoint, got {resp.status_code}\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_required_param_store_id_api_v1_products",
+    "target_endpoint": "/api/v1/products",
+    "target_method": "GET",
+    "related_rule_id": "RULE-REQUIRED-PARAM-ADDED",
+    "description": "Regression test verifying newly required parameter 'store_id' causes 422 when omitted.",
+    "test_purpose": "Detect unhandled required query parameter addition",
+    "expected_outcome": "422 without parameter; 200 with parameter on v2",
+    "target_version": "v2",
+    "test_code": "def test_regression_required_param_store_id_api_v1_products(client):\n    \"\"\"Verify newly required parameter 'store_id' fails when omitted on v2.\"\"\"\n    # Request without required parameter must fail validation (422)\n    resp_omitted = client.get(\"/api/v1/products\")\n    assert resp_omitted.status_code == 422, f\"Expected 422 when omitting 'store_id', got {resp_omitted.status_code}\"\n\n    # Request with required parameter must succeed (200)\n    resp_provided = client.get(\"/api/v1/products?store_id=store-main\")\n    assert resp_provided.status_code == 200, f\"Expected 200 when providing 'store_id', got {resp_provided.status_code}\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_method_removed_delete_api_v1_products__product_id",
+    "target_endpoint": "/api/v1/products/{product_id}",
+    "target_method": "DELETE",
+    "related_rule_id": "RULE-METHOD-REMOVED",
+    "description": "Regression test verifying removed HTTP method 'DELETE' returns 405 Method Not Allowed.",
+    "test_purpose": "Detect breaking HTTP method removal",
+    "expected_outcome": "Returns 405 Method Not Allowed on v2",
+    "target_version": "v2",
+    "test_code": "def test_regression_method_removed_delete_api_v1_products__product_id(client):\n    \"\"\"Verify removed method 'DELETE' on '/api/v1/products/{product_id}' returns 405 on v2.\"\"\"\n    test_path = \"/api/v1/products/{product_id}\".replace(\"{product_id}\", \"1\").replace(\"{user_id}\", \"1\").replace(\"{order_id}\", \"1\").replace(\"{payment_id}\", \"1\")\n    resp = client.request(\"DELETE\", test_path)\n    # Expected regression outcome: 405 Method Not Allowed\n    assert resp.status_code == 405, f\"Expected 405 for removed HTTP method, got {resp.status_code}\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_response_field_stock_removed",
+    "target_endpoint": "/api/v1/products/{product_id}",
+    "target_method": "GET",
+    "related_rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+    "description": "Regression test asserting 'stock' is absent from response, exposing callers depending on it.",
+    "test_purpose": "Detect breaking response field deletions",
+    "expected_outcome": "'stock' key absent in response payload on v2",
+    "target_version": "v2",
+    "test_code": "def test_regression_response_field_stock_removed(client):\n    \"\"\"Verify removed field 'stock' is absent from response on v2.\"\"\"\n    resp = client.get(\"/api/v1/products/1\")\n    assert resp.status_code == 200\n    data = resp.json()\n    # Breaking change assertion: client code asserting 'stock' in response will break\n    assert \"stock\" not in data, \"Expected 'stock' field to be removed in v2\"\n    assert \"sku\" in data, \"Expected new 'sku' field to be present\"\n",
+    "status": "approved"
+  },
+  {
+    "test_id": "test_regression_optional_param_search_supported",
+    "target_endpoint": "/api/v1/users",
+    "target_method": "GET",
+    "related_rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+    "description": "Regression test verifying optional 'search' parameter functions correctly.",
+    "test_purpose": "Verify non-breaking backward-compatible parameter additions",
+    "expected_outcome": "200 OK for both default and filtered queries",
+    "target_version": "v2",
+    "test_code": "def test_regression_optional_param_search_supported(client):\n    \"\"\"Verify optional parameter 'search' works without breaking default listing.\"\"\"\n    resp_all = client.get(\"/api/v1/users\")\n    assert resp_all.status_code == 200\n\n    resp_filtered = client.get(\"/api/v1/users?search=alice\")\n    assert resp_filtered.status_code == 200\n    items = resp_filtered.json()[\"items\"]\n    assert len(items) == 1\n    assert items[0][\"username\"] == \"alice\"\n",
+    "status": "approved"
+  }
+]

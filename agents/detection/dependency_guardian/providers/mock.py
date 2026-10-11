@@ -72,3 +72,53 @@ class MockAIProvider(BaseAIProvider):
             reasoning_summary="Mock AI analysis completed successfully.",
             raw_response="{'mock': true}",
         )
+
+    def get_health_status(self) -> Dict[str, Any]:
+        return {
+            "reachable": self._available,
+            "base_url": "mock://localhost",
+            "installed_models": [self.model_name],
+            "selected_model": self.model_name,
+            "model_available": self._available,
+            "error": None if self._available else "Mock AI provider is unavailable",
+        }
+
+    def generate_risk_insights(
+        self,
+        findings: List[Finding],
+        baseline_spec: Dict[str, Any],
+        current_spec: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        breaking_list = [
+            f"- [{f.rule_id}] {f.method or '*'} {f.path}: {f.message}"
+            for f in findings if f.compatibility.value == "breaking"
+        ]
+        non_breaking_list = [
+            f"- [{f.rule_id}] {f.method or '*'} {f.path}: {f.message}"
+            for f in findings if f.compatibility.value == "non_breaking"
+        ]
+        return {
+            "model": self.model_name,
+            "provider": "mock",
+            "executive_summary": "Mock AI risk insights generated for offline evaluation.",
+            "consumer_impact_analysis": "Detected breaking changes will disrupt clients relying on removed endpoints or altered schema types.",
+            "top_breaking_changes": breaking_list[:5],
+            "recommended_fixes": [
+                "Update API clients to handle newly required parameters.",
+                "Replace deprecated endpoints with modern replacements.",
+            ],
+            "recommended_order_of_resolution": [
+                "1. Address removed endpoints.",
+                "2. Migrate payload type changes.",
+                "3. Handle required parameters.",
+            ],
+            "recommended_regression_tests": [
+                "Verify 4xx status returned when legacy payloads are submitted.",
+                "Verify 2xx status returned when upgraded payloads are submitted.",
+            ],
+            "assumptions_and_limitations": "Mock provider generated results; verify against actual runtime integration.",
+            "facts_extracted_from_openapi": breaking_list + non_breaking_list,
+            "ai_generated_hypotheses": [
+                "Clients will require coordinated migration to avoid downtime."
+            ],
+        }

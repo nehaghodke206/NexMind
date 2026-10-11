@@ -1,0 +1,1211 @@
+{
+  "success": true,
+  "mode": "algorithmic",
+  "findings": [
+    {
+      "id": "find_c2fa7548-be05-4fce-b075-e3e970b29198",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:22663834207a46e2",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/orders",
+      "method": "GET",
+      "schema_location": "paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Discount Amount",
+        "description": "Promotional discount amount applied",
+        "default": 0.0
+      },
+      "message": "New optional field 'discount_amount' was added at paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount.",
+      "evidence": {
+        "added_property": "discount_amount",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Discount Amount",
+          "description": "Promotional discount amount applied",
+          "default": 0.0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415146Z"
+    },
+    {
+      "id": "find_a837d875-6f25-4298-a16f-d6f6e1174b4b",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:e2ea2f4c52368a15",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/orders",
+      "method": "POST",
+      "schema_location": "paths./api/v1/orders.post.responses.201.content.application/json.schema.properties.discount_amount",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Discount Amount",
+        "description": "Promotional discount amount applied",
+        "default": 0.0
+      },
+      "message": "New optional field 'discount_amount' was added at paths./api/v1/orders.post.responses.201.content.application/json.schema.properties.discount_amount.",
+      "evidence": {
+        "added_property": "discount_amount",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Discount Amount",
+          "description": "Promotional discount amount applied",
+          "default": 0.0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415229Z"
+    },
+    {
+      "id": "find_030ace81-f8ca-4a10-879a-3cbcedf1bdab",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:cf92810f63463ccf",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/orders/{order_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/orders/{order_id}.get.responses.200.content.application/json.schema.properties.discount_amount",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Discount Amount",
+        "description": "Promotional discount amount applied",
+        "default": 0.0
+      },
+      "message": "New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}.get.responses.200.content.application/json.schema.properties.discount_amount.",
+      "evidence": {
+        "added_property": "discount_amount",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Discount Amount",
+          "description": "Promotional discount amount applied",
+          "default": 0.0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415301Z"
+    },
+    {
+      "id": "find_0438e4d8-e379-4d4a-aaa1-c7fb93d32bc5",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:2dddf5a6f772e73f",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/orders/{order_id}/status",
+      "method": "PATCH",
+      "schema_location": "paths./api/v1/orders/{order_id}/status.patch.responses.200.content.application/json.schema.properties.discount_amount",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Discount Amount",
+        "description": "Promotional discount amount applied",
+        "default": 0.0
+      },
+      "message": "New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}/status.patch.responses.200.content.application/json.schema.properties.discount_amount.",
+      "evidence": {
+        "added_property": "discount_amount",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Discount Amount",
+          "description": "Promotional discount amount applied",
+          "default": 0.0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415390Z"
+    },
+    {
+      "id": "find_bb3d5c50-fcbd-4e09-9d4f-82c8f1319851",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:5f19bb342f44fa3c",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency",
+      "previous_value": null,
+      "current_value": {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3,
+        "title": "Currency",
+        "description": "ISO-4217 3-letter currency code, e.g. USD"
+      },
+      "message": "New optional field 'currency' was added at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency.",
+      "evidence": {
+        "added_property": "currency",
+        "current_definition": {
+          "type": "string",
+          "maxLength": 3,
+          "minLength": 3,
+          "title": "Currency",
+          "description": "ISO-4217 3-letter currency code, e.g. USD"
+        },
+        "is_request": true
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415488Z"
+    },
+    {
+      "id": "find_8f9aa0ca-3539-4a55-b9a8-33ab3c8407bd",
+      "rule_id": "RULE-ENUM-VALUE-REMOVED",
+      "fingerprint": "dg:rule-enum-value-removed:2bf0d6a6a70681dc",
+      "compatibility": "breaking",
+      "severity": "medium",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum",
+      "previous_value": [
+        "credit_card",
+        "debit_card",
+        "paypal",
+        "crypto"
+      ],
+      "current_value": [
+        "credit_card",
+        "debit_card",
+        "paypal"
+      ],
+      "message": "Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto'].",
+      "evidence": {
+        "removed_values": [
+          "crypto"
+        ],
+        "is_request": true
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415472Z"
+    },
+    {
+      "id": "find_fe7cc45d-1b64-4d4b-ab31-0e524af0afae",
+      "rule_id": "RULE-REQUIRED-FIELD-ADDED",
+      "fingerprint": "dg:rule-required-field-added:081743be0365cb6d",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.requestBody.content.application/json.schema.required.currency",
+      "previous_value": false,
+      "current_value": true,
+      "message": "Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema.",
+      "evidence": {
+        "field": "currency",
+        "required": true
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415505Z"
+    },
+    {
+      "id": "find_1a49aa6f-e132-4325-8b6a-1200b6b56fa7",
+      "rule_id": "RULE-FIELD-TYPE-CHANGED",
+      "fingerprint": "dg:rule-field-type-changed:add00f9dae7c178e",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.type",
+      "previous_value": "number",
+      "current_value": "string",
+      "message": "Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.",
+      "evidence": {
+        "previous_type": "number",
+        "current_type": "string",
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415534Z"
+    },
+    {
+      "id": "find_af28dc70-a274-438c-a9e8-707f1851fc89",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:d4219cfd1f2cbe48",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.currency",
+      "previous_value": null,
+      "current_value": {
+        "type": "string",
+        "title": "Currency",
+        "description": "Currency code",
+        "default": "USD"
+      },
+      "message": "New optional field 'currency' was added at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.currency.",
+      "evidence": {
+        "added_property": "currency",
+        "current_definition": {
+          "type": "string",
+          "title": "Currency",
+          "description": "Currency code",
+          "default": "USD"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415577Z"
+    },
+    {
+      "id": "find_fd603fe3-9620-43a9-9c26-043f588de1fe",
+      "rule_id": "RULE-ENUM-VALUE-REMOVED",
+      "fingerprint": "dg:rule-enum-value-removed:a4bcecee92b7e009",
+      "compatibility": "potentially_breaking",
+      "severity": "medium",
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "schema_location": "paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.payment_method.enum",
+      "previous_value": [
+        "credit_card",
+        "debit_card",
+        "paypal",
+        "crypto"
+      ],
+      "current_value": [
+        "credit_card",
+        "debit_card",
+        "paypal"
+      ],
+      "message": "Enum values removed at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.payment_method.enum: ['crypto'].",
+      "evidence": {
+        "removed_values": [
+          "crypto"
+        ],
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": true,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415554Z"
+    },
+    {
+      "id": "find_466bfa81-5200-43de-a6c4-64e788734c74",
+      "rule_id": "RULE-FIELD-TYPE-CHANGED",
+      "fingerprint": "dg:rule-field-type-changed:f7ace9b2f17f4d40",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/payments/{payment_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.amount.type",
+      "previous_value": "number",
+      "current_value": "string",
+      "message": "Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.amount.",
+      "evidence": {
+        "previous_type": "number",
+        "current_type": "string",
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415636Z"
+    },
+    {
+      "id": "find_a4308df8-2295-4e9a-98f2-1116f777893c",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:744ba98b47c293e2",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/payments/{payment_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.currency",
+      "previous_value": null,
+      "current_value": {
+        "type": "string",
+        "title": "Currency",
+        "description": "Currency code",
+        "default": "USD"
+      },
+      "message": "New optional field 'currency' was added at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.currency.",
+      "evidence": {
+        "added_property": "currency",
+        "current_definition": {
+          "type": "string",
+          "title": "Currency",
+          "description": "Currency code",
+          "default": "USD"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415673Z"
+    },
+    {
+      "id": "find_5ba5bb1d-3c10-495a-bcb9-f95238e20c21",
+      "rule_id": "RULE-ENUM-VALUE-REMOVED",
+      "fingerprint": "dg:rule-enum-value-removed:245a9cddcedf3dcd",
+      "compatibility": "potentially_breaking",
+      "severity": "medium",
+      "path": "/api/v1/payments/{payment_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.payment_method.enum",
+      "previous_value": [
+        "credit_card",
+        "debit_card",
+        "paypal",
+        "crypto"
+      ],
+      "current_value": [
+        "credit_card",
+        "debit_card",
+        "paypal"
+      ],
+      "message": "Enum values removed at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.payment_method.enum: ['crypto'].",
+      "evidence": {
+        "removed_values": [
+          "crypto"
+        ],
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": true,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415653Z"
+    },
+    {
+      "id": "find_7c37c80d-ed65-453b-9a98-569b78dcf5cf",
+      "rule_id": "RULE-PATH-REMOVED",
+      "fingerprint": "dg:rule-path-removed:1ad5b95ab2b40db9",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/payments/{payment_id}/receipt",
+      "method": null,
+      "schema_location": "paths./api/v1/payments/{payment_id}/receipt",
+      "previous_value": {
+        "methods": [
+          "GET"
+        ]
+      },
+      "current_value": null,
+      "message": "API path '/api/v1/payments/{payment_id}/receipt' was removed from the specification.",
+      "evidence": {
+        "removed_path": "/api/v1/payments/{payment_id}/receipt",
+        "previous_methods": [
+          "GET"
+        ]
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415713Z"
+    },
+    {
+      "id": "find_4551dca4-d8f1-4cf6-a023-e55213646373",
+      "rule_id": "RULE-REQUIRED-PARAM-ADDED",
+      "fingerprint": "dg:rule-required-param-added:68f33c3dc19dd594",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products",
+      "method": "GET",
+      "schema_location": "paths./api/v1/products.get.parameters.store_id",
+      "previous_value": {
+        "required": null
+      },
+      "current_value": {
+        "required": true
+      },
+      "message": "Newly required query parameter 'store_id' was added to GET /api/v1/products.",
+      "evidence": {
+        "parameter_name": "store_id",
+        "in": "query",
+        "required": true,
+        "previously_present": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414668Z"
+    },
+    {
+      "id": "find_229ee2bb-7748-423e-aa6a-21f8fe190053",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:56b2cdaea4e00d72",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products",
+      "method": "GET",
+      "schema_location": "paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku",
+        "description": "Stock Keeping Unit (non-breaking optional field)"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku",
+          "description": "Stock Keeping Unit (non-breaking optional field)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414732Z"
+    },
+    {
+      "id": "find_62cf654a-f6c5-4283-9773-903e7918ffb8",
+      "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+      "fingerprint": "dg:rule-response-field-removed:21ae22555c945a2a",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products",
+      "method": "GET",
+      "schema_location": "paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.stock",
+      "previous_value": {
+        "type": "integer",
+        "title": "Stock",
+        "default": 0
+      },
+      "current_value": null,
+      "message": "Property 'stock' was removed from response schema at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.stock.",
+      "evidence": {
+        "removed_property": "stock",
+        "previous_definition": {
+          "type": "integer",
+          "title": "Stock",
+          "default": 0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414714Z"
+    },
+    {
+      "id": "find_7e46aed4-5f71-41fe-beb6-65b1adedc30a",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:2c726225cd1ccbb8",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products",
+      "method": "POST",
+      "schema_location": "paths./api/v1/products.post.parameters.store_id",
+      "previous_value": null,
+      "current_value": {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Store ID for initial product placement",
+          "default": "store-main",
+          "title": "Store Id"
+        },
+        "description": "Store ID for initial product placement"
+      },
+      "message": "New optional query parameter 'store_id' was added to POST /api/v1/products.",
+      "evidence": {
+        "parameter_name": "store_id",
+        "in": "query",
+        "required": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414776Z"
+    },
+    {
+      "id": "find_d4ad6340-46e7-40d1-818c-5bd3e75ea90d",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:44eb5d55af457f77",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products",
+      "method": "POST",
+      "schema_location": "paths./api/v1/products.post.requestBody.content.application/json.schema.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 30
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products.post.requestBody.content.application/json.schema.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 30
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku"
+        },
+        "is_request": true
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414809Z"
+    },
+    {
+      "id": "find_b2100b27-fe26-461a-bb2e-82e52f07f853",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:42a30a123e2f6037",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products",
+      "method": "POST",
+      "schema_location": "paths./api/v1/products.post.responses.201.content.application/json.schema.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku",
+        "description": "Stock Keeping Unit (non-breaking optional field)"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku",
+          "description": "Stock Keeping Unit (non-breaking optional field)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414861Z"
+    },
+    {
+      "id": "find_78b743f3-42d3-416e-9386-c2dcc26d5d19",
+      "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+      "fingerprint": "dg:rule-response-field-removed:6d1726e4a3e2e419",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products",
+      "method": "POST",
+      "schema_location": "paths./api/v1/products.post.responses.201.content.application/json.schema.properties.stock",
+      "previous_value": {
+        "type": "integer",
+        "title": "Stock",
+        "default": 0
+      },
+      "current_value": null,
+      "message": "Property 'stock' was removed from response schema at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.stock.",
+      "evidence": {
+        "removed_property": "stock",
+        "previous_definition": {
+          "type": "integer",
+          "title": "Stock",
+          "default": 0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414847Z"
+    },
+    {
+      "id": "find_cec45995-23f9-49dd-b08a-285a9e51f5ba",
+      "rule_id": "RULE-METHOD-REMOVED",
+      "fingerprint": "dg:rule-method-removed:df468951ca058ba4",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products/{product_id}",
+      "method": "DELETE",
+      "schema_location": "paths./api/v1/products/{product_id}.delete",
+      "previous_value": {
+        "operationId": "delete_product_api_v1_products__product_id__delete"
+      },
+      "current_value": null,
+      "message": "HTTP method 'DELETE' was removed from path '/api/v1/products/{product_id}'.",
+      "evidence": {
+        "path": "/api/v1/products/{product_id}",
+        "removed_method": "DELETE"
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415084Z"
+    },
+    {
+      "id": "find_32ae2f4e-8c40-4036-b524-2c7ad55bc26e",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:e1908b6c907aab97",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products/{product_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku",
+        "description": "Stock Keeping Unit (non-breaking optional field)"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku",
+          "description": "Stock Keeping Unit (non-breaking optional field)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414935Z"
+    },
+    {
+      "id": "find_e3f04476-c158-44bd-a8ad-45c952ab433b",
+      "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+      "fingerprint": "dg:rule-response-field-removed:d911fd76cb98be39",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products/{product_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.stock",
+      "previous_value": {
+        "type": "integer",
+        "title": "Stock",
+        "default": 0
+      },
+      "current_value": null,
+      "message": "Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.stock.",
+      "evidence": {
+        "removed_property": "stock",
+        "previous_definition": {
+          "type": "integer",
+          "title": "Stock",
+          "default": 0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414921Z"
+    },
+    {
+      "id": "find_83d3da1b-d11a-4578-b7e3-ce0f3d43e416",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:b66b579349776fcf",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products/{product_id}",
+      "method": "PUT",
+      "schema_location": "paths./api/v1/products/{product_id}.put.requestBody.content.application/json.schema.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 30
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.requestBody.content.application/json.schema.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 30
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku"
+        },
+        "is_request": true
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415004Z"
+    },
+    {
+      "id": "find_1c5a19f0-5c3d-4b43-85d8-76846823dc9a",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:1dad56b95732c644",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/products/{product_id}",
+      "method": "PUT",
+      "schema_location": "paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.sku",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Sku",
+        "description": "Stock Keeping Unit (non-breaking optional field)"
+      },
+      "message": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.sku.",
+      "evidence": {
+        "added_property": "sku",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku",
+          "description": "Stock Keeping Unit (non-breaking optional field)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415045Z"
+    },
+    {
+      "id": "find_ffe27132-f502-4587-bea7-3bad0b45bee5",
+      "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+      "fingerprint": "dg:rule-response-field-removed:72c50e236592a891",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/v1/products/{product_id}",
+      "method": "PUT",
+      "schema_location": "paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.stock",
+      "previous_value": {
+        "type": "integer",
+        "title": "Stock",
+        "default": 0
+      },
+      "current_value": null,
+      "message": "Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.stock.",
+      "evidence": {
+        "removed_property": "stock",
+        "previous_definition": {
+          "type": "integer",
+          "title": "Stock",
+          "default": 0
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.415032Z"
+    },
+    {
+      "id": "find_c370d9b7-94bc-4045-b0cc-2b09f419130f",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:371d3ac92e04e012",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/users",
+      "method": "GET",
+      "schema_location": "paths./api/v1/users.get.parameters.search",
+      "previous_value": null,
+      "current_value": {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Search by username or email",
+          "title": "Search"
+        },
+        "description": "Search by username or email"
+      },
+      "message": "New optional query parameter 'search' was added to GET /api/v1/users.",
+      "evidence": {
+        "parameter_name": "search",
+        "in": "query",
+        "required": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414324Z"
+    },
+    {
+      "id": "find_0c27bfb0-dd03-4d4d-b032-ef1ae32e0254",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:a6581398a269eca8",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/users",
+      "method": "GET",
+      "schema_location": "paths./api/v1/users.get.responses.200.content.application/json.schema.properties.items.items.properties.notes",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Notes",
+        "description": "Optional administrative notes (non-breaking)"
+      },
+      "message": "New optional field 'notes' was added at paths./api/v1/users.get.responses.200.content.application/json.schema.properties.items.items.properties.notes.",
+      "evidence": {
+        "added_property": "notes",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notes",
+          "description": "Optional administrative notes (non-breaking)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414413Z"
+    },
+    {
+      "id": "find_1614513d-9bd9-4c02-86ef-0264a1aa4fe7",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:2beccc594b89a7c8",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/users",
+      "method": "POST",
+      "schema_location": "paths./api/v1/users.post.responses.201.content.application/json.schema.properties.notes",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Notes",
+        "description": "Optional administrative notes (non-breaking)"
+      },
+      "message": "New optional field 'notes' was added at paths./api/v1/users.post.responses.201.content.application/json.schema.properties.notes.",
+      "evidence": {
+        "added_property": "notes",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notes",
+          "description": "Optional administrative notes (non-breaking)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414482Z"
+    },
+    {
+      "id": "find_2f80ac13-a391-4a91-9389-693d766c3e92",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:288b2c45b4917842",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/users/{user_id}",
+      "method": "GET",
+      "schema_location": "paths./api/v1/users/{user_id}.get.responses.200.content.application/json.schema.properties.notes",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Notes",
+        "description": "Optional administrative notes (non-breaking)"
+      },
+      "message": "New optional field 'notes' was added at paths./api/v1/users/{user_id}.get.responses.200.content.application/json.schema.properties.notes.",
+      "evidence": {
+        "added_property": "notes",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notes",
+          "description": "Optional administrative notes (non-breaking)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414536Z"
+    },
+    {
+      "id": "find_9a43ede2-9b75-4706-a0f3-0906263c96c2",
+      "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
+      "fingerprint": "dg:rule-field-added-optional:a6dad80d42ec2b64",
+      "compatibility": "non_breaking",
+      "severity": "low",
+      "path": "/api/v1/users/{user_id}",
+      "method": "PUT",
+      "schema_location": "paths./api/v1/users/{user_id}.put.responses.200.content.application/json.schema.properties.notes",
+      "previous_value": null,
+      "current_value": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Notes",
+        "description": "Optional administrative notes (non-breaking)"
+      },
+      "message": "New optional field 'notes' was added at paths./api/v1/users/{user_id}.put.responses.200.content.application/json.schema.properties.notes.",
+      "evidence": {
+        "added_property": "notes",
+        "current_definition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notes",
+          "description": "Optional administrative notes (non-breaking)"
+        },
+        "is_request": false
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "created_at": "2026-10-11T05:47:20.414590Z"
+    }
+  ],
+  "summary": {
+    "total_findings": 32,
+    "breaking_count": 11,
+    "potentially_breaking_count": 2,
+    "non_breaking_count": 19,
+    "unknown_count": 0,
+    "by_severity": {
+      "critical": 0,
+      "high": 10,
+      "medium": 3,
+      "low": 19
+    }
+  },
+  "ai_status": "skipped",
+  "ai_error": null,
+  "fallback_triggered": false,
+  "execution_time_ms": 5.11,
+  "timestamp": "2026-10-11T05:47:20.415958Z",
+  "ai_insights": null,
+  "ai_provider": null,
+  "ai_model": null
+}

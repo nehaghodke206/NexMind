@@ -1,0 +1,113 @@
+========================================================================
+ Dependency Guardian Detection Summary
+ Mode: HYBRID | Execution Time: 62765.5ms
+========================================================================
+ Total Findings: 32
+   - Breaking:             11
+   - Potentially Breaking: 2
+   - Non-Breaking:         19
+   - Unknown:              0
+------------------------------------------------------------------------
+ Severity Breakdown: Critical=0, High=10, Medium=3, Low=19
+ AI Provider: ollama | AI Model: qwen2.5-coder:3b
+ AI Status: completed
+------------------------------------------------------------------------
+ RULE ID                      METHOD   COMPATIBILITY    PATH
+------------------------------------------------------------------------
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/orders
+   Message: New optional field 'discount_amount' was added at paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount.
+   AI Reasoning: New optional field 'discount_amount' was added at paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/orders
+   Message: New optional field 'discount_amount' was added at paths./api/v1/orders.post.responses.201.content.application/json.schema.properties.discount_amount.
+   AI Reasoning: New optional field 'discount_amount' was added at paths./api/v1/orders.post.responses.201.content.application/json.schema.properties.discount_amount.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/orders/{order_id}
+   Message: New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}.get.responses.200.content.application/json.schema.properties.discount_amount.
+   AI Reasoning: New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}.get.responses.200.content.application/json.schema.properties.discount_amount.
+ RULE-FIELD-ADDED-OPTIONAL    PATCH    non_breaking     /api/v1/orders/{order_id}/status
+   Message: New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}/status.patch.responses.200.content.application/json.schema.properties.discount_amount.
+   AI Reasoning: New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}/status.patch.responses.200.content.application/json.schema.properties.discount_amount.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/payments
+   Message: New optional field 'currency' was added at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency.
+   AI Reasoning: New optional field 'currency' was added at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency.
+ RULE-ENUM-VALUE-REMOVED      POST     breaking         /api/v1/payments
+   Message: Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto'].
+   AI Reasoning: The 'crypto' enum value is no longer available for payment_method, affecting caller's ability to use the API.
+ RULE-REQUIRED-FIELD-ADDED    POST     breaking         /api/v1/payments
+   Message: Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema.
+   AI Reasoning: The 'currency' field is now mandatory, requiring callers to include it in their requests.
+ RULE-FIELD-TYPE-CHANGED      POST     breaking         /api/v1/payments
+   Message: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.
+   AI Reasoning: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/payments
+   Message: New optional field 'currency' was added at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.currency.
+   AI Reasoning: New optional field 'currency' was added at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.currency.
+ RULE-ENUM-VALUE-REMOVED      POST     potentially_breaking /api/v1/payments
+   Message: Enum values removed at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.payment_method.enum: ['crypto'].
+   AI Reasoning: Enum values removed at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.payment_method.enum: ['crypto'].
+ RULE-FIELD-TYPE-CHANGED      GET      breaking         /api/v1/payments/{payment_id}
+   Message: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.amount.
+   AI Reasoning: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.amount.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/payments/{payment_id}
+   Message: New optional field 'currency' was added at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.currency.
+   AI Reasoning: New optional field 'currency' was added at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.currency.
+ RULE-ENUM-VALUE-REMOVED      GET      potentially_breaking /api/v1/payments/{payment_id}
+   Message: Enum values removed at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.payment_method.enum: ['crypto'].
+   AI Reasoning: Enum values removed at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.payment_method.enum: ['crypto'].
+ RULE-PATH-REMOVED            *        breaking         /api/v1/payments/{payment_id}/receipt
+   Message: API path '/api/v1/payments/{payment_id}/receipt' was removed from the specification.
+   AI Reasoning: API path '/api/v1/payments/{payment_id}/receipt' was removed from the specification.
+ RULE-REQUIRED-PARAM-ADDED    GET      breaking         /api/v1/products
+   Message: Newly required query parameter 'store_id' was added to GET /api/v1/products.
+   AI Reasoning: Newly required query parameter 'store_id' was added to GET /api/v1/products.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/products
+   Message: New optional field 'sku' was added at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.sku.
+ RULE-RESPONSE-FIELD-REMOVED  GET      breaking         /api/v1/products
+   Message: Property 'stock' was removed from response schema at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.stock.
+   AI Reasoning: Property 'stock' was removed from response schema at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.stock.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/products
+   Message: New optional query parameter 'store_id' was added to POST /api/v1/products.
+   AI Reasoning: New optional query parameter 'store_id' was added to POST /api/v1/products.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/products
+   Message: New optional field 'sku' was added at paths./api/v1/products.post.requestBody.content.application/json.schema.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products.post.requestBody.content.application/json.schema.properties.sku.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/products
+   Message: New optional field 'sku' was added at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.sku.
+ RULE-RESPONSE-FIELD-REMOVED  POST     breaking         /api/v1/products
+   Message: Property 'stock' was removed from response schema at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.stock.
+   AI Reasoning: Property 'stock' was removed from response schema at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.stock.
+ RULE-METHOD-REMOVED          DELETE   breaking         /api/v1/products/{product_id}
+   Message: HTTP method 'DELETE' was removed from path '/api/v1/products/{product_id}'.
+   AI Reasoning: HTTP method 'DELETE' was removed from path '/api/v1/products/{product_id}'.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/products/{product_id}
+   Message: New optional field 'sku' was added at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.sku.
+ RULE-RESPONSE-FIELD-REMOVED  GET      breaking         /api/v1/products/{product_id}
+   Message: Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.stock.
+   AI Reasoning: Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.stock.
+ RULE-FIELD-ADDED-OPTIONAL    PUT      non_breaking     /api/v1/products/{product_id}
+   Message: New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.requestBody.content.application/json.schema.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.requestBody.content.application/json.schema.properties.sku.
+ RULE-FIELD-ADDED-OPTIONAL    PUT      non_breaking     /api/v1/products/{product_id}
+   Message: New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.sku.
+   AI Reasoning: New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.sku.
+ RULE-RESPONSE-FIELD-REMOVED  PUT      breaking         /api/v1/products/{product_id}
+   Message: Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.stock.
+   AI Reasoning: Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.stock.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/users
+   Message: New optional query parameter 'search' was added to GET /api/v1/users.
+   AI Reasoning: New optional query parameter 'search' was added to GET /api/v1/users.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/users
+   Message: New optional field 'notes' was added at paths./api/v1/users.get.responses.200.content.application/json.schema.properties.items.items.properties.notes.
+   AI Reasoning: New optional field 'notes' was added at paths./api/v1/users.get.responses.200.content.application/json.schema.properties.items.items.properties.notes.
+ RULE-FIELD-ADDED-OPTIONAL    POST     non_breaking     /api/v1/users
+   Message: New optional field 'notes' was added at paths./api/v1/users.post.responses.201.content.application/json.schema.properties.notes.
+   AI Reasoning: New optional field 'notes' was added at paths./api/v1/users.post.responses.201.content.application/json.schema.properties.notes.
+ RULE-FIELD-ADDED-OPTIONAL    GET      non_breaking     /api/v1/users/{user_id}
+   Message: New optional field 'notes' was added at paths./api/v1/users/{user_id}.get.responses.200.content.application/json.schema.properties.notes.
+   AI Reasoning: New optional field 'notes' was added at paths./api/v1/users/{user_id}.get.responses.200.content.application/json.schema.properties.notes.
+ RULE-FIELD-ADDED-OPTIONAL    PUT      non_breaking     /api/v1/users/{user_id}
+   Message: New optional field 'notes' was added at paths./api/v1/users/{user_id}.put.responses.200.content.application/json.schema.properties.notes.
+   AI Reasoning: New optional field 'notes' was added at paths./api/v1/users/{user_id}.put.responses.200.content.application/json.schema.properties.notes.
+========================================================================

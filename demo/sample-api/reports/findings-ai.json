@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "mode": "ai",
+  "findings": [],
+  "summary": {
+    "total_findings": 0,
+    "breaking_count": 0,
+    "potentially_breaking_count": 0,
+    "non_breaking_count": 0,
+    "unknown_count": 0,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "ai_status": "completed",
+  "ai_error": null,
+  "fallback_triggered": false,
+  "execution_time_ms": 48268.64,
+  "timestamp": "2026-10-11T05:48:09.195537Z",
+  "ai_insights": {
+    "executive_summary": "No breaking changes detected between v1.0.0 and v2.0.0.",
+    "consumer_impact_analysis": "No consumers are expected to break due to the absence of breaking changes.",
+    "top_breaking_changes": [],
+    "recommended_fixes": [],
+    "recommended_order_of_resolution": [],
+    "recommended_regression_tests": [],
+    "assumptions_and_limitations": "Assumes no consumer-specific implementation details are present in the contracts.",
+    "facts_extracted_from_openapi": [],
+    "ai_generated_hypotheses": [],
+    "model": "qwen2.5-coder:3b",
+    "provider": "ollama"
+  },
+  "ai_provider": "ollama",
+  "ai_model": "qwen2.5-coder:3b"
+}

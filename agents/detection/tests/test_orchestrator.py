@@ -182,8 +182,8 @@ def test_hosted_and_ollama_providers_raise_explicit_unavailable_errors(baseline_
         from dependency_guardian.providers.base import AIAnalysisRequest
         hosted.analyze(AIAnalysisRequest(baseline_spec=baseline_spec, current_spec=baseline_spec))
 
-    ollama = OllamaProvider()
+    ollama = OllamaProvider(base_url="http://127.0.0.1:99999")
     assert ollama.is_available() is False
-    with pytest.raises(Exception, match="extension point"):
+    with pytest.raises(Exception):
         ollama.analyze(AIAnalysisRequest(baseline_spec=baseline_spec, current_spec=baseline_spec))
 

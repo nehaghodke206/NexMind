@@ -69,6 +69,17 @@ class DetectionOrchestrator:
                 f"Supported providers: 'ollama', 'hosted', 'mock'."
             )
 
+    @staticmethod
+    def _get_provider_name(provider: BaseAIProvider) -> str:
+        name = provider.__class__.__name__.lower()
+        if name.startswith("mock"):
+            return "mock"
+        elif name.startswith("ollama"):
+            return "ollama"
+        elif name.startswith("hosted"):
+            return "hosted"
+        return name.replace("provider", "")
+
     def execute(self, request: DetectionRequest) -> DetectionResult:
         """
         Execute detection pipeline according to the effective mode.
@@ -158,6 +169,16 @@ class DetectionOrchestrator:
             validated_findings = provider.validate_finding_payloads(
                 [f.model_dump() for f in ai_resp.findings]
             )
+            # Generate risk insights if supported
+            insights = None
+            if hasattr(provider, "generate_risk_insights"):
+                try:
+                    insights = provider.generate_risk_insights(
+                        validated_findings, request.baseline_spec, request.current_spec
+                    )
+                except Exception as ins_exc:
+                    logger.warning("Risk insights generation error: %s", ins_exc)
+            p_name = self._get_provider_name(provider)
             return DetectionResult(
                 success=True,
                 mode=DetectionMode.AI,
@@ -166,6 +187,9 @@ class DetectionOrchestrator:
                 ai_status="completed",
                 ai_error=None,
                 fallback_triggered=False,
+                ai_insights=insights,
+                ai_provider=p_name,
+                ai_model=ai_resp.model_name,
             )
         except Exception as exc:
             logger.error("AI provider execution failed: %s", exc)
@@ -227,6 +251,17 @@ class DetectionOrchestrator:
         try:
             ai_resp = provider.analyze(ai_req)
             merged_findings = self._merge_hybrid_findings(algo_findings, ai_resp.findings)
+
+            # Generate risk insights if supported
+            insights = None
+            if hasattr(provider, "generate_risk_insights"):
+                try:
+                    insights = provider.generate_risk_insights(
+                        merged_findings, request.baseline_spec, request.current_spec
+                    )
+                except Exception as ins_exc:
+                    logger.warning("Risk insights generation error: %s", ins_exc)
+            p_name = self._get_provider_name(provider)
             return DetectionResult(
                 success=True,
                 mode=DetectionMode.HYBRID,
@@ -235,6 +270,9 @@ class DetectionOrchestrator:
                 ai_status="completed",
                 ai_error=None,
                 fallback_triggered=False,
+                ai_insights=insights,
+                ai_provider=p_name,
+                ai_model=ai_resp.model_name,
             )
         except Exception as exc:
             logger.warning("AI reasoning failed in hybrid mode: %s. Preserving deterministic findings.", exc)
@@ -249,6 +287,28 @@ class DetectionOrchestrator:
                 ai_error=str(exc),
                 fallback_triggered=True,
             )
+
+    def get_provider_health(self) -> Dict[str, Any]:
+        """Diagnose and return health and status of the configured AI provider."""
+        try:
+            provider = self._resolve_ai_provider()
+            if hasattr(provider, "get_health_status"):
+                return provider.get_health_status()
+            return {
+                "reachable": provider.is_available(),
+                "base_url": getattr(provider, "base_url", "local"),
+                "selected_model": getattr(provider, "model_name", "unknown"),
+                "model_available": provider.is_available(),
+                "error": None,
+            }
+        except Exception as exc:
+            return {
+                "reachable": False,
+                "base_url": getattr(self.config, "ai_base_url", "unknown"),
+                "selected_model": getattr(self.config, "ai_model", "unknown"),
+                "model_available": False,
+                "error": str(exc),
+            }
 
     def _merge_hybrid_findings(
         self,

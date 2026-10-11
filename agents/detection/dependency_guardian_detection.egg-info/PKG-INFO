@@ -9,13 +9,72 @@ Requires-Dist: pydantic-settings>=2.4.0
 Requires-Dist: pyyaml>=6.0
 Requires-Dist: httpx>=0.27.0
 
+# Dependency Guardian — Modular Detection Agent
 
-# Detection Agent
+The **Detection Agent** evaluates OpenAPI 3.0.x, 3.1.x, and Swagger 2.0 specifications against known-good baselines to proactively identify breaking changes, classify compatibility risks, and submit evidence-backed observations and incidents.
 
-Owned by the detection teammate.
+---
 
-Choose the internal architecture that best supports API probes, baseline management,
-response comparison, change classification, evidence capture, and incident submission.
+## Architecture
 
-Do not silently overwrite a known-good baseline. Document setup, run, and test commands.
+- **Independent Core**: Operates completely decoupled from FastAPI, PostgreSQL, Ollama, and external AI SDKs.
+- **Three Detection Modes**:
+  1. `algorithmic` *(Default)*: Deterministic offline schema comparator. Requires no network access or external credentials.
+  2. `ai`: Semantic analysis through configured providers (`mock`, `ollama`, or `hosted`).
+  3. `hybrid`: Deterministic algorithmic baseline enriched with AI reasoning without discarding deterministic evidence.
+- **Contract Conformance**: Emits canonical findings adhering strictly to [`contracts/finding-v1.json`](../../contracts/finding-v1.json).
+- **Backend Graceful Degradation**: Can sync observations and incidents to the FastAPI backend service; if the backend is offline, detection succeeds without failure.
 
+---
+
+## Installation & Setup
+
+### Local Python Environment
+```bash
+cd agents/detection
+pip install -r requirements.txt
+pip install -e .
+```
+
+---
+
+## CLI Usage
+
+The agent installs a global entrypoint `dependency-guardian` (or via `python -m dependency_guardian.cli`):
+
+```bash
+# Compare two OpenAPI specifications (algorithmic mode, JSON output)
+dependency-guardian baseline.json current.json
+
+# Format as human-readable summary table
+dependency-guardian baseline.json current.json --format summary
+
+# Fail with non-zero exit code on breaking changes
+dependency-guardian baseline.json current.json --fail-on-breaking
+
+# Hybrid mode with mock AI provider
+dependency-guardian baseline.json current.json --mode hybrid --provider mock
+
+# Sync findings to running FastAPI backend
+dependency-guardian baseline.json current.json \
+  --backend-url http://127.0.0.1:8000/api/v1 \
+  --project-id <PROJECT_ID> \
+  --dependency-id <DEPENDENCY_ID> \
+  --sync-backend
+```
+
+---
+
+## Running Tests
+
+Run the full test suite using `pytest`:
+
+```bash
+# From agents/detection/ directory
+pytest tests
+
+# From repository root
+pytest agents/detection/tests
+```
+
+All 40 unit and integration tests run deterministically offline without requiring network access, paid AI keys, or databases.

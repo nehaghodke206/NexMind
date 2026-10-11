@@ -17,6 +17,8 @@ from .contracts.findings import (
 from .contracts.models import DetectionRequest, DetectionResult, DiffSummary
 from .orchestrator import DetectionOrchestrator
 from .client.backend import BackendClient
+from .insights import format_insights_text
+from .test_generator import RegressionTestGenerator, TestCaseModel, TestExecutionSummary
 
 logger = logging.getLogger("dependency_guardian.cli")
 
@@ -58,6 +60,7 @@ def _format_summary_table(result: DetectionResult) -> str:
     ]
 
     if result.ai_status and result.ai_status != "skipped":
+        lines.append(f" AI Provider: {result.ai_provider or 'none'} | AI Model: {result.ai_model or 'none'}")
         lines.append(f" AI Status: {result.ai_status}" + (f" (Error: {result.ai_error})" if result.ai_error else ""))
 
     if result.findings:
@@ -72,6 +75,45 @@ def _format_summary_table(result: DetectionResult) -> str:
                 lines.append(f"   AI Reasoning: {f.ai_reasoning}")
     lines.append("=" * 72)
     return "\n".join(lines)
+
+
+def _preview_candidate_tests(tests: List[TestCaseModel]) -> None:
+    """Print dry-run candidate test previews to stdout."""
+    print("=" * 72)
+    print(" DEPENDENCY GUARDIAN — CANDIDATE REGRESSION TESTS PREVIEW (DRY-RUN)")
+    print(f" Total Candidate Tests: {len(tests)}")
+    print("=" * 72)
+    for idx, t in enumerate(tests, 1):
+        print(f"\n--- [Test #{idx}] {t.test_id} ---")
+        print(f" Target Endpoint: {t.target_method} {t.target_endpoint}")
+        print(f" Related Rule ID: {t.related_rule_id}")
+        print(f" Purpose:         {t.test_purpose}")
+        print(f" Expected:        {t.expected_outcome}")
+        print(f" Code Preview:\n{t.test_code.strip()}")
+    print("=" * 72)
+
+
+def _print_test_summary(summary: TestExecutionSummary) -> None:
+    """Print regression test execution results to stdout."""
+    print("=" * 72)
+    print(" DEPENDENCY GUARDIAN — REGRESSION TEST EXECUTION SUMMARY")
+    print("=" * 72)
+    print(f" Test File:       {summary.test_file}")
+    print(f" Target Version:  {summary.target_version}")
+    print(f" Duration:        {summary.duration_seconds}s")
+    print(f" Total Tests:     {summary.total_tests}")
+    print(f" Passed:          {summary.passed}")
+    print(f" Failed:          {summary.failed}")
+    print(f" Errors:          {summary.errors}")
+    print(f" Exit Code:       {summary.exit_code}")
+    print("-" * 72)
+    if summary.exit_code == 0:
+        print(" [+] All regression tests executed and verified successfully.")
+    else:
+        print(f" [!] Test execution reported failures/errors (exit {summary.exit_code}).")
+        if summary.stderr:
+            print(f" Stderr: {summary.stderr[:300]}")
+    print("=" * 72)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -208,6 +250,52 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Suppress stderr informational messages",
     )
+    parser.add_argument(
+        "--check-ai",
+        action="store_true",
+        help="Run diagnostic connectivity and model check for configured AI provider",
+    )
+    parser.add_argument(
+        "--generate-tests",
+        nargs="?",
+        const="demo/sample-api/generated-tests",
+        default=None,
+        metavar="DIR",
+        help="Generate candidate regression tests into target directory (default: demo/sample-api/generated-tests)",
+    )
+    parser.add_argument(
+        "--test-target",
+        choices=["v1", "v2"],
+        default="v2",
+        help="Target API version to generate/run regression tests against (default: v2)",
+    )
+    parser.add_argument(
+        "--preview-tests",
+        action="store_true",
+        help="Preview candidate regression tests in stdout without writing files (dry run)",
+    )
+    parser.add_argument(
+        "--approve-tests",
+        nargs="?",
+        const="demo/sample-api/generated-tests",
+        default=None,
+        metavar="DIR",
+        help="Approve candidate regression tests in target directory for execution",
+    )
+    parser.add_argument(
+        "--execute-tests",
+        nargs="?",
+        const="demo/sample-api/generated-tests",
+        default=None,
+        metavar="DIR",
+        help="Execute approved regression tests and display test run summary",
+    )
+    parser.add_argument(
+        "--insights-output",
+        default=None,
+        metavar="FILE",
+        help="Output file path to save AI risk insights report (.txt or .json)",
+    )
     return parser
 
 
@@ -218,6 +306,72 @@ def run(argv: Optional[List[str]] = None) -> int:
 
     log_level = logging.DEBUG if args.verbose else (logging.ERROR if args.quiet else logging.INFO)
     logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
+    # Diagnostic mode: --check-ai
+    if args.check_ai:
+        cli_overrides: Dict[str, Any] = {}
+        if args.ai_provider:
+            cli_overrides["ai_provider"] = args.ai_provider
+        if args.ai_model:
+            cli_overrides["ai_model"] = args.ai_model
+        if args.ai_base_url:
+            cli_overrides["ai_base_url"] = args.ai_base_url
+        if args.ai_timeout_seconds is not None:
+            cli_overrides["ai_timeout_seconds"] = args.ai_timeout_seconds
+
+        workspace_dir = Path(args.workspace_dir) if args.workspace_dir else Path.cwd()
+        config = load_configuration(workspace_dir=workspace_dir, cli_overrides=cli_overrides)
+        if not config.ai_provider:
+            config.ai_provider = "ollama"
+
+        orchestrator = DetectionOrchestrator(config=config)
+        health = orchestrator.get_provider_health()
+
+        print("=" * 72)
+        print(" Dependency Guardian AI Provider Diagnostic")
+        print("=" * 72)
+        print(f" Provider:         {config.ai_provider}")
+        print(f" Endpoint:         {health.get('base_url', 'unknown')}")
+        print(f" Reachable:        {health.get('reachable', False)}")
+        print(f" Installed Models: {health.get('installed_models', [])}")
+        print(f" Selected Model:   {health.get('selected_model', 'none')}")
+        print(f" Model Ready:      {health.get('model_available', False)}")
+        if health.get("error"):
+            print(f" Error:            {health.get('error')}")
+        print("=" * 72)
+        return 0 if (health.get("reachable") and health.get("model_available")) else 1
+
+    # Standalone approval workflow: --approve-tests
+    if args.approve_tests and not (args.baseline_opt or args.baseline_pos):
+        target_dir = Path(args.approve_tests)
+        generator = RegressionTestGenerator()
+        try:
+            approved_file = generator.approve_candidate_tests(target_dir, target_version=args.test_target)
+            print(f"[+] Approved candidate tests successfully -> {approved_file}")
+            return 0
+        except Exception as exc:
+            sys.stderr.write(f"Approval failed: {exc}\n")
+            return 1
+
+    # Standalone execution workflow: --execute-tests
+    if args.execute_tests and not (args.baseline_opt or args.baseline_pos):
+        target_dir = Path(args.execute_tests)
+        approved_file = target_dir / f"test_approved_regression_{args.test_target}.py"
+        if not approved_file.is_file():
+            cand_file = target_dir / f"test_candidate_regression_{args.test_target}.py"
+            if cand_file.is_file():
+                sys.stderr.write(
+                    f"Error: Candidate tests exist at {cand_file} but have not been approved.\n"
+                    f"Run with '--approve-tests {target_dir}' before execution.\n"
+                )
+            else:
+                sys.stderr.write(f"Error: No approved test file found at {approved_file}\n")
+            return 1
+
+        generator = RegressionTestGenerator()
+        summary = generator.execute_approved_tests(approved_file)
+        _print_test_summary(summary)
+        return summary.exit_code
 
     # Resolve baseline and current file paths
     baseline_path = args.baseline_opt or args.baseline_pos
@@ -319,6 +473,48 @@ def run(argv: Optional[List[str]] = None) -> int:
         print(_format_summary_table(result))
         print(json_output)
 
+    # Save AI risk insights report if requested
+    if args.insights_output and result.ai_insights:
+        insights_p = Path(args.insights_output)
+        insights_p.parent.mkdir(parents=True, exist_ok=True)
+        if insights_p.suffix.lower() == ".json":
+            insights_p.write_text(json.dumps(result.ai_insights, indent=2), encoding="utf-8")
+        else:
+            txt_report = format_insights_text(result.ai_insights, result.summary.model_dump())
+            insights_p.write_text(txt_report, encoding="utf-8")
+        if not args.quiet:
+            sys.stderr.write(f"AI Risk Insights report saved to {args.insights_output}\n")
+
+    # Test generation and preview
+    generator = RegressionTestGenerator()
+    if args.preview_tests:
+        candidate_tests = generator.generate_candidate_tests(
+            result.findings, target_version=args.test_target
+        )
+        _preview_candidate_tests(candidate_tests)
+
+    if args.generate_tests:
+        gen_dir = Path(args.generate_tests)
+        candidate_tests = generator.generate_candidate_tests(
+            result.findings,
+            target_version=args.test_target,
+            output_dir=gen_dir,
+        )
+        if not args.quiet:
+            sys.stderr.write(f"[+] Generated {len(candidate_tests)} candidate regression tests into {gen_dir}\n")
+
+    if args.execute_tests:
+        exec_dir = Path(args.execute_tests)
+        appr_file = exec_dir / f"test_approved_regression_{args.test_target}.py"
+        if not appr_file.is_file():
+            sys.stderr.write(
+                f"[!] Notice: Candidate tests in {exec_dir} have not been approved for execution.\n"
+                f"    Run 'dependency-guardian --approve-tests {exec_dir}' to approve.\n"
+            )
+        else:
+            test_summary = generator.execute_approved_tests(appr_file)
+            _print_test_summary(test_summary)
+
     if args.fail_on_breaking and result.summary.breaking_count > 0:
         return 1
 
@@ -331,4 +527,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -23,3 +23,8 @@ dependency_guardian_detection.egg-info/dependency_links.txt
 dependency_guardian_detection.egg-info/entry_points.txt
 dependency_guardian_detection.egg-info/requires.txt
 dependency_guardian_detection.egg-info/top_level.txt
+tests/test_algorithmic_engine.py
+tests/test_backend_client.py
+tests/test_cli.py
+tests/test_configuration.py
+tests/test_orchestrator.py

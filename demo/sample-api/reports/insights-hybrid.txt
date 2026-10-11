@@ -1,0 +1,56 @@
+============================================================================
+ DEPENDENCY GUARDIAN — AI RISK & COMPATIBILITY INSIGHTS REPORT
+============================================================================
+ Provider: OLLAMA | Model: qwen2.5-coder:3b
+----------------------------------------------------------------------------
+ [1] EXECUTIVE SUMMARY
+ The Dependency Guardian Sample API v2.0.0 introduces breaking changes that remove enum values and add a required field in the POST /api/v1/payments endpoint, while also adding an optional field to the GET /api/v1/orders endpoint.
+
+----------------------------------------------------------------------------
+ [2] QUANTITATIVE BREAKDOWN
+ Total Contract Findings: 32
+   - Breaking:             11
+   - Potentially Breaking: 2
+   - Non-Breaking:         19
+   - Unknown:              0
+ Severity: {'critical': 0, 'high': 10, 'medium': 3, 'low': 19}
+
+----------------------------------------------------------------------------
+ [3] CONSUMER IMPACT ANALYSIS
+ Consumers using the POST /api/v1/payments endpoint will need to update their applications to handle the new required field and removed enum values, while consumers using the GET /api/v1/orders endpoint will need to update their applications to handle the new optional field.
+
+----------------------------------------------------------------------------
+ [4] TOP BREAKING CONTRACT CHANGES
+   * RULE-ENUM-VALUE-REMOVED
+   * RULE-REQUIRED-FIELD-ADDED
+
+----------------------------------------------------------------------------
+ [5] RECOMMENDED REMEDIATION & MIGRATION STEPS
+   1. Update application logic to handle the new required field and removed enum values in the POST /api/v1/payments endpoint.
+   2. Update application logic to handle the new optional field in the GET /api/v1/orders endpoint.
+
+----------------------------------------------------------------------------
+ [6] RECOMMENDED REGRESSION TEST SCENARIOS
+   1. Test the POST /api/v1/payments endpoint with updated logic.
+   2. Test the GET /api/v1/orders endpoint with updated logic.
+   3. Test the application with updated logic to ensure no other functionality is affected.
+
+----------------------------------------------------------------------------
+ [7] SUGGESTED ORDER OF RESOLUTION
+   Step 1: RULE-REQUIRED-FIELD-ADDED
+   Step 2: RULE-ENUM-VALUE-REMOVED
+
+----------------------------------------------------------------------------
+ [8] GROUNDING: FACTS (FROM CONTRACTS) VS. HYPOTHESES (AI-GENERATED)
+ Facts Extracted from OpenAPI:
+   + [FACT] Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto']
+   + [FACT] Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema.
+   + [FACT] New optional field 'discount_amount' was added at paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount.
+ AI-Generated Hypotheses & Interpretations:
+   ? [HYPOTHESIS] Consumers may experience issues with the POST /api/v1/payments endpoint if they do not update their applications to handle the new required field and removed enum values.
+   ? [HYPOTHESIS] Consumers may experience issues with the GET /api/v1/orders endpoint if they do not update their applications to handle the new optional field.
+
+----------------------------------------------------------------------------
+ [9] ASSUMPTIONS, UNCERTAINTY & LIMITATIONS
+ Assumes that consumers will update their applications to handle the new required field and removed enum values in the POST /api/v1/payments endpoint, and the new optional field in the GET /api/v1/orders endpoint.
+============================================================================

@@ -1,0 +1,14 @@
+========================================================================
+ Dependency Guardian Detection Summary
+ Mode: AI | Execution Time: 15401.3ms
+========================================================================
+ Total Findings: 0
+   - Breaking:             0
+   - Potentially Breaking: 0
+   - Non-Breaking:         0
+   - Unknown:              0
+------------------------------------------------------------------------
+ Severity Breakdown: Critical=0, High=0, Medium=0, Low=0
+ AI Provider: ollama | AI Model: qwen2.5-coder:3b
+ AI Status: completed
+========================================================================

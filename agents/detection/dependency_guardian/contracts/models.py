@@ -59,5 +59,8 @@ class DetectionResult(BaseModel):
     fallback_triggered: bool = False
     execution_time_ms: float = 0.0
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    ai_insights: Optional[Dict[str, Any]] = None
+    ai_provider: Optional[str] = None
+    ai_model: Optional[str] = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
