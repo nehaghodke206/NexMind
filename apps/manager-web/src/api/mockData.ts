@@ -5,6 +5,10 @@ import {
   RepairProposal,
   ValidationRun,
   ActivityEvent,
+  ProjectSummary,
+  ScanRun,
+  Baseline,
+  Observation,
 } from './types';
 
 export const mockProjects: Project[] = [
@@ -351,3 +355,98 @@ export const mockActivity: ActivityEvent[] = [
     created_at: '2026-10-10T16:00:00Z',
   },
 ];
+
+export const mockProjectSummaries: Record<string, ProjectSummary> = {
+  proj_demo_shop: {
+    project_id: 'proj_demo_shop',
+    dependency_count: 3,
+    open_incident_count: 3,
+    pending_review_count: 1,
+    validation_pass_count: 2,
+    validation_fail_count: 1,
+    last_scan_at: '2026-10-10T16:00:00Z',
+  },
+  proj_analytics_core: {
+    project_id: 'proj_analytics_core',
+    dependency_count: 1,
+    open_incident_count: 1,
+    pending_review_count: 0,
+    validation_pass_count: 0,
+    validation_fail_count: 1,
+    last_scan_at: '2026-10-08T16:20:00Z',
+  },
+};
+
+export const mockBaselines: Record<string, Baseline[]> = {
+  dep_demo_users: [
+    {
+      id: 'base_users_v1',
+      dependency_id: 'dep_demo_users',
+      version: 1,
+      source: 'scan',
+      contract: {
+        endpoint: '/users/{id}',
+        method: 'GET',
+        response: { id: 'uuid', name: 'string', email: 'string' },
+      },
+      created_at: '2026-09-01T10:05:00Z',
+    },
+  ],
+  dep_payments_gateway: [
+    {
+      id: 'base_payments_v2',
+      dependency_id: 'dep_payments_gateway',
+      version: 2,
+      source: 'manual',
+      contract: {
+        endpoint: '/charges',
+        method: 'POST',
+        headers: { Authorization: 'Bearer {token}' },
+      },
+      created_at: '2026-09-01T10:10:00Z',
+    },
+  ],
+};
+
+export const mockScans: ScanRun[] = [
+  {
+    id: 'scan_101',
+    project_id: 'proj_demo_shop',
+    dependency_id: 'dep_demo_users',
+    initiated_by: 'system',
+    status: 'completed',
+    summary: 'Detected 1 breaking field rename in response shape.',
+    started_at: '2026-10-10T14:20:00Z',
+    completed_at: '2026-10-10T14:23:10Z',
+  },
+  {
+    id: 'scan_102',
+    project_id: 'proj_demo_shop',
+    dependency_id: 'dep_payments_gateway',
+    initiated_by: 'user_alex_manager',
+    status: 'completed',
+    summary: 'Detected 401 Unauthorized status on token renewal.',
+    started_at: '2026-10-10T15:58:00Z',
+    completed_at: '2026-10-10T16:00:00Z',
+  },
+];
+
+export const mockObservations: Record<string, Observation[]> = {
+  inc_users_field_renamed: [
+    {
+      id: 'obs_01',
+      scan_id: 'scan_101',
+      dependency_id: 'dep_demo_users',
+      observation_type: 'response_shape',
+      endpoint: '/users/me',
+      method: 'GET',
+      observed_at: '2026-10-10T14:22:45Z',
+      payload: {
+        removed: ['name'],
+        added: ['display_name'],
+        status: 200,
+      },
+      fingerprint: 'users-api:name-to-display_name',
+    },
+  ],
+};

@@ -1,12 +1,19 @@
 import {
   Project,
+  ProjectCreate,
+  ProjectSummary,
   Dependency,
+  DependencyCreate,
+  Baseline,
+  ScanRun,
+  Observation,
   Incident,
   IncidentFilterOptions,
   RepairProposal,
   ValidationRun,
   RepairApproval,
   ActivityEvent,
+  HealthStatus,
 } from './types';
 import {
   mockProjects,
@@ -15,17 +22,58 @@ import {
   mockRepairProposals,
   mockValidationRuns,
   mockActivity,
+  mockProjectSummaries,
+  mockBaselines,
+  mockScans,
+  mockObservations,
 } from './mockData';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
-const IS_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+const IS_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 
 // In-memory state for mock mode session updates
+const inMemoryProjects = [...mockProjects];
+const inMemoryDependencies = [...mockDependencies];
 const inMemoryIncidents = [...mockIncidents];
 const inMemoryProposals = { ...mockRepairProposals };
+const inMemoryScans = [...mockScans];
 
-async function delay(ms = 250): Promise<void> {
+async function delay(ms = 200): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const url = `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+  try {
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
+
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}: ${res.statusText}`;
+      try {
+        const errJson = await res.json();
+        if (errJson.detail) errMsg = typeof errJson.detail === 'string' ? errJson.detail : JSON.stringify(errJson.detail);
+        else if (errJson.message) errMsg = errJson.message;
+      } catch {
+        // use default statusText
+      }
+      throw new Error(`API error at ${path}: ${errMsg}`);
+    }
+
+    return await res.json();
+  } catch (err: unknown) {
+    if (err instanceof TypeError && err.message.includes('fetch')) {
+      throw new Error(
+        `Unable to reach backend at ${BASE_URL}. Ensure the backend service is running, or switch VITE_USE_MOCK=true in .env.`
+      );
+    }
+    throw err;
+  }
 }
 
 export const api = {
@@ -37,44 +85,145 @@ export const api = {
     return BASE_URL;
   },
 
+  async checkHealth(): Promise<HealthStatus> {
+    if (IS_MOCK) {
+      await delay(100);
+      return { status: 'healthy (simulation)' };
+    }
+    const healthUrl = BASE_URL.replace(/\/api\/v1\/?$/, '') + '/health';
+    try {
+      const res = await fetch(healthUrl);
+      if (res.ok) return await res.json();
+      return { status: `degraded (${res.status})` };
+    } catch {
+      return { status: 'offline' };
+    }
+  },
+
   async getProjects(): Promise<Project[]> {
     if (IS_MOCK) {
       await delay();
-      return [...mockProjects];
+      return [...inMemoryProjects];
     }
-    const res = await fetch(`${BASE_URL}/projects`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch projects (HTTP ${res.status}: ${res.statusText})`);
-    }
-    const data = await res.json();
+    const data = await request<Project[] | { items: Project[] }>('/projects');
     return Array.isArray(data) ? data : data.items || [];
+  },
+
+  async createProject(payload: ProjectCreate): Promise<Project> {
+    if (IS_MOCK) {
+      await delay();
+      const newProj: Project = {
+        id: `proj_${Date.now()}`,
+        name: payload.name,
+        description: payload.description || null,
+        repository_url: payload.repository_url || null,
+        default_branch: payload.default_branch || 'main',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      inMemoryProjects.unshift(newProj);
+      return newProj;
+    }
+    return request<Project>('/projects', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
   },
 
   async getProject(projectId: string): Promise<Project> {
     if (IS_MOCK) {
       await delay();
-      const proj = mockProjects.find((p) => p.id === projectId);
+      const proj = inMemoryProjects.find((p) => p.id === projectId);
       if (!proj) throw new Error(`Project not found: ${projectId}`);
       return { ...proj };
     }
-    const res = await fetch(`${BASE_URL}/projects/${projectId}`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch project ${projectId} (HTTP ${res.status}: ${res.statusText})`);
+    return request<Project>(`/projects/${projectId}`);
+  },
+
+  async getProjectSummary(projectId: string): Promise<ProjectSummary> {
+    if (IS_MOCK) {
+      await delay();
+      const summary = mockProjectSummaries[projectId] || {
+        project_id: projectId,
+        dependency_count: inMemoryDependencies.filter((d) => d.project_id === projectId).length,
+        open_incident_count: inMemoryIncidents.filter((i) => i.project_id === projectId).length,
+        pending_review_count: 1,
+        validation_pass_count: 2,
+        validation_fail_count: 0,
+        last_scan_at: new Date().toISOString(),
+      };
+      return { ...summary };
     }
-    return res.json();
+    return request<ProjectSummary>(`/projects/${projectId}/summary`);
   },
 
   async getDependencies(projectId: string): Promise<Dependency[]> {
     if (IS_MOCK) {
       await delay();
-      return mockDependencies.filter((d) => d.project_id === projectId);
+      return inMemoryDependencies.filter((d) => d.project_id === projectId);
     }
-    const res = await fetch(`${BASE_URL}/projects/${projectId}/dependencies`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch dependencies (HTTP ${res.status}: ${res.statusText})`);
-    }
-    const data = await res.json();
+    const data = await request<Dependency[] | { items: Dependency[] }>(`/projects/${projectId}/dependencies`);
     return Array.isArray(data) ? data : data.items || [];
+  },
+
+  async createDependency(projectId: string, payload: DependencyCreate): Promise<Dependency> {
+    if (IS_MOCK) {
+      await delay();
+      const newDep: Dependency = {
+        id: `dep_${Date.now()}`,
+        project_id: projectId,
+        name: payload.name,
+        kind: payload.kind,
+        base_url: payload.base_url || null,
+        version: '1.0.0',
+        created_at: new Date().toISOString(),
+      };
+      inMemoryDependencies.push(newDep);
+      return newDep;
+    }
+    return request<Dependency>(`/projects/${projectId}/dependencies`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getDependencyBaselines(dependencyId: string): Promise<Baseline[]> {
+    if (IS_MOCK) {
+      await delay();
+      return mockBaselines[dependencyId] || [];
+    }
+    const data = await request<Baseline[] | { items: Baseline[] }>(`/dependencies/${dependencyId}/baselines`);
+    return Array.isArray(data) ? data : data.items || [];
+  },
+
+  async getScans(projectId: string): Promise<ScanRun[]> {
+    if (IS_MOCK) {
+      await delay();
+      return inMemoryScans.filter((s) => s.project_id === projectId);
+    }
+    const data = await request<ScanRun[] | { items: ScanRun[] }>(`/projects/${projectId}/scans`);
+    return Array.isArray(data) ? data : data.items || [];
+  },
+
+  async triggerScan(projectId: string, dependencyId?: string): Promise<ScanRun> {
+    if (IS_MOCK) {
+      await delay(400);
+      const newScan: ScanRun = {
+        id: `scan_${Date.now()}`,
+        project_id: projectId,
+        dependency_id: dependencyId || null,
+        initiated_by: 'user_manager',
+        status: 'running',
+        summary: 'Active probe scan checking response contracts against registered baselines.',
+        started_at: new Date().toISOString(),
+      };
+      inMemoryScans.unshift(newScan);
+      return newScan;
+    }
+    return request<ScanRun>(`/projects/${projectId}/scans`, {
+      method: 'POST',
+      body: JSON.stringify({ dependency_id: dependencyId }),
+    });
   },
 
   async getIncidents(projectId: string, filters?: IncidentFilterOptions): Promise<Incident[]> {
@@ -111,11 +260,7 @@ export const api = {
     if (filters?.dependency_id) query.set('dependency_id', filters.dependency_id);
     const queryString = query.toString() ? `?${query.toString()}` : '';
 
-    const res = await fetch(`${BASE_URL}/projects/${projectId}/incidents${queryString}`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch incidents (HTTP ${res.status}: ${res.statusText})`);
-    }
-    const data = await res.json();
+    const data = await request<Incident[] | { items: Incident[] }>(`/projects/${projectId}/incidents${queryString}`);
     return Array.isArray(data) ? data : data.items || [];
   },
 
@@ -126,11 +271,20 @@ export const api = {
       if (!inc) throw new Error(`Incident not found: ${incidentId}`);
       return { ...inc };
     }
-    const res = await fetch(`${BASE_URL}/incidents/${incidentId}`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch incident ${incidentId} (HTTP ${res.status}: ${res.statusText})`);
+    return request<Incident>(`/incidents/${incidentId}`);
+  },
+
+  async getIncidentObservations(incidentId: string): Promise<Observation[]> {
+    if (IS_MOCK) {
+      await delay();
+      return mockObservations[incidentId] || [];
     }
-    return res.json();
+    try {
+      const data = await request<Observation[] | { items: Observation[] }>(`/incidents/${incidentId}/observations`);
+      return Array.isArray(data) ? data : data.items || [];
+    } catch {
+      return [];
+    }
   },
 
   async getRepairProposal(incidentId: string): Promise<RepairProposal | null> {
@@ -139,14 +293,15 @@ export const api = {
       const proposal = inMemoryProposals[incidentId];
       return proposal ? { ...proposal } : null;
     }
-    const res = await fetch(`${BASE_URL}/incidents/${incidentId}/repair-proposals`);
-    if (res.status === 404) return null;
-    if (!res.ok) {
-      throw new Error(`Failed to fetch repair proposals (HTTP ${res.status}: ${res.statusText})`);
+    try {
+      const data = await request<RepairProposal[] | { items: RepairProposal[] }>(
+        `/incidents/${incidentId}/repair-proposals`
+      );
+      if (Array.isArray(data)) return data[0] || null;
+      return data.items ? data.items[0] || null : (data as unknown as RepairProposal);
+    } catch {
+      return null;
     }
-    const data = await res.json();
-    if (Array.isArray(data)) return data[0] || null;
-    return data.items ? data.items[0] || null : data;
   },
 
   async getValidationRun(repairId: string): Promise<ValidationRun | null> {
@@ -155,22 +310,20 @@ export const api = {
       const run = mockValidationRuns[repairId];
       return run ? { ...run } : null;
     }
-    const res = await fetch(`${BASE_URL}/repair-proposals/${repairId}/validation-runs`);
-    if (res.status === 404) return null;
-    if (!res.ok) {
-      throw new Error(`Failed to fetch validation runs (HTTP ${res.status}: ${res.statusText})`);
+    try {
+      const data = await request<ValidationRun[] | { items: ValidationRun[] }>(
+        `/repair-proposals/${repairId}/validation-runs`
+      );
+      if (Array.isArray(data)) return data[0] || null;
+      return data.items ? data.items[0] || null : (data as unknown as ValidationRun);
+    } catch {
+      return null;
     }
-    const data = await res.json();
-    if (Array.isArray(data)) return data[0] || null;
-    return data.items ? data.items[0] || null : data;
   },
 
   async approveRepairProposal(repairId: string, comment?: string): Promise<RepairApproval> {
     if (IS_MOCK) {
-      await delay(400);
-      // In-memory transition: repair proposal status moves to approved
-      // Cardinal Product Rule: Approval is NOT Application.
-      // The incident remains in its current workflow or 'approved' state, NOT 'resolved'.
+      await delay(300);
       for (const key of Object.keys(inMemoryProposals)) {
         if (inMemoryProposals[key].id === repairId) {
           inMemoryProposals[key] = {
@@ -199,19 +352,37 @@ export const api = {
       };
     }
 
-    const res = await fetch(`${BASE_URL}/repair-proposals/${repairId}/approvals`, {
+    return request<RepairApproval>(`/repair-proposals/${repairId}/approvals`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         reviewer_id: 'user_alex_manager',
         decision: 'approved',
         comment: comment || '',
       }),
     });
-    if (!res.ok) {
-      throw new Error(`Failed to approve repair proposal (HTTP ${res.status}: ${res.statusText})`);
+  },
+
+  async rejectRepairProposal(repairId: string, reason: string): Promise<{ status: string }> {
+    if (IS_MOCK) {
+      await delay(300);
+      for (const key of Object.keys(inMemoryProposals)) {
+        if (inMemoryProposals[key].id === repairId) {
+          inMemoryProposals[key] = {
+            ...inMemoryProposals[key],
+            status: 'rejected',
+          };
+          break;
+        }
+      }
+      return { status: 'rejected' };
     }
-    return res.json();
+    return request<{ status: string }>(`/repair-proposals/${repairId}/rejection`, {
+      method: 'POST',
+      body: JSON.stringify({
+        reviewer_id: 'user_alex_manager',
+        reason,
+      }),
+    });
   },
 
   async getActivity(projectId: string): Promise<ActivityEvent[]> {
@@ -219,11 +390,7 @@ export const api = {
       await delay();
       return mockActivity.filter((a) => a.project_id === projectId);
     }
-    const res = await fetch(`${BASE_URL}/projects/${projectId}/activity`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch activity (HTTP ${res.status}: ${res.statusText})`);
-    }
-    const data = await res.json();
+    const data = await request<ActivityEvent[] | { items: ActivityEvent[] }>(`/projects/${projectId}/activity`);
     return Array.isArray(data) ? data : data.items || [];
   },
 };

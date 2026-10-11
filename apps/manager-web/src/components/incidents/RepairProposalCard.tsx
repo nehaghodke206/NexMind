@@ -8,12 +8,14 @@ interface RepairProposalCardProps {
   proposal: RepairProposal;
   validationRun: ValidationRun | null;
   onApprove: (comment: string) => Promise<void>;
+  onReject?: (reason: string) => Promise<void>;
 }
 
 export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
   proposal,
   validationRun,
   onApprove,
+  onReject,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
@@ -22,6 +24,7 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
   const validationPassed = validationRun?.status === 'passed' || validationRun?.result === 'passed';
   const isApproved = proposal.status === 'approved';
   const isApplied = proposal.status === 'applied';
+  const isRejected = proposal.status === 'rejected';
 
   const handleConfirmApproval = async (comment: string) => {
     setIsApproving(true);
@@ -32,12 +35,49 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
     }
   };
 
+  const handleConfirmRejection = async (reason: string) => {
+    if (!onReject) return;
+    setIsApproving(true);
+    try {
+      await onReject(reason);
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+  const getRiskStyle = (level?: string) => {
+    switch (level) {
+      case 'critical':
+      case 'high':
+        return {
+          backgroundColor: 'var(--sev-critical-bg)',
+          color: 'var(--sev-critical-text)',
+          border: '1px solid var(--sev-critical-border)',
+        };
+      case 'medium':
+        return {
+          backgroundColor: 'var(--sev-high-bg)',
+          color: 'var(--sev-high-text)',
+          border: '1px solid var(--sev-high-border)',
+        };
+      case 'low':
+      default:
+        return {
+          backgroundColor: 'var(--sev-low-bg)',
+          color: 'var(--sev-low-text)',
+          border: '1px solid var(--sev-low-border)',
+        };
+    }
+  };
+
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-sm)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Repair Proposal</h3>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, letterSpacing: '-0.01em', margin: 0 }}>
+            Automated Repair Proposal
+          </h3>
           <StatusChip status={proposal.status} type="repair" />
         </div>
 
@@ -48,30 +88,13 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
                 fontSize: '0.75rem',
                 fontWeight: 700,
                 textTransform: 'uppercase',
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor:
-                  proposal.risk_level === 'high'
-                    ? 'rgba(239, 68, 68, 0.15)'
-                    : proposal.risk_level === 'medium'
-                    ? 'rgba(234, 179, 8, 0.15)'
-                    : 'rgba(34, 197, 94, 0.15)',
-                color:
-                  proposal.risk_level === 'high'
-                    ? '#fca5a5'
-                    : proposal.risk_level === 'medium'
-                    ? '#fef08a'
-                    : '#86efac',
-                border: `1px solid ${
-                  proposal.risk_level === 'high'
-                    ? 'var(--sev-critical-border)'
-                    : proposal.risk_level === 'medium'
-                    ? 'var(--sev-medium-border)'
-                    : '#22c55e'
-                }`,
+                letterSpacing: '0.04em',
+                padding: '3px 10px',
+                borderRadius: 'var(--radius-full)',
+                ...getRiskStyle(proposal.risk_level),
               }}
             >
-              Risk: {proposal.risk_level}
+              RISK: {proposal.risk_level}
             </span>
           )}
         </div>
@@ -82,51 +105,79 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
         <p><strong>Rationale:</strong> {proposal.rationale}</p>
         {proposal.strategy && (
           <p style={{ color: 'var(--text-muted)' }}>
-            <strong>Strategy:</strong> <code style={{ color: '#93c5fd' }}>{proposal.strategy}</code>
+            <strong>Strategy:</strong>{' '}
+            <code
+              style={{
+                color: 'var(--brand-primary)',
+                backgroundColor: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-sm)',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {proposal.strategy}
+            </code>
           </p>
         )}
       </div>
 
       {/* Unified Diff */}
       <div>
-        <h4 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 'var(--space-xs)' }}>
-          Candidate Patch Diff
-        </h4>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-xs)' }}>
+          <h4 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>
+            Unified Patch Diff
+          </h4>
+          <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-faint)' }}>
+            unified_diff format
+          </span>
+        </div>
         <DiffViewer diffText={diffContent} />
       </div>
 
       {/* Validation Result Box */}
       <div
         style={{
-          backgroundColor: 'var(--bg-app)',
+          backgroundColor: 'var(--diff-bg)',
           border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-md)',
           padding: 'var(--space-md)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-sm)' }}>
-          <h4 style={{ fontSize: '0.875rem', fontWeight: 600 }}>Automated Validation Run</h4>
+          <h4 style={{ fontSize: '0.875rem', fontWeight: 700, letterSpacing: '-0.01em', margin: 0 }}>
+            Automated Validation Suite
+          </h4>
           {validationRun && (
             <span
               style={{
                 fontSize: '0.75rem',
-                fontWeight: 600,
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: validationPassed ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                color: validationPassed ? '#86efac' : '#fca5a5',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                padding: '2px 10px',
+                borderRadius: 'var(--radius-full)',
+                backgroundColor: validationPassed ? 'var(--status-resolved-bg)' : 'var(--status-failed-bg)',
+                color: validationPassed ? 'var(--status-resolved-text)' : 'var(--status-failed-text)',
+                border: `1px solid ${validationPassed ? 'var(--status-resolved-border)' : 'var(--status-failed-border)'}`,
               }}
             >
-              {validationPassed ? '✓ PASSED' : '✕ FAILED'}
+              {validationPassed ? 'SUITE PASSED' : 'SUITE FAILED'}
             </span>
           )}
         </div>
 
         {validationRun ? (
           <div style={{ fontSize: '0.8125rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
-            <div>
-              Tests: <strong>{validationRun.tests_passed ?? 0} passed</strong>,{' '}
-              <strong>{validationRun.tests_failed ?? 0} failed</strong> (total: {validationRun.tests_total ?? 0})
+            <div style={{ fontFamily: 'var(--font-mono)' }}>
+              Tests:{' '}
+              <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>
+                {validationRun.tests_passed ?? 0} passed
+              </span>
+              ,{' '}
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>
+                {validationRun.tests_failed ?? 0} failed
+              </span>{' '}
+              (total: {validationRun.tests_total ?? 0})
             </div>
             {validationRun.summary && (
               <p style={{ color: 'var(--text-muted)' }}>{validationRun.summary}</p>
@@ -136,13 +187,14 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
                 style={{
                   marginTop: 'var(--space-xs)',
                   padding: 'var(--space-sm)',
-                  backgroundColor: '#030712',
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-sm)',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.75rem',
                   overflowX: 'auto',
                   maxHeight: '160px',
-                  color: '#94a3b8',
+                  color: 'var(--text-main)',
                 }}
               >
                 {validationRun.output}
@@ -151,34 +203,39 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
           </div>
         ) : (
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-            No validation run results available for this proposal.
+            No validation run telemetry available for this proposal.
           </p>
         )}
       </div>
 
       {/* Action Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-md)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-md)', flexWrap: 'wrap', gap: 'var(--space-sm)' }}>
         <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
           {isApplied ? (
-            <span style={{ color: '#86efac', fontWeight: 600 }}>✓ Patch applied to repository</span>
+            <span style={{ color: 'var(--status-resolved-text)', fontWeight: 600 }}>Patch confirmed applied to repository</span>
           ) : isApproved ? (
-            <span style={{ color: '#93c5fd', fontWeight: 600 }}>✓ Review approved. Ready for application.</span>
+            <span style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>Review approved. Authorized for deployment.</span>
+          ) : isRejected ? (
+            <span style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>Proposal rejected by human reviewer.</span>
           ) : !validationPassed ? (
-            <span style={{ color: '#fca5a5' }}>⚠ Tests must pass before approving</span>
+            <span style={{ color: 'var(--text-muted)' }}>Automated tests must pass prior to approval</span>
           ) : (
-            <span>Ready for manager review sign-off</span>
+            <span>Ready for human reviewer authorization</span>
           )}
         </div>
 
-        {!isApproved && !isApplied && (
+        {!isApproved && !isApplied && !isRejected && (
           <button
             type="button"
             className="btn btn-primary"
             onClick={() => setIsModalOpen(true)}
             disabled={!validationPassed}
-            style={{ backgroundColor: validationPassed ? '#059669' : undefined }}
+            style={{ gap: '6px' }}
           >
-            Review & Approve Repair...
+            <span>Review & Approve Repair</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
           </button>
         )}
       </div>
@@ -187,6 +244,7 @@ export const RepairProposalCard: React.FC<RepairProposalCardProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmApproval}
+        onReject={handleConfirmRejection}
         proposal={proposal}
         validationRun={validationRun}
         isApproving={isApproving}

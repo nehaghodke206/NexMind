@@ -34,21 +34,71 @@ export const ActivityFeedPage: React.FC = () => {
     loadData();
   }, [loadData]);
 
+  const getEventBadge = (type: string) => {
+    if (type.includes('detect')) {
+      return {
+        label: 'Detection',
+        color: 'var(--brand-primary)',
+        border: 'var(--sev-critical-border)',
+        bg: 'var(--sev-critical-bg)',
+      };
+    }
+    if (type.includes('repair')) {
+      return {
+        label: 'Repair',
+        color: 'var(--sev-high-text)',
+        border: 'var(--sev-high-border)',
+        bg: 'var(--sev-high-bg)',
+      };
+    }
+    if (type.includes('validation')) {
+      return {
+        label: 'Validation',
+        color: 'var(--status-review-text)',
+        border: 'var(--status-review-border)',
+        bg: 'var(--status-review-bg)',
+      };
+    }
+    return {
+      label: 'System',
+      color: 'var(--text-muted)',
+      border: 'var(--border-subtle)',
+      bg: 'var(--bg-surface-elevated)',
+    };
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: 'var(--space-xs)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: 'var(--space-xs)' }}>
+            <span
+              style={{
+                fontSize: '0.6875rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--brand-primary)',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--sev-critical-bg)',
+                border: '1px solid var(--sev-critical-border)',
+              }}
+            >
+              LIVE AUDIT LOG
+            </span>
+          </div>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 700, marginBottom: 'var(--space-xs)', letterSpacing: '-0.02em' }}>
             Project Activity Feed
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem' }}>
-            Real-time chronological timeline of schema scans, detections, automated validations, and review actions.
+            Chronological audit stream of schema scans, detections, automated validations, and review actions (<code>GET /projects/:id/activity</code>).
           </p>
         </div>
 
         {projects.length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-            <label htmlFor="activity-project-select" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+            <label htmlFor="activity-project-select" style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 600 }}>
               Project:
             </label>
             <select
@@ -59,7 +109,7 @@ export const ActivityFeedPage: React.FC = () => {
                 backgroundColor: 'var(--bg-surface)',
                 border: '1px solid var(--border-strong)',
                 color: 'var(--text-main)',
-                padding: 'var(--space-xs) var(--space-md)',
+                padding: '8px 14px',
                 borderRadius: 'var(--radius-md)',
                 fontSize: '0.875rem',
               }}
@@ -75,7 +125,7 @@ export const ActivityFeedPage: React.FC = () => {
       </div>
 
       {loading ? (
-        <LoadingState message="Loading activity timeline..." />
+        <LoadingState message="Streaming activity events..." />
       ) : error ? (
         <ErrorState message={error} onRetry={loadData} />
       ) : activities.length === 0 ? (
@@ -86,61 +136,68 @@ export const ActivityFeedPage: React.FC = () => {
       ) : (
         <div className="card" style={{ padding: 'var(--space-xl)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-            {activities.map((act) => (
-              <div
-                key={act.id}
-                style={{
-                  display: 'flex',
-                  gap: 'var(--space-md)',
-                  alignItems: 'flex-start',
-                  borderBottom: '1px solid var(--border-subtle)',
-                  paddingBottom: 'var(--space-md)',
-                }}
-              >
+            {activities.map((act) => {
+              const badge = getEventBadge(act.event_type);
+              return (
                 <div
+                  key={act.id}
                   style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--bg-app)',
-                    border: '1px solid var(--border-strong)',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.875rem',
-                    flexShrink: 0,
+                    gap: 'var(--space-md)',
+                    alignItems: 'flex-start',
+                    borderBottom: '1px solid var(--border-subtle)',
+                    paddingBottom: 'var(--space-md)',
                   }}
-                  aria-hidden="true"
                 >
-                  {act.event_type.includes('detect')
-                    ? '🔍'
-                    : act.event_type.includes('repair')
-                    ? '🛠'
-                    : act.event_type.includes('validation')
-                    ? '🧪'
-                    : '📋'}
-                </div>
-
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)' }}>
-                      {act.event_type.replace(/_/g, ' ').toUpperCase()}
-                    </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)' }}>
-                      {new Date(act.created_at).toLocaleString()}
-                    </span>
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: 'var(--radius-md)',
+                      backgroundColor: badge.bg,
+                      border: `1px solid ${badge.border}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      color: badge.color,
+                    }}
+                    aria-hidden="true"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
                   </div>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    {act.message}
-                  </p>
-                  {act.actor_id && (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' }}>
-                      Actor: {act.actor_id}
-                    </span>
-                  )}
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px', flexWrap: 'wrap', gap: '4px' }}>
+                      <span
+                        style={{
+                          fontSize: '0.8125rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.04em',
+                          color: badge.color,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {act.event_type.replace(/_/g, ' ')}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-faint)' }}>
+                        {new Date(act.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '0.9375rem', color: 'var(--text-main)', marginBottom: '4px', lineHeight: 1.5 }}>
+                      {act.message}
+                    </p>
+                    {act.actor_id && (
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' }}>
+                        Actor: <span style={{ color: 'var(--text-muted)' }}>{act.actor_id}</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

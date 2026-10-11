@@ -37,6 +37,20 @@ export type ValidationStatus =
 
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
+export interface HealthStatus {
+  status: string;
+}
+
+export interface ProjectSummary {
+  project_id: string;
+  dependency_count: number;
+  open_incident_count: number;
+  pending_review_count: number;
+  validation_pass_count: number;
+  validation_fail_count: number;
+  last_scan_at?: string | null;
+}
+
 export interface IncidentEvidence {
   removed_fields?: string[];
   added_fields?: string[];
@@ -131,8 +145,16 @@ export interface Project {
   name: string;
   description?: string | null;
   repository_url?: string | null;
+  default_branch?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProjectCreate {
+  name: string;
+  description?: string;
+  repository_url?: string;
+  default_branch?: string;
 }
 
 export interface Dependency {
@@ -142,7 +164,58 @@ export interface Dependency {
   kind?: string;
   base_url?: string | null;
   version?: string | null;
+  configuration?: Record<string, unknown>;
   created_at: string;
+}
+
+export interface DependencyCreate {
+  name: string;
+  kind: 'rest_api' | 'sdk' | 'package' | 'mcp_tool' | 'other';
+  base_url?: string;
+}
+
+export interface Baseline {
+  id: string;
+  dependency_id: string;
+  version: number;
+  contract: Record<string, unknown>;
+  source?: 'manual' | 'scan' | 'imported';
+  created_by?: string | null;
+  created_at: string;
+}
+
+export interface ScanRun {
+  id: string;
+  project_id: string;
+  dependency_id?: string | null;
+  initiated_by?: string | null;
+  status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
+  summary?: string | null;
+  error_message?: string | null;
+  started_at: string;
+  completed_at?: string | null;
+}
+
+export interface Observation {
+  id: string;
+  scan_id: string;
+  dependency_id: string;
+  observation_type: 'response_shape' | 'status_code' | 'latency' | 'pagination' | 'tool_schema' | 'semantic_change' | 'other';
+  endpoint?: string | null;
+  method?: string | null;
+  observed_at: string;
+  payload: Record<string, unknown>;
+  fingerprint?: string | null;
+}
+
+export interface ProjectMember {
+  id: string;
+  project_id: string;
+  user_id: string;
+  display_name: string;
+  email: string;
+  role: 'owner' | 'maintainer' | 'developer' | 'viewer';
+  joined_at: string;
 }
 
 export interface ActivityEvent {
