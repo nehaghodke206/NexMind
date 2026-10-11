@@ -1,6 +1,6 @@
 ========================================================================
  Dependency Guardian Detection Summary
- Mode: HYBRID | Execution Time: 62765.5ms
+ Mode: HYBRID | Execution Time: 84888.8ms
 ========================================================================
  Total Findings: 32
    - Breaking:             11
@@ -31,10 +31,10 @@
    AI Reasoning: New optional field 'currency' was added at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency.
  RULE-ENUM-VALUE-REMOVED      POST     breaking         /api/v1/payments
    Message: Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto'].
-   AI Reasoning: The 'crypto' enum value is no longer available for payment_method, affecting caller's ability to use the API.
+   AI Reasoning: Removing enum values can lead to unexpected behavior if clients rely on specific values.
  RULE-REQUIRED-FIELD-ADDED    POST     breaking         /api/v1/payments
    Message: Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema.
-   AI Reasoning: The 'currency' field is now mandatory, requiring callers to include it in their requests.
+   AI Reasoning: Adding a required field can break existing clients that do not provide this field.
  RULE-FIELD-TYPE-CHANGED      POST     breaking         /api/v1/payments
    Message: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.
    AI Reasoning: Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.
