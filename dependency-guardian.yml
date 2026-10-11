@@ -1,0 +1,71 @@
+project:
+  name: demo-shop
+  validation_command: "pytest -q demo-app/tests"
+
+settings:
+  request_timeout_seconds: 3
+  scan_timeout_seconds: 10
+  max_response_bytes: 1000000
+  allow_private_network_targets: true
+  llm_explanations_enabled: false
+
+dependencies:
+  - id: users-api
+    name: Users API
+    base_url: "http://127.0.0.1:8001"
+    probes:
+      - id: user-profile
+        method: GET
+        path: "/users/u_123"
+        expected_contract: user_profile
+
+  - id: payments-api
+    name: Payments API
+    base_url: "http://127.0.0.1:8002"
+    probes:
+      - id: payment-detail
+        method: GET
+        path: "/payments/p_123"
+        expected_contract: payment
+        known_values:
+          status: "paid"
+
+  - id: search-api
+    name: Search API
+    base_url: "http://127.0.0.1:8003"
+    probes:
+      - id: search-page-one
+        method: GET
+        path: "/search?page=1"
+        expected_contract: search_results
+
+  - id: notification-tool
+    name: Notification Tool
+    base_url: "http://127.0.0.1:8004"
+    probes:
+      - id: notify-status
+        method: GET
+        path: "/status"
+        expected_contract: tool_status
+
+workflows:
+  - id: user-profile
+    name: User Profile Page
+    dependencies: [users-api]
+    source_files: ["demo-app/src/services/user_service.py"]
+    fields: ["name", "email"]
+    tests: ["demo-app/tests/test_user_profile.py"]
+
+  - id: payment-dashboard
+    name: Payment Dashboard
+    dependencies: [payments-api]
+    source_files: ["demo-app/src/services/payment_service.py"]
+    fields: ["status", "amount"]
+    tests: ["demo-app/tests/test_payments.py"]
+
+  - id: user-search
+    name: User Search
+    dependencies: [search-api]
+    source_files: ["demo-app/src/services/search_service.py"]
+    fields: ["items", "page", "next_page"]
+    tests: ["demo-app/tests/test_search.py"]
