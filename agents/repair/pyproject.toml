@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dependency-guardian-repair"
+version = "0.1.0"
+description = "Modular Repair Agent for Dependency Guardian"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.8.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+dependency-guardian-repair = "repair_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["repair_agent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = [".venv", "venv", "__pycache__"]

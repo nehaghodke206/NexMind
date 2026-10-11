@@ -1,0 +1,2 @@
+[console_scripts]
+dependency-guardian-repair = repair_agent.cli:main
