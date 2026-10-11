@@ -1,0 +1,2 @@
+[console_scripts]
+dependency-guardian = dependency_guardian.cli:main

@@ -1,0 +1,30 @@
+{
+  "id": "find_b82a1c02-e221-4f10-9b37-975d71c14f99",
+  "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
+  "fingerprint": "path:/users/{id}:method:GET:location:responses.200.properties.name:rule:RULE-RESPONSE-FIELD-REMOVED",
+  "compatibility": "breaking",
+  "severity": "high",
+  "path": "/users/{id}",
+  "method": "GET",
+  "schema_location": "paths./users/{id}.get.responses.200.content.application/json.schema.properties.name",
+  "previous_value": {
+    "type": "string",
+    "description": "User full name"
+  },
+  "current_value": null,
+  "message": "Property 'name' was removed from 200 response schema.",
+  "evidence": {
+    "removed_property": "name",
+    "status_code": "200",
+    "media_type": "application/json",
+    "baseline_property_definition": {
+      "type": "string",
+      "description": "User full name"
+    }
+  },
+  "confidence": 1.0,
+  "source": "algorithmic",
+  "review_required": false,
+  "ai_reasoning": null,
+  "created_at": "2026-10-11T03:00:00Z"
+}
