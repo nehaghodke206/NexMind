@@ -1,4 +1,3 @@
-
 # Environment / secrets
 .env
 .env.*
@@ -9,6 +8,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -27,9 +27,11 @@ coverage/
 *.sqlite
 *.sqlite3
 *.log
+.guardian_backups/
 
 # OS/editor
 .DS_Store
 Thumbs.db
 .idea/
 
+temp_*

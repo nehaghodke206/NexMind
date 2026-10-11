@@ -1,0 +1,14 @@
+
+{
+  "name": "dependency-guardian-workspace",
+  "version": "1.1.0",
+  "description": "Workspace root for Dependency Guardian extension, backend, and simulated services",
+  "scripts": {
+    "compile": "npm --prefix vscode-extension run compile",
+    "build": "npm --prefix vscode-extension run compile",
+    "package": "cd vscode-extension && npx -y @vscode/vsce package --no-dependencies",
+    "install:extension": "code --install-extension vscode-extension/dependency-guardian-1.1.0.vsix --force",
+    "test": "python scripts/test_e2e.py",
+    "start": "python scripts/run_all.py"
+  }
+}

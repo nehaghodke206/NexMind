@@ -1,0 +1,21 @@
+Metadata-Version: 2.4
+Name: dependency-guardian-detection
+Version: 0.1.0
+Summary: Modular Detection Agent for Dependency Guardian
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.8.0
+Requires-Dist: pydantic-settings>=2.4.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: httpx>=0.27.0
+
+
+# Detection Agent
+
+Owned by the detection teammate.
+
+Choose the internal architecture that best supports API probes, baseline management,
+response comparison, change classification, evidence capture, and incident submission.
+
+Do not silently overwrite a known-good baseline. Document setup, run, and test commands.
+
