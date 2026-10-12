@@ -1,0 +1,2909 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Repository API \u2014 /home/last-hope/Dnyaneshwar/HackWave/services/backend",
+    "version": "1.0.0",
+    "description": "Generated and enriched by Dependency Guardian Repository Intelligence."
+  },
+  "paths": {
+    "/baselines/{baseline_id}": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 158,
+        "x-handler-name": "get_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "baseline_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaselineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies/{dependency_id}": {
+      "get": {
+        "x-source-file": "app/routers/dependencies.py",
+        "x-source-line": 30,
+        "x-handler-name": "get_dependency",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "dependency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "x-source-file": "app/routers/dependencies.py",
+        "x-source-line": 37,
+        "x-handler-name": "update_dependency",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "dependency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies/{dependency_id}/baselines": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 116,
+        "x-handler-name": "list_baselines",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "dependency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 139,
+        "x-handler-name": "create_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "dependency_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaselineCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaselineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "x-source-file": "app/routers/health.py",
+        "x-source-line": 8,
+        "x-handler-name": "get_health",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 56,
+        "x-handler-name": "get_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 63,
+        "x-handler-name": "update_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/events": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 109,
+        "x-handler-name": "list_incident_events",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/observations": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 116,
+        "x-handler-name": "list_incident_observations",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/repair-proposals": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 125,
+        "x-handler-name": "list_repair_proposals",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 133,
+        "x-handler-name": "create_repair_proposal",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairProposalCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/repairs": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 125,
+        "x-handler-name": "list_repair_proposals",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 133,
+        "x-handler-name": "create_repair_proposal",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairProposalCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 21,
+        "x-handler-name": "list_projects",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1
+            },
+            "description": null
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1,
+              "le": 100
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 37,
+        "x-handler-name": "create_project",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 44,
+        "x-handler-name": "get_project",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/activity": {
+      "get": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 65,
+        "x-handler-name": "list_activity",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1
+            },
+            "description": null
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1,
+              "le": 100
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityEventListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/baselines": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 27,
+        "x-handler-name": "list_project_baselines",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBaselineListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 44,
+        "x-handler-name": "create_project_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBaselineCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBaselineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/baselines/active": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 57,
+        "x-handler-name": "get_active_project_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/baselines/compare": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 70,
+        "x-handler-name": "compare_project_baselines",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "base",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Base baseline ID or version number"
+          },
+          {
+            "name": "target",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Target baseline ID or version number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBaselineCompareResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/baselines/{baseline_id}": {
+      "get": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 85,
+        "x-handler-name": "get_project_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "baseline_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBaselineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/dependencies": {
+      "get": {
+        "x-source-file": "app/routers/dependencies.py",
+        "x-source-line": 16,
+        "x-handler-name": "list_dependencies",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/dependencies.py",
+        "x-source-line": 23,
+        "x-handler-name": "create_dependency",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/incidents": {
+      "get": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 22,
+        "x-handler-name": "list_incidents",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "assignee_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1
+            },
+            "description": null
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1,
+              "le": 100
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 49,
+        "x-handler-name": "create_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/members": {
+      "get": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 51,
+        "x-handler-name": "list_members",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 58,
+        "x-handler-name": "add_member",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/scans": {
+      "get": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 22,
+        "x-handler-name": "list_scans",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "ge": 1,
+              "le": 200
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 38,
+        "x-handler-name": "start_scan",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/summary": {
+      "get": {
+        "x-source-file": "app/routers/projects.py",
+        "x-source-line": 82,
+        "x-handler-name": "get_project_summary",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repair-proposals/{repair_id}": {
+      "get": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 23,
+        "x-handler-name": "get_repair_proposal",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repair-proposals/{repair_id}/validation-runs": {
+      "get": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 31,
+        "x-handler-name": "list_validation_runs",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 39,
+        "x-handler-name": "create_validation_run",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidationRunCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repairs/{repair_id}": {
+      "get": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 23,
+        "x-handler-name": "get_repair_proposal",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repairs/{repair_id}/validation-runs": {
+      "get": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 31,
+        "x-handler-name": "list_validation_runs",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scans/{scan_id}": {
+      "get": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 59,
+        "x-handler-name": "get_scan",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "scan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/acknowledge": {
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 70,
+        "x-handler-name": "acknowledge_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "payload",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/reopen": {
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 96,
+        "x-handler-name": "reopen_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "payload",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{incident_id}/resolve": {
+      "post": {
+        "x-source-file": "app/routers/incidents.py",
+        "x-source-line": 83,
+        "x-handler-name": "resolve_incident",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "incident_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "payload",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/baselines/{baseline_id}/promote": {
+      "post": {
+        "x-source-file": "app/routers/baselines.py",
+        "x-source-line": 96,
+        "x-handler-name": "promote_project_baseline",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "baseline_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          },
+          {
+            "name": "promoted_by",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBaselineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/scans/ingest": {
+      "post": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 50,
+        "x-handler-name": "ingest_scan",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanIngestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repair-proposals/{repair_id}/applications": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 62,
+        "x-handler-name": "record_repair_application",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairApplicationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairApplicationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repair-proposals/{repair_id}/approvals": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 47,
+        "x-handler-name": "approve_repair",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairApprovalCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairApprovalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repair-proposals/{repair_id}/rejection": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 54,
+        "x-handler-name": "reject_repair",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairRejectionCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repairs/{repair_id}/apply-result": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 62,
+        "x-handler-name": "record_repair_application",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairApplicationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairApplicationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repairs/{repair_id}/approve": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 47,
+        "x-handler-name": "approve_repair",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairApprovalCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepairApprovalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repairs/{repair_id}/validate": {
+      "post": {
+        "x-source-file": "app/routers/repairs.py",
+        "x-source-line": 39,
+        "x-handler-name": "create_validation_run",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "repair_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidationRunCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scans/{scan_id}/complete": {
+      "post": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 85,
+        "x-handler-name": "complete_scan",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "scan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanCompleteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response (200)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scans/{scan_id}/observations": {
+      "post": {
+        "x-source-file": "app/routers/scans.py",
+        "x-source-line": 72,
+        "x-handler-name": "submit_observations",
+        "x-discovery-method": "framework_ast",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "scan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObservationBatchCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response (201)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservationBatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaselineResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dependency_id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "contract": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "DependencyResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "base_url": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "configuration": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "IncidentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "dependency_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "change_type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "occurrence_count": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          },
+          "resolution_notes": {
+            "type": "string"
+          },
+          "review_notes": {
+            "type": "string"
+          },
+          "assignee_id": {
+            "type": "string"
+          },
+          "affected_workflows": {
+            "type": "string"
+          },
+          "affected_files": {
+            "type": "string"
+          },
+          "evidence_summary": {
+            "type": "string"
+          },
+          "first_detected_at": {
+            "type": "string"
+          },
+          "last_observed_at": {
+            "type": "string"
+          },
+          "acknowledged_at": {
+            "type": "string"
+          },
+          "acknowledged_by": {
+            "type": "string"
+          },
+          "resolved_at": {
+            "type": "string"
+          },
+          "reopened_at": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "page": {
+            "type": "string"
+          },
+          "page_size": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ActivityEventListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "page": {
+            "type": "string"
+          },
+          "page_size": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectBaselineListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "active_baseline": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectBaselineCompareResponse": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "base_version": {
+            "type": "string"
+          },
+          "target_version": {
+            "type": "string"
+          },
+          "base_id": {
+            "type": "string"
+          },
+          "target_id": {
+            "type": "string"
+          },
+          "endpoints_added": {
+            "type": "string"
+          },
+          "endpoints_removed": {
+            "type": "string"
+          },
+          "endpoints_modified": {
+            "type": "string"
+          },
+          "contract_diffs": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectBaselineResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "version_tag": {
+            "type": "string"
+          },
+          "contracts": {
+            "type": "string"
+          },
+          "inventory": {
+            "type": "string"
+          },
+          "source_scan_id": {
+            "type": "string"
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "is_active": {
+            "type": "string"
+          },
+          "is_promoted": {
+            "type": "string"
+          },
+          "promoted_at": {
+            "type": "string"
+          },
+          "promoted_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "IncidentListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "page": {
+            "type": "string"
+          },
+          "page_size": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "dependency_count": {
+            "type": "string"
+          },
+          "open_incident_count": {
+            "type": "string"
+          },
+          "pending_review_count": {
+            "type": "string"
+          },
+          "validation_pass_count": {
+            "type": "string"
+          },
+          "validation_fail_count": {
+            "type": "string"
+          },
+          "last_scan_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairProposalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "incident_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "strategy": {
+            "type": "string"
+          },
+          "diff_preview": {
+            "type": "string"
+          },
+          "proposed_changes": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ScanRunResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "dependency_id": {
+            "type": "string"
+          },
+          "initiated_by": {
+            "type": "string"
+          },
+          "scan_type": {
+            "type": "string"
+          },
+          "detection_mode": {
+            "type": "string"
+          },
+          "capabilities_executed": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "string"
+          },
+          "summary_counts": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "is_local": {
+            "type": "string"
+          },
+          "sync_status": {
+            "type": "string"
+          },
+          "client_run_id": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "DependencyUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "pattern": "^(rest_api|sdk|package|mcp_tool|other)$"
+          },
+          "base_url": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "configuration": {
+            "type": "string"
+          }
+        }
+      },
+      "IncidentUpdate": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "pattern": "^(open|acknowledged|resolved|reopened|triaged|in_progress|awaiting_review|dismissed)$"
+          },
+          "assignee_id": {
+            "type": "string"
+          },
+          "review_notes": {
+            "type": "string"
+          },
+          "resolution_notes": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "pattern": "^(low|medium|high|critical|blocked)$"
+          }
+        }
+      },
+      "BaselineCreate": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^(manual|scan|imported)$"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairProposalCreate": {
+        "type": "object",
+        "properties": {
+          "rationale": {
+            "type": "string",
+            "min_length": 1
+          },
+          "strategy": {
+            "type": "string",
+            "pattern": "^(compatibility_adapter|callsite_update|pagination_adapter|manual_review|other)$"
+          },
+          "diff_preview": {
+            "type": "string"
+          },
+          "proposed_changes": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string",
+            "ge": 0.0,
+            "le": 1.0
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "patch": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectCreate": {
+        "type": "object",
+        "properties": {}
+      },
+      "ProjectBaselineCreate": {
+        "type": "object",
+        "properties": {
+          "contracts": {
+            "type": "string"
+          },
+          "inventory": {
+            "type": "string"
+          },
+          "version_tag": {
+            "type": "string"
+          },
+          "source_scan_id": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "is_promoted": {
+            "type": "string"
+          }
+        }
+      },
+      "DependencyCreate": {
+        "type": "object",
+        "properties": {}
+      },
+      "IncidentCreate": {
+        "type": "object",
+        "properties": {
+          "dependency_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "min_length": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "change_type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "pattern": "^(low|medium|high|critical|blocked)$"
+          },
+          "provenance": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string",
+            "ge": 0.0,
+            "le": 1.0
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          },
+          "observation_ids": {
+            "type": "string"
+          },
+          "affected_workflows": {
+            "type": "string"
+          },
+          "affected_files": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectMemberCreate": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "pattern": "^(owner|admin|developer|reviewer)$"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectMemberResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "project_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "joined_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ScanCreate": {
+        "type": "object",
+        "properties": {
+          "dependency_id": {
+            "type": "string"
+          },
+          "initiated_by": {
+            "type": "string"
+          },
+          "scan_type": {
+            "type": "string",
+            "pattern": "^(full|targeted|codebase|contract_drift|live_probe)$"
+          },
+          "detection_mode": {
+            "type": "string",
+            "pattern": "^(algorithmic|hybrid|ai)$"
+          },
+          "trigger_type": {
+            "type": "string"
+          }
+        }
+      },
+      "ScanIngestRequest": {
+        "type": "object",
+        "properties": {
+          "client_run_id": {
+            "type": "string"
+          },
+          "scan_type": {
+            "type": "string"
+          },
+          "detection_mode": {
+            "type": "string",
+            "pattern": "^(algorithmic|hybrid|ai)$"
+          },
+          "capabilities_executed": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "string"
+          },
+          "summary_counts": {
+            "type": "string"
+          },
+          "findings": {
+            "type": "string"
+          },
+          "inventory": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "pattern": "^(succeeded|partial|failed|canceled)$"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "scanner_version": {
+            "type": "string"
+          },
+          "repository_revision": {
+            "type": "string"
+          },
+          "initiated_by": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairApplicationCreate": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "pattern": "^(applied|failed|cancelled)$"
+          },
+          "workspace_reference": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repair_id": {
+            "type": "string"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "workspace_reference": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "reported_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairApprovalCreate": {
+        "type": "object",
+        "properties": {
+          "reviewer_id": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "pattern": "^(approved)$"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairApprovalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repair_id": {
+            "type": "string"
+          },
+          "reviewer_id": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "decided_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RepairRejectionCreate": {
+        "type": "object",
+        "properties": {
+          "reviewer_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "min_length": 1
+          }
+        }
+      },
+      "ValidationRunCreate": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "pattern": "^(queued|running|passed|failed|blocked|error)$"
+          },
+          "test_command": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationRunResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repair_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "test_command": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ScanCompleteRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "pattern": "^(succeeded|partial|failed|canceled|completed)$"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "string"
+          },
+          "summary_counts": {
+            "type": "string"
+          }
+        }
+      },
+      "ObservationBatchCreate": {
+        "type": "object",
+        "properties": {
+          "observations": {
+            "type": "string"
+          }
+        }
+      },
+      "ObservationBatchResponse": {
+        "type": "object",
+        "properties": {
+          "accepted_count": {
+            "type": "string"
+          },
+          "observation_ids": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

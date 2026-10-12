@@ -10,6 +10,53 @@ settings:
   llm_explanations_enabled: false
 
 dependencies:
+  - id: demo-api
+    name: Demo Application
+    base_url: "http://localhost:8080"
+    probes:
+      - id: service-health
+        method: GET
+        path: "/health"
+        expected_status_code: 200
+        expected_fields: ["status", "service"]
+        known_values:
+          status: "ok"
+      - id: backend-health-integration
+        method: GET
+        path: "/api/backend/health"
+        expected_status_code: 200
+        expected_fields: ["status", "backend_service", "upstream_url"]
+      - id: backend-projects-integration
+        method: GET
+        path: "/api/backend/projects"
+        expected_status_code: 200
+        expected_fields: ["status", "upstream_url", "total", "items"]
+      - id: broken-invalid-path
+        method: GET
+        path: "/api/broken/invalid-path"
+        expected_status_code: 200
+
+  - id: guardian-backend
+    name: Guardian Backend
+    base_url: "http://localhost:8000"
+    probes:
+      - id: backend-health
+        method: GET
+        path: "/api/v1/health"
+        expected_status_code: 200
+        expected_fields: ["status", "version"]
+        known_values:
+          status: "ok"
+      - id: backend-projects
+        method: GET
+        path: "/api/v1/projects"
+        expected_status_code: 200
+        expected_fields: ["total", "items"]
+      - id: backend-docs
+        method: GET
+        path: "/docs"
+        expected_status_code: 200
+
   - id: users-api
     name: Users API
     base_url: "http://127.0.0.1:8001"

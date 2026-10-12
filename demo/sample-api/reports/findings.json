@@ -3,7 +3,7 @@
   "mode": "algorithmic",
   "findings": [
     {
-      "id": "find_33c699ac-dd2d-41e6-b299-b475b6454c89",
+      "id": "find_d0bfe569-ff7b-4871-989b-d475030fe640",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:22663834207a46e2",
       "compatibility": "non_breaking",
@@ -47,10 +47,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228445Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494684Z"
     },
     {
-      "id": "find_01c32081-39d1-438b-9bd3-4df08235e64e",
+      "id": "find_d0497f47-29de-4ee5-8767-8cdc30e50201",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e2ea2f4c52368a15",
       "compatibility": "non_breaking",
@@ -94,10 +97,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228558Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494782Z"
     },
     {
-      "id": "find_e5ae8ae2-2673-46c2-b77e-636cc6ce1cae",
+      "id": "find_a453e610-71a8-4f2a-84d3-6de3ea9225ba",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:cf92810f63463ccf",
       "compatibility": "non_breaking",
@@ -141,10 +147,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228668Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494852Z"
     },
     {
-      "id": "find_f4bedf69-17ba-4d61-8d43-3ccba5602810",
+      "id": "find_1a709df2-d269-4d9c-be37-e5f93f6c5879",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2dddf5a6f772e73f",
       "compatibility": "non_breaking",
@@ -188,10 +197,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228785Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494937Z"
     },
     {
-      "id": "find_bc949608-bd49-4d5a-88e9-c6e33943bb34",
+      "id": "find_4f02d827-8e8e-456d-ba7d-0e5b0bb73800",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:5f19bb342f44fa3c",
       "compatibility": "non_breaking",
@@ -223,10 +235,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228927Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495006Z"
     },
     {
-      "id": "find_942ca418-a691-4304-9194-8000dfe3957a",
+      "id": "find_21f89529-4675-4f8d-9f48-7bf42f4b9a12",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:2bf0d6a6a70681dc",
       "compatibility": "breaking",
@@ -256,10 +271,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228888Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494990Z"
     },
     {
-      "id": "find_81ab7d9b-3f9f-42d1-9668-09c471659343",
+      "id": "find_66e1b2cd-efaa-4e8f-9beb-fcdaf781481c",
       "rule_id": "RULE-REQUIRED-FIELD-ADDED",
       "fingerprint": "dg:rule-required-field-added:081743be0365cb6d",
       "compatibility": "breaking",
@@ -278,10 +296,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228961Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495023Z"
     },
     {
-      "id": "find_7a7af853-16cb-4dd9-94e7-f390309f83eb",
+      "id": "find_23060f5b-8057-4833-9a34-72a0fd3cf4a8",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:add00f9dae7c178e",
       "compatibility": "breaking",
@@ -301,10 +322,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229016Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495050Z"
     },
     {
-      "id": "find_1155b858-3b12-473d-8c21-776c27ea8da4",
+      "id": "find_998c232d-6e27-4228-8e3c-5aa24eaad459",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:d4219cfd1f2cbe48",
       "compatibility": "non_breaking",
@@ -334,10 +358,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229115Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495079Z"
     },
     {
-      "id": "find_43a7d386-828f-4000-80a0-fab0a629bb49",
+      "id": "find_71757db0-bf41-4216-adb3-77e0d0d5bbd9",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:a4bcecee92b7e009",
       "compatibility": "potentially_breaking",
@@ -367,10 +394,13 @@
       "source": "algorithmic",
       "review_required": true,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229065Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495065Z"
     },
     {
-      "id": "find_90d8049f-d517-4d68-b222-13959ba4cce8",
+      "id": "find_f5a075df-36e9-4b67-8ac1-be50913057b4",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:f7ace9b2f17f4d40",
       "compatibility": "breaking",
@@ -390,10 +420,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229207Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495113Z"
     },
     {
-      "id": "find_97bf1862-3934-47fc-a7f6-b18fca3dd293",
+      "id": "find_1bd68ac4-5bbc-48bc-a88c-1a59253a070f",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:744ba98b47c293e2",
       "compatibility": "non_breaking",
@@ -423,10 +456,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229299Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495136Z"
     },
     {
-      "id": "find_bd6fdec6-d875-434c-928c-87c46328f821",
+      "id": "find_d51f4cce-d677-46b5-8f42-d04cb373a48d",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:245a9cddcedf3dcd",
       "compatibility": "potentially_breaking",
@@ -456,10 +492,13 @@
       "source": "algorithmic",
       "review_required": true,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229242Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495124Z"
     },
     {
-      "id": "find_73c5d64e-08c3-4c97-8d9f-4adb2a801376",
+      "id": "find_149cc356-18e6-4733-a1ac-7c1f317a5f72",
       "rule_id": "RULE-PATH-REMOVED",
       "fingerprint": "dg:rule-path-removed:1ad5b95ab2b40db9",
       "compatibility": "breaking",
@@ -484,10 +523,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.229385Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.495162Z"
     },
     {
-      "id": "find_cb3749d4-a134-4242-851a-4bfb9a2ad961",
+      "id": "find_d6e1fddd-df50-4ebf-8ec3-45d1d98e2cf6",
       "rule_id": "RULE-REQUIRED-PARAM-ADDED",
       "fingerprint": "dg:rule-required-param-added:68f33c3dc19dd594",
       "compatibility": "breaking",
@@ -512,10 +554,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227681Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494182Z"
     },
     {
-      "id": "find_f129be9a-8612-4db9-b653-8f6ef06d526f",
+      "id": "find_d224f1b7-4db4-4b06-bf46-cf610243f68c",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:56b2cdaea4e00d72",
       "compatibility": "non_breaking",
@@ -557,10 +602,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227756Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494248Z"
     },
     {
-      "id": "find_ec1b7f32-d5d7-498b-bbfa-d53aeb1e74a0",
+      "id": "find_7559341b-b2dd-45e8-873c-cd08e4405007",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:21ae22555c945a2a",
       "compatibility": "breaking",
@@ -588,10 +636,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227739Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494229Z"
     },
     {
-      "id": "find_6846d2ac-43f5-44b1-94ca-56f10597f901",
+      "id": "find_17ce7db0-8559-4e2b-b5c7-fa55b926aa3a",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2c726225cd1ccbb8",
       "compatibility": "non_breaking",
@@ -622,10 +673,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227806Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494295Z"
     },
     {
-      "id": "find_539d827b-afbb-4bba-bf43-250bc1c10e3d",
+      "id": "find_3d726b98-bd8e-4514-b028-86277c81b544",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:44eb5d55af457f77",
       "compatibility": "non_breaking",
@@ -667,10 +721,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227840Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494326Z"
     },
     {
-      "id": "find_e3ce6596-2336-4f81-b6dd-e05bb5bd32b4",
+      "id": "find_5210ce95-24b3-4cbb-b618-8b3832b1bb0a",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:42a30a123e2f6037",
       "compatibility": "non_breaking",
@@ -712,10 +769,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228037Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494375Z"
     },
     {
-      "id": "find_1b2b19a1-046a-40c6-adb6-4a9f1e9c12f0",
+      "id": "find_17483e62-2574-4bfd-91f7-2806fff1f58c",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:6d1726e4a3e2e419",
       "compatibility": "breaking",
@@ -743,10 +803,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228007Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494361Z"
     },
     {
-      "id": "find_b1ea7435-9753-4c85-84b9-545505907bf6",
+      "id": "find_f172df3e-f5d4-4375-a0a6-a96c4f199c57",
       "rule_id": "RULE-METHOD-REMOVED",
       "fingerprint": "dg:rule-method-removed:df468951ca058ba4",
       "compatibility": "breaking",
@@ -767,10 +830,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228352Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494597Z"
     },
     {
-      "id": "find_23c2ada3-4849-4ca5-8d39-595539b9a332",
+      "id": "find_f3ceb542-3f6a-4e84-b895-dcc5cf23b103",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e1908b6c907aab97",
       "compatibility": "non_breaking",
@@ -812,10 +878,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228149Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494469Z"
     },
     {
-      "id": "find_373808b7-c33d-4d0d-a321-26ad9880e4be",
+      "id": "find_acdd2cc1-0e13-41e7-bfb5-a01a021b0492",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:d911fd76cb98be39",
       "compatibility": "breaking",
@@ -843,10 +912,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228121Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494455Z"
     },
     {
-      "id": "find_ff6c6a26-dafe-4153-97c1-7df7f60fba77",
+      "id": "find_c8aec117-68e7-4c53-b527-7e1c7032c8d4",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:b66b579349776fcf",
       "compatibility": "non_breaking",
@@ -888,10 +960,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228217Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494521Z"
     },
     {
-      "id": "find_f5789842-9f8c-445c-a6c7-9402b40776dd",
+      "id": "find_0073d069-2854-44a4-8079-74617ea330d6",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:1dad56b95732c644",
       "compatibility": "non_breaking",
@@ -933,10 +1008,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228285Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494561Z"
     },
     {
-      "id": "find_277049d0-3cd2-467e-82c4-3e2777658bd2",
+      "id": "find_01342bf8-4809-46e2-b7d0-682587e4b665",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:72c50e236592a891",
       "compatibility": "breaking",
@@ -964,10 +1042,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.228258Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494549Z"
     },
     {
-      "id": "find_13b1564a-47da-4523-8e24-79cb926fa7b8",
+      "id": "find_8715f366-ba06-4183-a001-57b1eab8b6f6",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:371d3ac92e04e012",
       "compatibility": "non_breaking",
@@ -1004,10 +1085,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227161Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.493682Z"
     },
     {
-      "id": "find_04c9d09b-64cb-4043-94ac-cf99e8ca78e4",
+      "id": "find_06cfbe44-1785-4012-b27b-c5e4951e6ee6",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6581398a269eca8",
       "compatibility": "non_breaking",
@@ -1049,10 +1133,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227255Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.493804Z"
     },
     {
-      "id": "find_ddffa69d-a7b5-4365-a6e1-5e1272196a3f",
+      "id": "find_ab78ba59-c0cd-4f55-b8b2-cc8241b6fb41",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2beccc594b89a7c8",
       "compatibility": "non_breaking",
@@ -1094,10 +1181,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227388Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.493891Z"
     },
     {
-      "id": "find_20b33a86-57dd-4c72-af1d-b7e603e0b16c",
+      "id": "find_7644d225-7902-4c66-a47e-13222b07851b",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:288b2c45b4917842",
       "compatibility": "non_breaking",
@@ -1139,10 +1229,13 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227493Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.493976Z"
     },
     {
-      "id": "find_ef9f2203-ebe3-47de-8463-b8d2c0b0c1ec",
+      "id": "find_f2614a7c-47c8-4983-a669-fc07ef1ba33c",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6dad80d42ec2b64",
       "compatibility": "non_breaking",
@@ -1184,7 +1277,10 @@
       "source": "algorithmic",
       "review_required": false,
       "ai_reasoning": null,
-      "created_at": "2026-10-11T07:57:20.227587Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:23:40.494084Z"
     }
   ],
   "summary": {
@@ -1203,8 +1299,8 @@
   "ai_status": "skipped",
   "ai_error": null,
   "fallback_triggered": false,
-  "execution_time_ms": 7.41,
-  "timestamp": "2026-10-11T07:57:20.229698Z",
+  "execution_time_ms": 6.66,
+  "timestamp": "2026-10-12T02:23:40.495307Z",
   "ai_insights": null,
   "ai_provider": null,
   "ai_model": null

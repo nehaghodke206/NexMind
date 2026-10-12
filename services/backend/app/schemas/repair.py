@@ -26,6 +26,7 @@ class RepairProposalResponse(BaseModel):
     proposed_changes: Dict[str, Any] = Field(default_factory=dict)
     confidence: Optional[float] = None
     created_by: Optional[str] = None
+    patch_hash: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

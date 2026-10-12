@@ -93,3 +93,47 @@ def test_backend_client_graceful_offline_degradation():
     assert sync_res["synced"] is False
     assert "offline" in sync_res["reason"].lower()
 
+
+def test_backend_client_requires_valid_project_and_dependency_ids():
+    client = BackendClient(base_url="http://127.0.0.1:8000/api/v1")
+    dummy_result = DetectionResult(
+        success=True,
+        mode=DetectionMode.ALGORITHMIC,
+        findings=[],
+        summary=DiffSummary(),
+    )
+
+    import pytest
+    with pytest.raises(ValueError, match="valid, non-empty project_id"):
+        client.start_scan(project_id="")
+
+    with pytest.raises(ValueError, match="valid, non-empty project_id"):
+        client.sync_detection_result(project_id="  ", dependency_id="dep-1", result=dummy_result)
+
+    with pytest.raises(ValueError, match="valid, non-empty dependency_id"):
+        client.sync_detection_result(project_id="proj-1", dependency_id="", result=dummy_result)
+
+
+def test_finding_to_backend_incident_maps_field_rename_and_affected_files():
+    finding = Finding(
+        rule_id="RULE-FIELD-RENAMED",
+        fingerprint="test:rename:123",
+        compatibility=CompatibilityClassification.BREAKING,
+        severity=SeverityLevel.HIGH,
+        path="/items",
+        method="PUT",
+        schema_location="items.sku",
+        previous_value="sku",
+        current_value="item_sku",
+        message="Property 'sku' was renamed to 'item_sku'",
+        evidence={"renamed_from": "sku", "renamed_to": "item_sku", "file": "src/inventory.py"},
+        confidence=1.0,
+        source=DetectionSource.ALGORITHMIC,
+    )
+
+    inc = finding.to_backend_incident(dependency_id="dep-456")
+    assert inc["change_type"] == "field_rename"
+    assert inc["affected_files"] == ["src/inventory.py"]
+    assert inc["evidence"]["evidence_details"]["renamed_to"] == "item_sku"
+
+

@@ -2,7 +2,7 @@
   "name": "dependency-guardian",
   "displayName": "Dependency Guardian",
   "description": "Detecting, explaining, and safely adapting external dependency changes",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "dependency-guardian",
   "license": "MIT",
   "repository": {
@@ -18,6 +18,12 @@
     "Linters"
   ],
   "main": "./dist/extension.js",
+  "activationEvents": [
+    "onView:dependencyGuardian.chatView",
+    "onView:dependencyGuardian.changes",
+    "onView:dependencyGuardian.repairs",
+    "onView:dependencyGuardian.services"
+  ],
   "contributes": {
     "commands": [
       {
@@ -26,9 +32,74 @@
         "icon": "$(dashboard)"
       },
       {
-        "command": "dependencyGuardian.scanDependencies",
-        "title": "Dependency Guardian: Scan Dependencies",
+        "command": "dependencyGuardian.openDependencyGraph",
+        "title": "Dependency Guardian: View API Dependency Graph",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "dependencyGuardian.openChat",
+        "title": "Dependency Guardian: Open Guardian Assistant (Chat)",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "dependencyGuardian.runDetection",
+        "title": "Dependency Guardian: Run Contract Drift Detection",
         "icon": "$(search)"
+      },
+      {
+        "command": "dependencyGuardian.scanDependencies",
+        "title": "Dependency Guardian: Scan Codebase & Dependencies",
+        "icon": "$(search)"
+      },
+      {
+        "command": "dependencyGuardian.scanCodebase",
+        "title": "Dependency Guardian: Scan Codebase & Inventory",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "dependencyGuardian.cancelCodebaseScan",
+        "title": "Dependency Guardian: Cancel Active Codebase Scan",
+        "icon": "$(close)"
+      },
+      {
+        "command": "dependencyGuardian.proposeRepair",
+        "title": "Dependency Guardian: Generate Repair Proposal",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "dependencyGuardian.reviewRepair",
+        "title": "Dependency Guardian: Review Repair Diff",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "dependencyGuardian.approveRepair",
+        "title": "Dependency Guardian: Approve Repair Proposal",
+        "icon": "$(check)"
+      },
+      {
+        "command": "dependencyGuardian.rejectRepair",
+        "title": "Dependency Guardian: Reject Repair Proposal",
+        "icon": "$(close)"
+      },
+      {
+        "command": "dependencyGuardian.applyRepair",
+        "title": "Dependency Guardian: Apply Repair to Workspace",
+        "icon": "$(pass)"
+      },
+      {
+        "command": "dependencyGuardian.openAffectedFile",
+        "title": "Dependency Guardian: Open Affected Source File",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "dependencyGuardian.refresh",
+        "title": "Dependency Guardian: Refresh Status",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "dependencyGuardian.setupEnvironment",
+        "title": "Dependency Guardian: Check Agent & Python Environment",
+        "icon": "$(gear)"
       },
       {
         "command": "dependencyGuardian.createBaseline",
@@ -42,6 +113,21 @@
       {
         "command": "dependencyGuardian.resetDemo",
         "title": "Dependency Guardian: Reset Demo"
+      },
+      {
+        "command": "dependencyGuardian.runAnalysis",
+        "title": "Dependency Guardian: Run Complete Analysis",
+        "icon": "$(play-circle)"
+      },
+      {
+        "command": "dependencyGuardian.setDetectionMode",
+        "title": "Dependency Guardian: Select Detection Mode",
+        "icon": "$(settings)"
+      },
+      {
+        "command": "dependencyGuardian.validateExternalApis",
+        "title": "Dependency Guardian: Validate External APIs",
+        "icon": "$(globe)"
       }
     ],
     "viewsContainers": {
@@ -56,47 +142,171 @@
     "views": {
       "dependency-guardian-sidebar": [
         {
-          "id": "dependencyGuardian.services",
-          "name": "Configured Dependencies"
+          "type": "webview",
+          "id": "dependencyGuardian.chatView",
+          "name": "Guardian Assistant"
         },
         {
           "id": "dependencyGuardian.changes",
           "name": "Detected Changes"
         },
         {
-          "id": "dependencyGuardian.workflows",
-          "name": "Affected Workflows"
-        },
-        {
           "id": "dependencyGuardian.repairs",
           "name": "Repair Proposals"
+        },
+        {
+          "id": "dependencyGuardian.services",
+          "name": "Configured Dependencies"
+        },
+        {
+          "id": "dependencyGuardian.workflows",
+          "name": "Affected Workflows"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "dependencyGuardian.scanDependencies",
+          "command": "dependencyGuardian.openDashboard",
+          "when": "view == dependencyGuardian.chatView || view == dependencyGuardian.changes || view == dependencyGuardian.repairs",
+          "group": "navigation@1"
+        },
+        {
+          "command": "dependencyGuardian.runDetection",
           "when": "view == dependencyGuardian.changes",
-          "group": "navigation"
+          "group": "navigation@2"
+        },
+        {
+          "command": "dependencyGuardian.proposeRepair",
+          "when": "view == dependencyGuardian.changes || view == dependencyGuardian.repairs",
+          "group": "navigation@3"
+        },
+        {
+          "command": "dependencyGuardian.refresh",
+          "when": "view == dependencyGuardian.chatView || view == dependencyGuardian.changes || view == dependencyGuardian.repairs || view == dependencyGuardian.services",
+          "group": "navigation@4"
         },
         {
           "command": "dependencyGuardian.createBaseline",
           "when": "view == dependencyGuardian.services",
-          "group": "navigation"
+          "group": "navigation@5"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "dependencyGuardian.proposeRepair",
+          "when": "view == dependencyGuardian.changes && viewItem == change",
+          "group": "inline@1"
         },
         {
-          "command": "dependencyGuardian.openDashboard",
-          "when": "view == dependencyGuardian.services",
-          "group": "navigation"
+          "command": "dependencyGuardian.openAffectedFile",
+          "when": "view == dependencyGuardian.changes && viewItem == change",
+          "group": "inline@2"
+        },
+        {
+          "command": "dependencyGuardian.reviewRepair",
+          "when": "view == dependencyGuardian.repairs && viewItem =~ /^repair/",
+          "group": "inline@1"
+        },
+        {
+          "command": "dependencyGuardian.approveRepair",
+          "when": "view == dependencyGuardian.repairs && (viewItem == repair || viewItem == repair-validated)",
+          "group": "inline@2"
+        },
+        {
+          "command": "dependencyGuardian.applyRepair",
+          "when": "view == dependencyGuardian.repairs && (viewItem == repair || viewItem == repair-approved || viewItem == repair-validated)",
+          "group": "inline@3"
         }
       ]
+    },
+    "configuration": {
+      "title": "Dependency Guardian",
+      "properties": {
+        "dependencyGuardian.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8000/api/v1",
+          "description": "Base URL of the Dependency Guardian backend service."
+        },
+        "dependencyGuardian.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to the Python interpreter to execute Detection and Repair agents (defaults to auto-detection in workspace virtual environments)."
+        },
+        "dependencyGuardian.agentPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the Dependency Guardian agents directory or repository root (e.g. /path/to/HackWave/agents/detection). If empty, auto-detected from workspace, environment, or extension install location."
+        },
+        "dependencyGuardian.detectionMode": {
+          "type": "string",
+          "enum": [
+            "algorithmic",
+            "ai",
+            "hybrid"
+          ],
+          "default": "algorithmic",
+          "description": "Detection Agent diffing mode: algorithmic (fast, deterministic), ai, or hybrid."
+        },
+        "dependencyGuardian.aiProvider": {
+          "type": "string",
+          "enum": [
+            "ollama",
+            "mock",
+            "hosted"
+          ],
+          "default": "ollama",
+          "description": "AI provider used by Detection and Repair agents."
+        },
+        "dependencyGuardian.ollamaModel": {
+          "type": "string",
+          "default": "qwen2.5-coder:3b",
+          "description": "Local Ollama model name (centralized default: qwen2.5-coder:3b)."
+        },
+        "dependencyGuardian.ollamaBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Local Ollama API base URL."
+        },
+        "dependencyGuardian.projectId": {
+          "type": "string",
+          "default": "",
+          "description": "Optional backend Project ID to associate scans and incidents."
+        },
+        "dependencyGuardian.dependencyId": {
+          "type": "string",
+          "default": "",
+          "description": "Optional backend Dependency ID to associate scans and contract drift findings."
+        },
+        "dependencyGuardian.autoSyncBackend": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically synchronize detection scans and repair proposals with the backend API."
+        },
+        "dependencyGuardian.liveValidationConfigPath": {
+          "type": "string",
+          "default": "dependency-guardian.yml",
+          "description": "Path to dependency-guardian.yml specification for live API validation."
+        },
+        "dependencyGuardian.liveValidationTimeoutSeconds": {
+          "type": "number",
+          "default": 5,
+          "description": "Timeout in seconds for external live API probes."
+        },
+        "dependencyGuardian.liveValidationConcurrency": {
+          "type": "number",
+          "default": 5,
+          "description": "Maximum concurrent HTTP requests for live API probes."
+        }
+      }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node --test test/repairWorkflow.test.js test/uiComponents.test.js test/detectionIntegration.test.js test/agentResolution.test.js test/scanProgress.test.js test/detectionModesAndLiveValidation.test.js test/persistentBaselinesAndIncidents.test.js test/approvalWorkflowAndDiff.test.js test/dependencyGraph.test.js test/contractDriftSync.test.js",
+    "package": "npx @vscode/vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

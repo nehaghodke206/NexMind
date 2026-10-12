@@ -107,6 +107,8 @@ class RepairBackendClient:
         rationale = result.rationale or result.explanation or "Automated repair proposal from Dependency Guardian."
 
         proposed_changes = {
+            "client_repair_id": result.repair_id,
+            "repair_id": result.repair_id,
             "target_file": result.target_file,
             "finding_id": result.finding_id,
             "engine_strategy": result.strategy,
@@ -117,6 +119,17 @@ class RepairBackendClient:
             "proposal_generated": result.proposal_generated,
             "repair_agent_status": result.status.value,
         }
+
+        if getattr(result, "likely_root_cause", None):
+            proposed_changes["likely_root_cause"] = result.likely_root_cause
+        if getattr(result, "affected_symbols", None):
+            proposed_changes["affected_symbols"] = result.affected_symbols
+        if getattr(result, "file_changes", None):
+            proposed_changes["file_changes"] = [fc.model_dump() for fc in result.file_changes]
+        if getattr(result, "line_ranges", None):
+            proposed_changes["line_ranges"] = result.line_ranges
+        if getattr(result, "suggested_validation_command", None):
+            proposed_changes["suggested_validation_command"] = result.suggested_validation_command
 
         payload: Dict[str, Any] = {
             "rationale": rationale,
@@ -588,6 +601,19 @@ def incident_to_finding_input(incident: Dict[str, Any]) -> FindingInput:
     from .models import FindingInput
 
     evidence = incident.get("evidence") or {}
+    if not evidence and incident.get("evidence_summary"):
+        try:
+            ev_parsed = json.loads(incident["evidence_summary"])
+            if isinstance(ev_parsed, dict):
+                evidence = ev_parsed
+        except Exception:
+            pass
+
+    if not evidence and incident.get("metadata_json"):
+        meta = incident["metadata_json"]
+        if isinstance(meta, dict) and isinstance(meta.get("evidence"), dict):
+            evidence = meta["evidence"]
+
     if not evidence and incident.get("observations"):
         obs_list = incident["observations"]
         if obs_list and isinstance(obs_list[0], dict):
@@ -598,7 +624,7 @@ def incident_to_finding_input(incident: Dict[str, Any]) -> FindingInput:
     # Extract path and method from evidence or incident title e.g. "[GET] /users/{id} - RULE-FIELD-REMOVED"
     title = incident.get("title", "")
     method = evidence.get("method")
-    path = evidence.get("endpoint") or "/"
+    path = evidence.get("path") or evidence.get("endpoint") or evidence.get("invalid_path") or "/"
 
     if path == "/" or not method:
         if "[" in title and "]" in title:
@@ -617,7 +643,18 @@ def incident_to_finding_input(incident: Dict[str, Any]) -> FindingInput:
             path = incident.get("endpoint")
 
     finding_id = evidence.get("finding_id") or incident.get("id") or "find_unknown"
-    rule_id = evidence.get("rule_id") or incident.get("change_type") or "RULE-DRIFT"
+    rule_id = (
+        evidence.get("rule_id")
+        or (
+            "RULE-API-SERVER-FAILURE"
+            if evidence.get("invalid_path")
+            or "502" in str(evidence.get("status_code"))
+            or "nonexistent-service" in str(evidence.get("target_url", ""))
+            else None
+        )
+        or incident.get("change_type")
+        or "RULE-DRIFT"
+    )
 
     # Merge evidence details
     merged_evidence = dict(evidence_details)
@@ -640,6 +677,10 @@ def incident_to_finding_input(incident: Dict[str, Any]) -> FindingInput:
         "field",
         "old_type",
         "new_type",
+        "invalid_path",
+        "target_url",
+        "url",
+        "status_code",
     ):
         if k in evidence and k not in merged_evidence:
             merged_evidence[k] = evidence[k]

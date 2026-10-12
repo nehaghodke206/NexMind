@@ -30,6 +30,40 @@ def generate_contracts():
     # 2. Generate v2 contract
     app_v2 = create_app_v2()
     spec_v2 = app_v2.openapi()
+
+    # Intentional Defect E: Ghost endpoint declared in contract but missing in codebase implementation
+    spec_v2.setdefault("paths", {})["/api/v1/discounts/validate"] = {
+        "get": {
+            "summary": "Ghost endpoint: Validate promotional discount code",
+            "description": "Documented in OpenAPI contract specification but unhandled in codebase AST.",
+            "tags": ["Discounts"],
+            "parameters": [
+                {
+                    "name": "code",
+                    "in": "query",
+                    "required": True,
+                    "schema": {"type": "string"},
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Discount code validity result",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "valid": {"type": "boolean"},
+                                    "discount_percent": {"type": "number"},
+                                },
+                            }
+                        }
+                    },
+                }
+            },
+        }
+    }
+
     v2_path = contracts_dir / "openapi-v2.json"
     with open(v2_path, "w", encoding="utf-8") as f:
         json.dump(spec_v2, f, indent=2)

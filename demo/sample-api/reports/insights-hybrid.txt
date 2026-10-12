@@ -26,13 +26,13 @@
 
 ----------------------------------------------------------------------------
  [5] RECOMMENDED REMEDIATION & MIGRATION STEPS
-   1. Update application to handle new required field
-   2. Remove removed enum values
+   1. Update application logic to handle the new required field.
+   2. Modify the API contract to reflect the removed enum values.
 
 ----------------------------------------------------------------------------
  [6] RECOMMENDED REGRESSION TEST SCENARIOS
-   1. Test POST /api/v1/payments with new required field
-   2. Test GET /api/v1/orders with new optional field
+   1. Test the API with the new required field to ensure it works as expected.
+   2. Verify that the API contract is updated to reflect the removed enum values.
 
 ----------------------------------------------------------------------------
  [7] SUGGESTED ORDER OF RESOLUTION
@@ -42,10 +42,10 @@
 ----------------------------------------------------------------------------
  [8] GROUNDING: FACTS (FROM CONTRACTS) VS. HYPOTHESES (AI-GENERATED)
  Facts Extracted from OpenAPI:
-   + [FACT] Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto']
-   + [FACT] Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema
+   + [FACT] POST /api/v1/payments: Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto']
+   + [FACT] POST /api/v1/payments: Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema
  AI-Generated Hypotheses & Interpretations:
-   ? [HYPOTHESIS] Consumers using the API may experience errors if they do not update their applications to handle the new required field and remove the removed enum values.
+   ? [HYPOTHESIS] Consumers may experience errors or crashes if they do not update their applications to handle the new required field.
 
 ----------------------------------------------------------------------------
  [9] ASSUMPTIONS, UNCERTAINTY & LIMITATIONS

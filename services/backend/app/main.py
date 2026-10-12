@@ -1,7 +1,11 @@
+import logging
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+
+logger = logging.getLogger("dependency_guardian.api")
 
 from app.core.config import settings
 from app.core.exceptions import AppException
@@ -60,6 +64,33 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "error": "bad_request",
             "message": "Invalid request payload",
             "details": {"errors": exc.errors()},
+        },
+    )
+
+
+@app.exception_handler(IntegrityError)
+async def integrity_exception_handler(request: Request, exc: IntegrityError):
+    logger.error(f"[Database Integrity Error] {exc}", exc_info=True)
+    detail_msg = str(exc.orig) if hasattr(exc, "orig") and exc.orig else str(exc)
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={
+            "error": "conflict_or_constraint_violation",
+            "message": "Database constraint or foreign key violation occurred.",
+            "details": {"detail": detail_msg},
+        },
+    )
+
+
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    logger.error(f"[Database Error] {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "error": "database_error",
+            "message": "A database error occurred while processing the request.",
+            "details": {"detail": str(exc)},
         },
     )
 

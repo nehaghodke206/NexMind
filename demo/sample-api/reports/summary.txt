@@ -1,6 +1,6 @@
 ========================================================================
  Dependency Guardian Detection Summary
- Mode: ALGORITHMIC | Execution Time: 4.4ms
+ Mode: ALGORITHMIC | Execution Time: 4.3ms
 ========================================================================
  Total Findings: 32
    - Breaking:             11

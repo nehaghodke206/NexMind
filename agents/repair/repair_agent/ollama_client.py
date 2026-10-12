@@ -1,3 +1,4 @@
+import ast
 import logging
 import re
 from typing import Any, Dict, Optional
@@ -40,22 +41,23 @@ class OllamaRepairClient:
         original_code: str,
         relevant_snippet: Optional[str] = None,
     ) -> Optional[str]:
-        """Request candidate repair from local Ollama model."""
+        """Request candidate repair from local Ollama model with AST syntax validation."""
         prompt = (
-            f"You are an automated code repair assistant for Dependency Guardian.\n"
-            f"An external API has introduced a breaking change or schema drift:\n"
+            "You are an automated code repair assistant for Dependency Guardian.\n"
+            "An external API has introduced a breaking change or schema drift:\n"
             f"- Rule: {finding_info.get('rule_id')}\n"
             f"- Path: {finding_info.get('path')}\n"
             f"- Message: {finding_info.get('message')}\n"
             f"- Evidence: {finding_info.get('evidence')}\n\n"
-            f"Here is the affected application code snippet:\n"
+            "Here is the affected application code snippet:\n"
             f"```python\n{relevant_snippet or original_code[:1000]}\n```\n\n"
-            f"Here is the complete source file:\n"
+            "Here is the complete source file:\n"
             f"```python\n{original_code}\n```\n\n"
-            f"Instructions:\n"
-            f"1. Fix the affected code to be backwards-compatible or adapt to the new contract schema.\n"
-            f"2. Return the COMPLETE repaired source file contents only.\n"
-            f"3. Do not include introductory or explanatory conversational text. Output only the code.\n"
+            "Instructions:\n"
+            "1. Fix the affected code to be backwards-compatible or adapt to the new contract schema.\n"
+            "2. Preserve all existing function signatures, indentation, and imports.\n"
+            "3. Enclose the COMPLETE repaired source file contents in a single ```python ... ``` markdown code block.\n"
+            "4. Do NOT include introductory, conversational, or explanatory text outside the code block.\n"
         )
 
         try:
@@ -65,7 +67,10 @@ class OllamaRepairClient:
                     "messages": [
                         {
                             "role": "system",
-                            "content": "You are an expert software engineer fixing API contract drift. Output only the repaired Python code, without markdown explanation.",
+                            "content": (
+                                "You are an expert Python software engineer fixing API contract drift. "
+                                "Return strictly the complete valid Python source file enclosed in ```python ... ```."
+                            ),
                         },
                         {"role": "user", "content": prompt},
                     ],
@@ -79,8 +84,32 @@ class OllamaRepairClient:
 
                 raw_content = res.json().get("message", {}).get("content", "")
                 cleaned = self._clean_code_fence(raw_content)
-                return cleaned if cleaned.strip() else None
 
+                if not cleaned or not cleaned.strip():
+                    logger.warning("Ollama response contained empty code content.")
+                    return None
+
+                if cleaned.strip() == original_code.strip():
+                    logger.info("Ollama produced code identical to original without modification.")
+                    return None
+
+                # Validate AST syntax before returning
+                try:
+                    ast.parse(cleaned)
+                except SyntaxError as syn_err:
+                    logger.warning(
+                        f"Ollama candidate repair failed AST syntax validation at line {syn_err.lineno}: {syn_err.msg}"
+                    )
+                    return None
+                except Exception as parse_err:
+                    logger.warning(f"Ollama candidate repair failed AST parsing: {parse_err}")
+                    return None
+
+                return cleaned
+
+        except httpx.TimeoutException:
+            logger.warning(f"Ollama repair generation timed out after {self.timeout}s.")
+            return None
         except Exception as exc:
             logger.warning(f"Ollama repair generation failed: {exc}")
             return None

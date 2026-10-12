@@ -149,16 +149,21 @@ def load_configuration(
                 merged.update({k: v for k, v in ws_dict.items() if v is not None})
                 break
 
-    # 4. Environment-variable overrides
+    # 4. Environment-variable overrides (supporting centralized and agent-specific vars)
     env_mappings = {
+        "BACKEND_BASE_URL": "backend_base_url",
+        "DEPENDENCY_GUARDIAN_BACKEND_BASE_URL": "backend_base_url",
+        "OLLAMA_BASE_URL": "ai_base_url",
+        "DEPENDENCY_GUARDIAN_AI_BASE_URL": "ai_base_url",
+        "OLLAMA_MODEL": "ai_model",
+        "DEPENDENCY_GUARDIAN_AI_MODEL": "ai_model",
+        "OLLAMA_TIMEOUT_SECONDS": "ai_timeout_seconds",
+        "REQUEST_TIMEOUT_SECONDS": "ai_timeout_seconds",
+        "DEPENDENCY_GUARDIAN_AI_TIMEOUT_SECONDS": "ai_timeout_seconds",
         "DEPENDENCY_GUARDIAN_DETECTION_MODE": "detection_mode",
         "DEPENDENCY_GUARDIAN_AI_PROVIDER": "ai_provider",
-        "DEPENDENCY_GUARDIAN_AI_MODEL": "ai_model",
-        "DEPENDENCY_GUARDIAN_AI_BASE_URL": "ai_base_url",
         "DEPENDENCY_GUARDIAN_AI_API_KEY": "ai_api_key",
-        "DEPENDENCY_GUARDIAN_AI_TIMEOUT_SECONDS": "ai_timeout_seconds",
         "DEPENDENCY_GUARDIAN_AI_FALLBACK_POLICY": "ai_fallback_policy",
-        "DEPENDENCY_GUARDIAN_BACKEND_BASE_URL": "backend_base_url",
         "DEPENDENCY_GUARDIAN_LOGGING_LEVEL": "logging_level",
     }
     for env_var, field_name in env_mappings.items():

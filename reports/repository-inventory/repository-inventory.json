@@ -2,37 +2,57 @@
   "metadata": {
     "scanner_name": "Dependency Guardian Repository Intelligence",
     "scanner_version": "0.2.0",
-    "scanned_path": "/home/last-hope/Dnyaneshwar/HackWave/agents/detection/tests/fixtures/fixture_repo",
-    "scan_timestamp": "2026-10-11T07:54:40.667589+00:00",
+    "scanned_path": "/home/last-hope/Dnyaneshwar/HackWave/demo/sample-api",
+    "scan_timestamp": "2026-10-12T04:51:26.082097+00:00",
     "languages_detected": [
-      "JavaScript",
       "Python"
     ],
     "frameworks_detected": [
-      "Express",
       "FastAPI"
     ],
-    "total_files_scanned": 3,
+    "total_files_scanned": 23,
     "skipped_files": [],
     "openapi_specs_found": [
-      "openapi.json"
+      "openapi.json",
+      "contracts/openapi-v2.json",
+      "contracts/openapi-v1.json"
     ]
   },
   "dependencies": [
     {
       "package_name": "fastapi",
       "ecosystem": "python",
-      "declared_constraint": ">=0.100.0",
-      "resolved_version": "0.104.1",
+      "declared_constraint": ">=0.110.0",
+      "resolved_version": null,
       "is_direct": true,
       "purpose": "High-performance asynchronous web framework for building APIs",
       "is_inferred_purpose": false,
       "is_used": true,
       "import_locations": [
         {
-          "file": "app/main.py",
+          "file": "main.py",
+          "line": 16,
+          "statement": "from fastapi import FastAPI, HTTPException, status"
+        },
+        {
+          "file": "tests/test_localhost_integrations.py",
+          "line": 12,
+          "statement": "from fastapi.testclient import TestClient"
+        },
+        {
+          "file": "tests/test_contract_drift.py",
+          "line": 16,
+          "statement": "from fastapi.testclient import TestClient"
+        },
+        {
+          "file": "generated-tests/test_candidate_regression_v2.py",
           "line": 7,
-          "statement": "from fastapi import Depends, FastAPI, HTTPException"
+          "statement": "from fastapi.testclient import TestClient"
+        },
+        {
+          "file": "generated-tests/test_approved_regression_v2.py",
+          "line": 7,
+          "statement": "from fastapi.testclient import TestClient"
         }
       ],
       "official_documentation_url": "https://fastapi.tiangolo.com/",
@@ -41,19 +61,50 @@
       "manifest_file": "requirements.txt"
     },
     {
+      "package_name": "uvicorn",
+      "ecosystem": "python",
+      "declared_constraint": ">=0.28.0",
+      "resolved_version": null,
+      "is_direct": true,
+      "purpose": "Lightning-fast ASGI web server implementation for Python",
+      "is_inferred_purpose": false,
+      "is_used": true,
+      "import_locations": [
+        {
+          "file": "main.py",
+          "line": 259,
+          "statement": "import uvicorn"
+        }
+      ],
+      "official_documentation_url": "https://www.uvicorn.org/",
+      "configuration_requirements": [],
+      "vulnerabilities": [],
+      "manifest_file": "requirements.txt"
+    },
+    {
       "package_name": "pydantic",
       "ecosystem": "python",
-      "declared_constraint": ">=2.0.0",
-      "resolved_version": "2.5.2",
+      "declared_constraint": ">=2.7.0",
+      "resolved_version": null,
       "is_direct": true,
       "purpose": "Data validation and settings management using Python type annotations",
       "is_inferred_purpose": false,
       "is_used": true,
       "import_locations": [
         {
-          "file": "app/main.py",
-          "line": 10,
+          "file": "main.py",
+          "line": 17,
           "statement": "from pydantic import BaseModel, Field"
+        },
+        {
+          "file": "versions/v1/app/core/config.py",
+          "line": 4,
+          "statement": "from pydantic import BaseModel"
+        },
+        {
+          "file": "versions/v2/app/core/config.py",
+          "line": 4,
+          "statement": "from pydantic import BaseModel"
         }
       ],
       "official_documentation_url": "https://docs.pydantic.dev/",
@@ -64,16 +115,21 @@
     {
       "package_name": "httpx",
       "ecosystem": "python",
-      "declared_constraint": ">=0.24.0",
-      "resolved_version": "0.25.1",
+      "declared_constraint": ">=0.27.0",
+      "resolved_version": null,
       "is_direct": true,
       "purpose": "Next-generation HTTP client with async support and HTTP/2",
       "is_inferred_purpose": false,
       "is_used": true,
       "import_locations": [
         {
-          "file": "app/main.py",
-          "line": 8,
+          "file": "client.py",
+          "line": 12,
+          "statement": "import httpx"
+        },
+        {
+          "file": "main.py",
+          "line": 18,
           "statement": "import httpx"
         }
       ],
@@ -83,157 +139,102 @@
       "manifest_file": "requirements.txt"
     },
     {
-      "package_name": "psycopg2-binary",
+      "package_name": "pytest",
       "ecosystem": "python",
-      "declared_constraint": ">=2.9.0",
-      "resolved_version": "2.9.9",
+      "declared_constraint": ">=8.0.0",
+      "resolved_version": null,
       "is_direct": true,
-      "purpose": "Standalone binary package for PostgreSQL database adapter",
+      "purpose": "Testing framework supporting unit, functional, and integration tests",
       "is_inferred_purpose": false,
       "is_used": true,
       "import_locations": [
         {
-          "file": "app/main.py",
-          "line": 9,
-          "statement": "import psycopg2"
-        }
-      ],
-      "official_documentation_url": "https://www.psycopg.org/docs/",
-      "configuration_requirements": [],
-      "vulnerabilities": [],
-      "manifest_file": "requirements.txt"
-    },
-    {
-      "package_name": "redis",
-      "ecosystem": "python",
-      "declared_constraint": ">=5.0.0",
-      "resolved_version": "5.0.1",
-      "is_direct": true,
-      "purpose": "Python interface to Redis in-memory data structure store",
-      "is_inferred_purpose": false,
-      "is_used": true,
-      "import_locations": [
-        {
-          "file": "app/main.py",
+          "file": "tests/test_localhost_integrations.py",
           "line": 11,
-          "statement": "import redis"
-        }
-      ],
-      "official_documentation_url": "https://redis-py.readthedocs.io/",
-      "configuration_requirements": [],
-      "vulnerabilities": [],
-      "manifest_file": "requirements.txt"
-    },
-    {
-      "package_name": "stripe",
-      "ecosystem": "python",
-      "declared_constraint": ">=5.0.0",
-      "resolved_version": "5.4.0",
-      "is_direct": true,
-      "purpose": "Official Stripe Python API library for payment processing",
-      "is_inferred_purpose": false,
-      "is_used": true,
-      "import_locations": [
+          "statement": "import pytest"
+        },
         {
-          "file": "app/main.py",
-          "line": 12,
-          "statement": "import stripe"
+          "file": "tests/test_detection_assertions.py",
+          "line": 7,
+          "statement": "import pytest"
+        },
+        {
+          "file": "tests/test_contract_drift.py",
+          "line": 15,
+          "statement": "import pytest"
+        },
+        {
+          "file": "generated-tests/test_candidate_regression_v2.py",
+          "line": 6,
+          "statement": "import pytest"
+        },
+        {
+          "file": "generated-tests/test_approved_regression_v2.py",
+          "line": 6,
+          "statement": "import pytest"
         }
       ],
-      "official_documentation_url": "https://docs.stripe.com/api",
+      "official_documentation_url": "https://docs.pytest.org/",
       "configuration_requirements": [],
       "vulnerabilities": [],
       "manifest_file": "requirements.txt"
     },
     {
-      "package_name": "unused-lib",
+      "package_name": "pyyaml",
       "ecosystem": "python",
-      "declared_constraint": ">=1.0.0",
-      "resolved_version": "1.2.0",
+      "declared_constraint": ">=6.0",
+      "resolved_version": null,
       "is_direct": true,
-      "purpose": "Python library: unused-lib",
-      "is_inferred_purpose": true,
+      "purpose": "YAML parser and emitter for Python",
+      "is_inferred_purpose": false,
       "is_used": false,
       "import_locations": [],
-      "official_documentation_url": "https://pypi.org/project/unused-lib/",
+      "official_documentation_url": "https://pyyaml.org/",
       "configuration_requirements": [],
       "vulnerabilities": [],
       "manifest_file": "requirements.txt"
-    },
-    {
-      "package_name": "express",
-      "ecosystem": "npm",
-      "declared_constraint": "^4.18.2",
-      "resolved_version": "4.18.2",
-      "is_direct": true,
-      "purpose": "Fast, unopinionated, minimalist web framework for Node.js",
-      "is_inferred_purpose": false,
-      "is_used": true,
-      "import_locations": [
-        {
-          "file": "web/server.js",
-          "line": 4,
-          "statement": "const express = require('express');"
-        }
-      ],
-      "official_documentation_url": "https://expressjs.com/",
-      "configuration_requirements": [],
-      "vulnerabilities": [],
-      "manifest_file": "package.json"
-    },
-    {
-      "package_name": "axios",
-      "ecosystem": "npm",
-      "declared_constraint": "^1.6.0",
-      "resolved_version": "1.6.2",
-      "is_direct": true,
-      "purpose": "Promise-based HTTP client for the browser and Node.js",
-      "is_inferred_purpose": false,
-      "is_used": true,
-      "import_locations": [
-        {
-          "file": "web/server.js",
-          "line": 5,
-          "statement": "const axios = require('axios');"
-        }
-      ],
-      "official_documentation_url": "https://axios-http.com/",
-      "configuration_requirements": [],
-      "vulnerabilities": [],
-      "manifest_file": "package.json"
     }
   ],
   "internal_modules": [
-    "app",
+    "client",
+    "config",
+    "conftest",
+    "generate_contracts",
+    "generated-tests",
     "main",
-    "test_api",
-    "tests"
+    "scripts",
+    "test_approved_regression_v2",
+    "test_candidate_regression_v2",
+    "test_contract_drift",
+    "test_detection_assertions",
+    "test_localhost_integrations",
+    "tests",
+    "versions"
   ],
   "unused_dependencies": [
-    "unused-lib"
+    "pyyaml"
   ],
   "integrations": [
     {
-      "integration_type": "database",
-      "service_name": "PostgreSQL (psycopg2)",
-      "target_url_or_host": null,
-      "file_path": "app/main.py",
-      "line_number": 63,
-      "code_snippet": "psycopg2.connect(...)",
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/nonexistent-service",
+      "file_path": "client.py",
+      "line_number": 113,
+      "code_snippet": "httpx.get(\"{var}/api/v1/nonexistent-service\")",
       "config_references": [],
       "operations": [
-        "connect",
-        "query"
+        "GET"
       ],
       "redacted_secrets_count": 0
     },
     {
       "integration_type": "http_service",
-      "service_name": "Stripe API",
-      "target_url_or_host": "https://api.stripe.com/v1/customers",
-      "file_path": "app/main.py",
-      "line_number": 69,
-      "code_snippet": "httpx.post(\"https://api.stripe.com/v1/customers\")",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/health",
+      "file_path": "client.py",
+      "line_number": 124,
+      "code_snippet": "httpx.post(\"{var}/api/v1/health\")",
       "config_references": [],
       "operations": [
         "POST"
@@ -241,80 +242,846 @@
       "redacted_secrets_count": 0
     },
     {
-      "integration_type": "cache",
-      "service_name": "Redis Client",
-      "target_url_or_host": null,
-      "file_path": "app/main.py",
-      "line_number": 76,
-      "code_snippet": "redis.redis(...)",
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 136,
+      "code_snippet": "httpx.post(\"{var}/api/v1/projects\")",
       "config_references": [],
       "operations": [
-        "connect",
-        "publish",
-        "query"
+        "POST"
       ],
       "redacted_secrets_count": 0
     },
     {
-      "integration_type": "database",
-      "service_name": "PostgreSQL (psycopg2)",
-      "target_url_or_host": null,
-      "file_path": "app/main.py",
-      "line_number": 107,
-      "code_snippet": "psycopg2.connect(...)",
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/health",
+      "file_path": "client.py",
+      "line_number": 38,
+      "code_snippet": "httpx.get(\"http://localhost:8000/api/v1/health\")",
       "config_references": [],
       "operations": [
-        "connect",
-        "query"
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/health",
+      "file_path": "client.py",
+      "line_number": 40,
+      "code_snippet": "httpx.get(\"{var}/api/v1/health\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 51,
+      "code_snippet": "httpx.get(\"http://localhost:8000/api/v1/projects\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 53,
+      "code_snippet": "httpx.get(\"{var}/api/v1/projects\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 69,
+      "code_snippet": "httpx.post(\"http://localhost:8000/api/v1/projects\")",
+      "config_references": [],
+      "operations": [
+        "POST"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 71,
+      "code_snippet": "httpx.post(\"{var}/api/v1/projects\")",
+      "config_references": [],
+      "operations": [
+        "POST"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/projects/{project_id}",
+      "file_path": "client.py",
+      "line_number": 82,
+      "code_snippet": "httpx.get(\"http://localhost:8000/api/v1/projects/{project_id}\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/projects/{project_id}",
+      "file_path": "client.py",
+      "line_number": 84,
+      "code_snippet": "httpx.get(\"{var}/api/v1/projects/{project_id}\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/projects/{project_id}/dependencies",
+      "file_path": "client.py",
+      "line_number": 95,
+      "code_snippet": "httpx.get(\"http://localhost:8000/api/v1/projects/{project_id}/dependencies\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{var}/api/v1/projects/{project_id}/dependencies",
+      "file_path": "client.py",
+      "line_number": 97,
+      "code_snippet": "httpx.get(\"{var}/api/v1/projects/{project_id}/dependencies\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/nonexistent-service",
+      "file_path": "client.py",
+      "line_number": 112,
+      "code_snippet": "httpx.get(\"http://localhost:8000/api/v1/nonexistent-service\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/health",
+      "file_path": "client.py",
+      "line_number": 123,
+      "code_snippet": "httpx.post(\"http://localhost:8000/api/v1/health\")",
+      "config_references": [],
+      "operations": [
+        "POST"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External Service (localhost)",
+      "target_url_or_host": "http://localhost:8000/api/v1/projects",
+      "file_path": "client.py",
+      "line_number": 135,
+      "code_snippet": "httpx.post(\"http://localhost:8000/api/v1/projects\")",
+      "config_references": [],
+      "operations": [
+        "POST"
       ],
       "redacted_secrets_count": 0
     }
   ],
   "endpoints": [
     {
-      "http_method": "GET",
-      "route_path": "/api/v1/health",
-      "summary": null,
+      "http_method": "DELETE",
+      "route_path": "/api/v1/products/{product_id}",
+      "summary": "Delete product",
       "description": null,
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "product_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
       "request_body": null,
       "responses": [
         {
-          "status_code": 200,
-          "description": "OK response",
+          "status_code": 204,
+          "description": "Successful Response",
           "schema_name": null,
           "fields": [],
-          "is_inferred": true,
-          "provenance": "inferred_default"
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
         }
       ],
       "auth_and_authz": null,
       "auth_inferred": false,
       "error_cases": [],
       "side_effects": [],
-      "source_file": "web/server.js",
-      "line_number": 11,
-      "handler_function": "anonymous_handler",
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
       "relevant_dependencies": [],
-      "existing_tests": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
       "generated_tests": [],
-      "test_results": "No automated tests found (Coverage Gap)",
-      "discovery_method": "framework_ast",
-      "evidence_source": "source_regex:express_app (web/server.js:11)",
-      "confidence_level": 0.95,
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "DELETE",
+      "route_path": "/api/v1/users/{user_id}",
+      "summary": "Delete user",
+      "description": null,
+      "parameters": [
+        {
+          "name": "user_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 204,
+          "description": "Successful Response",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
       "is_inferred": false
     },
     {
       "http_method": "GET",
-      "route_path": "/api/v1/legacy-analytics",
-      "summary": "Legacy analytics summary (Ghost Endpoint)",
-      "description": "Deprecated endpoint documented in spec but no longer implemented in code.",
+      "route_path": "/api/backend/health",
+      "summary": "Verify upstream backend health",
+      "description": "Working API 1: Queries upstream GET /api/v1/health on Dependency Guardian backend.",
       "parameters": [],
       "request_body": null,
       "responses": [
         {
           "status_code": 200,
-          "description": "Analytics summary",
+          "description": "Upstream backend is reachable and healthy",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "backend_service",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "backend_version",
+              "field_type": "string",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "upstream_url",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "raw_response",
+              "field_type": "object",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 502,
+          "description": "Upstream backend unreachable or gateway error",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 61,
+      "handler_function": "backend_health",
+      "relevant_dependencies": [
+        "httpx"
+      ],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_self_health",
+        "tests/test_localhost_integrations.py::test_working_backend_health",
+        "tests/test_localhost_integrations.py::test_direct_client_health",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:61 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/backend/projects",
+      "summary": "List projects from upstream backend",
+      "description": "Working API 2: Queries upstream GET /api/v1/projects from Dependency Guardian backend.",
+      "parameters": [],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Project listing retrieved successfully",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "upstream_url",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 89,
+      "handler_function": "backend_projects",
+      "relevant_dependencies": [
+        "httpx"
+      ],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:89 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/backend/projects/{project_id}",
+      "summary": "Get project details from upstream backend",
+      "description": "Working API 4: Queries upstream GET /api/v1/projects/{project_id}.",
+      "parameters": [
+        {
+          "name": "project_id",
+          "in_location": "path",
+          "param_type": "string",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Unique project identifier",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Project details retrieved successfully",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "upstream_url",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "project",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 404,
+          "description": "Project not found on upstream backend",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 136,
+      "handler_function": "backend_get_project",
+      "relevant_dependencies": [
+        "httpx"
+      ],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:136 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/backend/projects/{project_id}/dependencies",
+      "summary": "List dependencies from upstream backend",
+      "description": "Working API 5: Queries upstream GET /api/v1/projects/{project_id}/dependencies.",
+      "parameters": [
+        {
+          "name": "project_id",
+          "in_location": "path",
+          "param_type": "string",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Unique project identifier",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Project dependencies retrieved successfully",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "upstream_url",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "dependencies",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 162,
+      "handler_function": "backend_project_dependencies",
+      "relevant_dependencies": [
+        "httpx"
+      ],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:162 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/broken/invalid-path",
+      "summary": "Integration route with intentional path mismatch",
+      "description": "Expected contract specifies valid upstream health integration. Intentional mismatch: client calls nonexistent route /api/v1/nonexistent-service resulting in 404/502.",
+      "parameters": [],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Expected successful response",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 502,
+          "description": "Upstream route not found (404 forwarded as 502 Bad Gateway)",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 187,
+      "handler_function": "broken_invalid_path",
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_broken_api_1_invalid_path",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:187 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/broken/method-mismatch",
+      "summary": "Health status probe integration with method mismatch",
+      "description": "Expected contract specifies HTTP method GET for health verification. Intentional mismatch: client integration and endpoint use POST causing 405 Method Not Allowed.",
+      "parameters": [],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Expected successful health check response",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 502,
+          "description": "Upstream method not allowed (405 forwarded as 502 Bad Gateway)",
           "schema_name": null,
           "fields": [],
           "is_inferred": false,
@@ -329,9 +1096,13 @@
       "line_number": null,
       "handler_function": null,
       "relevant_dependencies": [],
-      "existing_tests": [],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift"
+      ],
       "generated_tests": [],
-      "test_results": "No automated tests found (Coverage Gap)",
+      "test_results": "Covered by test suite",
       "discovery_method": "openapi_spec",
       "evidence_source": "openapi_specification (openapi.json)",
       "confidence_level": 1.0,
@@ -339,10 +1110,811 @@
     },
     {
       "http_method": "GET",
-      "route_path": "/api/v1/users",
-      "summary": "List all active users",
-      "description": "Retrieve paginated list of registered users.",
+      "route_path": "/api/v1/orders",
+      "summary": "List orders",
+      "description": null,
       "parameters": [
+        {
+          "name": "status",
+          "in_location": "query",
+          "param_type": "string",
+          "required": false,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Filter by order status",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "name": "user_id",
+          "in_location": "query",
+          "param_type": "string",
+          "required": false,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Filter by user ID",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "OrderListResponse",
+          "fields": [
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/orders/{order_id}",
+      "summary": "Get order by ID",
+      "description": null,
+      "parameters": [
+        {
+          "name": "order_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "OrderResponse",
+          "fields": [
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "user_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total_amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "created_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/payments/{payment_id}",
+      "summary": "Get payment status",
+      "description": null,
+      "parameters": [
+        {
+          "name": "payment_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "PaymentResponse",
+          "fields": [
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "order_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "payment_method",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "transaction_id",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "created_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/payments/{payment_id}/receipt",
+      "summary": "Get payment receipt",
+      "description": null,
+      "parameters": [
+        {
+          "name": "payment_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "PaymentReceiptResponse",
+          "fields": [
+            {
+              "name": "receipt_id",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "payment_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "issued_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/products",
+      "summary": "List products",
+      "description": null,
+      "parameters": [
+        {
+          "name": "category",
+          "in_location": "query",
+          "param_type": "string",
+          "required": false,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Filter by product category",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "name": "min_price",
+          "in_location": "query",
+          "param_type": "string",
+          "required": false,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Minimum price filter",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "name": "limit",
+          "in_location": "query",
+          "param_type": "integer",
+          "required": false,
+          "default": 20,
+          "constraints": {
+            "minimum": 1,
+            "maximum": 100
+          },
+          "enum_values": null,
+          "description": "Page limit",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "name": "offset",
+          "in_location": "query",
+          "param_type": "integer",
+          "required": false,
+          "default": 0,
+          "constraints": {
+            "minimum": 0
+          },
+          "enum_values": null,
+          "description": "Page offset",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "ProductListResponse",
+          "fields": [
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/products/{product_id}",
+      "summary": "Get product by ID",
+      "description": null,
+      "parameters": [
+        {
+          "name": "product_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "ProductResponse",
+          "fields": [
+            {
+              "name": "name",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {
+                "minLength": 2,
+                "maxLength": 100
+              },
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "description",
+              "field_type": "string",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "price",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Price in USD",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "category",
+              "field_type": "string",
+              "required": false,
+              "default": "electronics",
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Unique product identifier",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "stock",
+              "field_type": "integer",
+              "required": false,
+              "default": 0,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/users",
+      "summary": "List users",
+      "description": null,
+      "parameters": [
+        {
+          "name": "role",
+          "in_location": "query",
+          "param_type": "string",
+          "required": false,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": "Filter by user role",
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
         {
           "name": "limit",
           "in_location": "query",
@@ -354,19 +1926,21 @@
             "maximum": 100
           },
           "enum_values": null,
-          "description": "Maximum number of items to return",
+          "description": "Page limit",
           "is_inferred": false,
           "provenance": "explicit_openapi"
         },
         {
-          "name": "role",
+          "name": "offset",
           "in_location": "query",
-          "param_type": "string",
+          "param_type": "integer",
           "required": false,
-          "default": null,
-          "constraints": {},
+          "default": 0,
+          "constraints": {
+            "minimum": 0
+          },
           "enum_values": null,
-          "description": "Filter users by role",
+          "description": "Page offset",
           "is_inferred": false,
           "provenance": "explicit_openapi"
         }
@@ -375,7 +1949,216 @@
       "responses": [
         {
           "status_code": 200,
-          "description": "Successfully retrieved users list",
+          "description": "Successful Response",
+          "schema_name": "UserListResponse",
+          "fields": [
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/api/v1/users/{user_id}",
+      "summary": "Get user by ID",
+      "description": null,
+      "parameters": [
+        {
+          "name": "user_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "UserResponse",
+          "fields": [
+            {
+              "name": "username",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {
+                "minLength": 3,
+                "maxLength": 50
+              },
+              "enum_values": null,
+              "description": "Unique username",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "email",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "User email address",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "role",
+              "field_type": "string",
+              "required": false,
+              "default": "member",
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account permission role",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Unique integer ID",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "is_active",
+              "field_type": "boolean",
+              "required": false,
+              "default": true,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account active status",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "GET",
+      "route_path": "/health",
+      "summary": "Service health check",
+      "description": null,
+      "parameters": [],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
           "schema_name": null,
           "fields": [],
           "is_inferred": false,
@@ -386,92 +2169,331 @@
       "auth_inferred": false,
       "error_cases": [],
       "side_effects": [],
-      "source_file": "app/main.py",
-      "line_number": 45,
-      "handler_function": "list_users",
+      "source_file": "main.py",
+      "line_number": 49,
+      "handler_function": "self_health",
       "relevant_dependencies": [],
       "existing_tests": [
-        "tests/test_api.py::test_list_users",
-        "tests/test_api.py::test_create_user"
+        "tests/test_localhost_integrations.py::test_self_health",
+        "tests/test_localhost_integrations.py::test_working_backend_health",
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_localhost_integrations.py::test_direct_client_health",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
       ],
       "generated_tests": [],
       "test_results": "Covered by test suite",
       "discovery_method": "hybrid",
-      "evidence_source": "hybrid_source_and_openapi (app/main.py:45 & openapi.json)",
+      "evidence_source": "hybrid_source_and_openapi (main.py:49 & contracts/openapi-v1.json)",
       "confidence_level": 1.0,
       "is_inferred": false
     },
     {
-      "http_method": "GET",
-      "route_path": "/api/v1/users/{user_id}",
-      "summary": "Fetch single user by unique identifier.",
-      "description": "Fetch single user by unique identifier.",
+      "http_method": "PATCH",
+      "route_path": "/api/v1/orders/{order_id}/status",
+      "summary": "Update order status",
+      "description": null,
       "parameters": [
         {
-          "name": "user_id",
+          "name": "order_id",
           "in_location": "path",
-          "param_type": "int",
+          "param_type": "integer",
           "required": true,
           "default": null,
           "constraints": {},
           "enum_values": null,
-          "description": "Target user identifier",
+          "description": null,
           "is_inferred": false,
-          "provenance": "source_ast"
+          "provenance": "explicit_openapi"
         }
       ],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "OrderUpdateStatus",
+        "required": true,
+        "fields": [
+          {
+            "name": "status",
+            "field_type": "string",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Target status",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "OrderResponse",
+          "fields": [
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "user_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total_amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "created_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [],
+      "generated_tests": [],
+      "test_results": "No automated tests found (Coverage Gap)",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "POST",
+      "route_path": "/api/backend/projects",
+      "summary": "Create a project on upstream backend",
+      "description": "Working API 3: Posts valid ProjectCreate payload to upstream POST /api/v1/projects.",
+      "parameters": [],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "CreateProjectRequest",
+        "required": true,
+        "fields": [
+          {
+            "name": "name",
+            "field_type": "string",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Project name",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "description",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Optional description",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "repository_url",
+            "field_type": "string",
+            "required": false,
+            "default": "https://github.com/demo/sample-repo",
+            "constraints": {},
+            "enum_values": null,
+            "description": "Repository URL",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 201,
+          "description": "Project created successfully",
+          "schema_name": null,
+          "fields": [
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "upstream_url",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "project",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 502,
+          "description": "Upstream error creating project",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        },
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 111,
+      "handler_function": "backend_create_project",
+      "relevant_dependencies": [
+        "httpx"
+      ],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:111 & openapi.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "POST",
+      "route_path": "/api/broken/method-mismatch",
+      "summary": "Broken API 2 (Incorrect HTTP Method):\nCalls upstream POST /api/v1/health. The backend health endpoint only supports GET.\nThe upstream backend returns HTTP 405 Method Not Allowed.\nThis endpoint catches the upstream failure and returns HTTP 502 with diagnostic details.",
+      "description": "Broken API 2 (Incorrect HTTP Method):\nCalls upstream POST /api/v1/health. The backend health endpoint only supports GET.\nThe upstream backend returns HTTP 405 Method Not Allowed.\nThis endpoint catches the upstream failure and returns HTTP 502 with diagnostic details.",
+      "parameters": [],
       "request_body": null,
       "responses": [
         {
           "status_code": 200,
           "description": "Successful response (200)",
-          "schema_name": "UserResponse",
-          "fields": [
-            {
-              "name": "id",
-              "field_type": "int",
-              "required": false,
-              "default": null,
-              "constraints": {},
-              "enum_values": null,
-              "description": "Unique user ID",
-              "is_inferred": false,
-              "provenance": "source_ast"
-            },
-            {
-              "name": "username",
-              "field_type": "str",
-              "required": false,
-              "default": null,
-              "constraints": {},
-              "enum_values": null,
-              "description": "User name",
-              "is_inferred": false,
-              "provenance": "source_ast"
-            },
-            {
-              "name": "email",
-              "field_type": "str",
-              "required": false,
-              "default": null,
-              "constraints": {},
-              "enum_values": null,
-              "description": "Email address",
-              "is_inferred": false,
-              "provenance": "source_ast"
-            },
-            {
-              "name": "created_at",
-              "field_type": "str",
-              "required": false,
-              "default": null,
-              "constraints": {},
-              "enum_values": null,
-              "description": "Account creation timestamp",
-              "is_inferred": false,
-              "provenance": "source_ast"
-            }
-          ],
+          "schema_name": null,
+          "fields": [],
           "is_inferred": false,
           "provenance": "source_ast"
         }
@@ -480,31 +2502,126 @@
       "auth_inferred": false,
       "error_cases": [
         {
-          "status_code": 404,
-          "condition": "User not found",
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
           "exception_type": "HTTPException"
         }
       ],
       "side_effects": [],
-      "source_file": "app/main.py",
-      "line_number": 88,
-      "handler_function": "get_user_by_id",
+      "source_file": "main.py",
+      "line_number": 208,
+      "handler_function": "broken_method_mismatch",
       "relevant_dependencies": [],
       "existing_tests": [
-        "tests/test_api.py::test_create_user"
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift"
       ],
       "generated_tests": [],
       "test_results": "Covered by test suite",
       "discovery_method": "framework_ast",
-      "evidence_source": "source_ast:fastapi_router (app/main.py:88)",
+      "evidence_source": "source_ast:fastapi_router (main.py:208)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "POST",
+      "route_path": "/api/broken/payload-mismatch",
+      "summary": "Project creation integration with schema drift",
+      "description": "Expected contract requires CreateProjectRequest with mandatory field 'name'. Intentional mismatch: client sends invalid keys without 'name', causing 400 Bad Request.",
+      "parameters": [],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "CreateProjectRequest",
+        "required": true,
+        "fields": [
+          {
+            "name": "name",
+            "field_type": "string",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Project name",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "description",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Optional description",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "repository_url",
+            "field_type": "string",
+            "required": false,
+            "default": "https://github.com/demo/sample-repo",
+            "constraints": {},
+            "enum_values": null,
+            "description": "Repository URL",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 201,
+          "description": "Project created successfully",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 502,
+          "description": "Upstream payload validation failed (400 forwarded as 502 Bad Gateway)",
+          "schema_name": null,
+          "fields": [],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [
+        {
+          "status_code": 400,
+          "condition": "Validation or business logic exception",
+          "exception_type": "HTTPException"
+        }
+      ],
+      "side_effects": [],
+      "source_file": "main.py",
+      "line_number": 230,
+      "handler_function": "broken_payload_mismatch",
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_localhost_integrations.py::test_broken_api_3_payload_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_3_payload_schema_mismatch_drift"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "hybrid",
+      "evidence_source": "hybrid_source_and_openapi (main.py:230 & openapi.json)",
       "confidence_level": 1.0,
       "is_inferred": false
     },
     {
       "http_method": "POST",
       "route_path": "/api/v1/orders",
-      "summary": "Undocumented route implemented in source code but missing from OpenAPI spec.",
-      "description": "Undocumented route implemented in source code but missing from OpenAPI spec.",
+      "summary": "Create order",
+      "description": null,
       "parameters": [],
       "request_body": {
         "content_type": "application/json",
@@ -512,78 +2629,546 @@
         "required": true,
         "fields": [
           {
-            "name": "item_name",
-            "field_type": "str",
-            "required": false,
+            "name": "user_id",
+            "field_type": "integer",
+            "required": true,
             "default": null,
-            "constraints": {
-              "min_length": 1
-            },
+            "constraints": {},
             "enum_values": null,
-            "description": "Item identifier",
+            "description": null,
             "is_inferred": false,
-            "provenance": "source_ast"
+            "provenance": "explicit_openapi"
           },
           {
-            "name": "amount",
-            "field_type": "float",
+            "name": "items",
+            "field_type": "array",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "notes",
+            "field_type": "string",
             "required": false,
             "default": null,
-            "constraints": {
-              "gt": 0
-            },
+            "constraints": {},
             "enum_values": null,
-            "description": "Order total in USD",
+            "description": "Optional customer notes",
             "is_inferred": false,
-            "provenance": "source_ast"
+            "provenance": "explicit_openapi"
           }
         ],
-        "description": "Request payload for OrderCreate",
+        "description": null,
         "is_inferred": false,
-        "provenance": "source_ast"
+        "provenance": "explicit_openapi"
       },
       "responses": [
         {
           "status_code": 201,
-          "description": "Successful response (201)",
-          "schema_name": null,
-          "fields": [],
+          "description": "Successful Response",
+          "schema_name": "OrderResponse",
+          "fields": [
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "user_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "items",
+              "field_type": "array",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "total_amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "created_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
           "is_inferred": false,
-          "provenance": "source_ast"
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
         }
       ],
       "auth_and_authz": null,
       "auth_inferred": false,
       "error_cases": [],
-      "side_effects": [
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "POST",
+      "route_path": "/api/v1/payments",
+      "summary": "Process payment",
+      "description": null,
+      "parameters": [],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "PaymentCreate",
+        "required": true,
+        "fields": [
+          {
+            "name": "order_id",
+            "field_type": "integer",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "amount",
+            "field_type": "number",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "payment_method",
+            "field_type": "string",
+            "required": false,
+            "default": "credit_card",
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
         {
-          "effect_type": "database_write",
-          "target": "Database",
-          "description": "Persists changes or updates entity in database transaction"
+          "status_code": 201,
+          "description": "Successful Response",
+          "schema_name": "PaymentResponse",
+          "fields": [
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "order_id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "amount",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "payment_method",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "status",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "transaction_id",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "created_at",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
         },
         {
-          "effect_type": "database_write",
-          "target": "Database",
-          "description": "Persists changes or updates entity in database transaction"
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
         }
       ],
-      "source_file": "app/main.py",
-      "line_number": 103,
-      "handler_function": "create_order",
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
       "relevant_dependencies": [],
-      "existing_tests": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
       "generated_tests": [],
-      "test_results": "No automated tests found (Coverage Gap)",
-      "discovery_method": "framework_ast",
-      "evidence_source": "source_ast:fastapi_router (app/main.py:103)",
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "POST",
+      "route_path": "/api/v1/products",
+      "summary": "Create product",
+      "description": null,
+      "parameters": [],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "ProductCreate",
+        "required": true,
+        "fields": [
+          {
+            "name": "name",
+            "field_type": "string",
+            "required": true,
+            "default": null,
+            "constraints": {
+              "minLength": 2,
+              "maxLength": 100
+            },
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "description",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "price",
+            "field_type": "number",
+            "required": true,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": "Price in USD",
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "category",
+            "field_type": "string",
+            "required": false,
+            "default": "electronics",
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "stock",
+            "field_type": "integer",
+            "required": false,
+            "default": 0,
+            "constraints": {
+              "minimum": 0.0
+            },
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 201,
+          "description": "Successful Response",
+          "schema_name": "ProductResponse",
+          "fields": [
+            {
+              "name": "name",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {
+                "minLength": 2,
+                "maxLength": 100
+              },
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "description",
+              "field_type": "string",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "price",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Price in USD",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "category",
+              "field_type": "string",
+              "required": false,
+              "default": "electronics",
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Unique product identifier",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "stock",
+              "field_type": "integer",
+              "required": false,
+              "default": 0,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
       "confidence_level": 1.0,
       "is_inferred": false
     },
     {
       "http_method": "POST",
       "route_path": "/api/v1/users",
-      "summary": "Register a new user",
-      "description": "Create a new user record in the database.",
+      "summary": "Create user",
+      "description": null,
       "parameters": [],
       "request_body": {
         "content_type": "application/json",
@@ -611,36 +3196,18 @@
             "default": null,
             "constraints": {},
             "enum_values": null,
-            "description": "User primary email address",
+            "description": "User email address",
             "is_inferred": false,
             "provenance": "explicit_openapi"
           },
           {
-            "name": "age",
-            "field_type": "integer",
-            "required": false,
-            "default": null,
-            "constraints": {
-              "minimum": 18,
-              "maximum": 120
-            },
-            "enum_values": null,
-            "description": "User age in years",
-            "is_inferred": false,
-            "provenance": "explicit_openapi"
-          },
-          {
-            "name": "status",
+            "name": "role",
             "field_type": "string",
             "required": false,
-            "default": "pending",
+            "default": "member",
             "constraints": {},
-            "enum_values": [
-              "active",
-              "pending",
-              "suspended"
-            ],
-            "description": "Account status",
+            "enum_values": null,
+            "description": "Account permission role",
             "is_inferred": false,
             "provenance": "explicit_openapi"
           }
@@ -652,28 +3219,20 @@
       "responses": [
         {
           "status_code": 201,
-          "description": "User created successfully",
+          "description": "Successful Response",
           "schema_name": "UserResponse",
           "fields": [
-            {
-              "name": "id",
-              "field_type": "integer",
-              "required": true,
-              "default": null,
-              "constraints": {},
-              "enum_values": null,
-              "description": "Unique user ID",
-              "is_inferred": false,
-              "provenance": "explicit_openapi"
-            },
             {
               "name": "username",
               "field_type": "string",
               "required": true,
               "default": null,
-              "constraints": {},
+              "constraints": {
+                "minLength": 3,
+                "maxLength": 50
+              },
               "enum_values": null,
-              "description": "User name",
+              "description": "Unique username",
               "is_inferred": false,
               "provenance": "explicit_openapi"
             },
@@ -684,18 +3243,60 @@
               "default": null,
               "constraints": {},
               "enum_values": null,
-              "description": "Email address",
+              "description": "User email address",
               "is_inferred": false,
               "provenance": "explicit_openapi"
             },
             {
-              "name": "created_at",
+              "name": "role",
               "field_type": "string",
+              "required": false,
+              "default": "member",
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account permission role",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
               "required": true,
               "default": null,
               "constraints": {},
               "enum_values": null,
-              "description": "Account creation timestamp",
+              "description": "Unique integer ID",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "is_active",
+              "field_type": "boolean",
+              "required": false,
+              "default": true,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account active status",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
               "is_inferred": false,
               "provenance": "explicit_openapi"
             }
@@ -704,112 +3305,764 @@
           "provenance": "explicit_openapi"
         }
       ],
-      "auth_and_authz": "Security: Depends(get_current_user)",
-      "auth_inferred": true,
-      "error_cases": [
-        {
-          "status_code": 400,
-          "condition": "Username already taken",
-          "exception_type": "HTTPException"
-        }
-      ],
-      "side_effects": [
-        {
-          "effect_type": "database_write",
-          "target": "Database",
-          "description": "Persists changes or updates entity in database transaction"
-        },
-        {
-          "effect_type": "database_write",
-          "target": "Database",
-          "description": "Persists changes or updates entity in database transaction"
-        },
-        {
-          "effect_type": "external_http",
-          "target": "External Service",
-          "description": "Dispatches outbound call: httpx.post"
-        },
-        {
-          "effect_type": "message_publish",
-          "target": "Message Queue",
-          "description": "Publishes asynchronous event or task"
-        }
-      ],
-      "source_file": "app/main.py",
-      "line_number": 54,
-      "handler_function": "create_user",
-      "relevant_dependencies": [
-        "httpx",
-        "redis"
-      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
       "existing_tests": [
-        "tests/test_api.py::test_create_user"
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
       ],
       "generated_tests": [],
       "test_results": "Covered by test suite",
-      "discovery_method": "hybrid",
-      "evidence_source": "hybrid_source_and_openapi (app/main.py:54 & openapi.json)",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "PUT",
+      "route_path": "/api/v1/products/{product_id}",
+      "summary": "Update product",
+      "description": null,
+      "parameters": [
+        {
+          "name": "product_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "ProductUpdate",
+        "required": true,
+        "fields": [
+          {
+            "name": "name",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "description",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "price",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "category",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "stock",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "ProductResponse",
+          "fields": [
+            {
+              "name": "name",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {
+                "minLength": 2,
+                "maxLength": 100
+              },
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "description",
+              "field_type": "string",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "price",
+              "field_type": "number",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Price in USD",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "category",
+              "field_type": "string",
+              "required": false,
+              "default": "electronics",
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Unique product identifier",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "stock",
+              "field_type": "integer",
+              "required": false,
+              "default": 0,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
+      "confidence_level": 1.0,
+      "is_inferred": false
+    },
+    {
+      "http_method": "PUT",
+      "route_path": "/api/v1/users/{user_id}",
+      "summary": "Update user",
+      "description": null,
+      "parameters": [
+        {
+          "name": "user_id",
+          "in_location": "path",
+          "param_type": "integer",
+          "required": true,
+          "default": null,
+          "constraints": {},
+          "enum_values": null,
+          "description": null,
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "request_body": {
+        "content_type": "application/json",
+        "schema_name": "UserUpdate",
+        "required": true,
+        "fields": [
+          {
+            "name": "username",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "email",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "role",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          },
+          {
+            "name": "is_active",
+            "field_type": "string",
+            "required": false,
+            "default": null,
+            "constraints": {},
+            "enum_values": null,
+            "description": null,
+            "is_inferred": false,
+            "provenance": "explicit_openapi"
+          }
+        ],
+        "description": null,
+        "is_inferred": false,
+        "provenance": "explicit_openapi"
+      },
+      "responses": [
+        {
+          "status_code": 200,
+          "description": "Successful Response",
+          "schema_name": "UserResponse",
+          "fields": [
+            {
+              "name": "username",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {
+                "minLength": 3,
+                "maxLength": 50
+              },
+              "enum_values": null,
+              "description": "Unique username",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "email",
+              "field_type": "string",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "User email address",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "role",
+              "field_type": "string",
+              "required": false,
+              "default": "member",
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account permission role",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "id",
+              "field_type": "integer",
+              "required": true,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Unique integer ID",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            },
+            {
+              "name": "is_active",
+              "field_type": "boolean",
+              "required": false,
+              "default": true,
+              "constraints": {},
+              "enum_values": null,
+              "description": "Account active status",
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        },
+        {
+          "status_code": 422,
+          "description": "Validation Error",
+          "schema_name": "HTTPValidationError",
+          "fields": [
+            {
+              "name": "detail",
+              "field_type": "array",
+              "required": false,
+              "default": null,
+              "constraints": {},
+              "enum_values": null,
+              "description": null,
+              "is_inferred": false,
+              "provenance": "explicit_openapi"
+            }
+          ],
+          "is_inferred": false,
+          "provenance": "explicit_openapi"
+        }
+      ],
+      "auth_and_authz": null,
+      "auth_inferred": false,
+      "error_cases": [],
+      "side_effects": [],
+      "source_file": "contracts/openapi-v1.json",
+      "line_number": null,
+      "handler_function": null,
+      "relevant_dependencies": [],
+      "existing_tests": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "generated_tests": [],
+      "test_results": "Covered by test suite",
+      "discovery_method": "openapi_spec",
+      "evidence_source": "openapi_specification (contracts/openapi-v1.json)",
       "confidence_level": 1.0,
       "is_inferred": false
     }
   ],
   "discrepancies": [
     {
-      "discrepancy_type": "undocumented_endpoint",
-      "endpoint_path": "/api/v1/health",
-      "method": "GET",
-      "description": "Endpoint GET /api/v1/health is implemented in web/server.js:11 but is not documented in any OpenAPI specification.",
-      "code_evidence": "Handler anonymous_handler at web/server.js:11",
-      "spec_evidence": "Missing from OpenAPI paths"
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/products/{product_id}",
+      "method": "DELETE",
+      "description": "Endpoint DELETE /api/v1/products/{product_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
     },
     {
       "discrepancy_type": "ghost_endpoint",
-      "endpoint_path": "/api/v1/legacy-analytics",
+      "endpoint_path": "/api/v1/users/{user_id}",
+      "method": "DELETE",
+      "description": "Endpoint DELETE /api/v1/users/{user_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/broken/method-mismatch",
       "method": "GET",
-      "description": "Endpoint GET /api/v1/legacy-analytics is documented in OpenAPI (openapi.json) but was not found implemented in source code routes.",
+      "description": "Endpoint GET /api/broken/method-mismatch is documented in OpenAPI (openapi.json) but was not found implemented in source code routes.",
       "code_evidence": "No matching route handler found in source AST",
       "spec_evidence": "Documented in openapi.json"
     },
     {
-      "discrepancy_type": "undocumented_endpoint",
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/orders",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/orders is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/orders/{order_id}",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/orders/{order_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/payments/{payment_id}",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/payments/{payment_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/payments/{payment_id}/receipt",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/payments/{payment_id}/receipt is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/products",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/products is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/products/{product_id}",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/products/{product_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/users",
+      "method": "GET",
+      "description": "Endpoint GET /api/v1/users is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
       "endpoint_path": "/api/v1/users/{user_id}",
       "method": "GET",
-      "description": "Endpoint GET /api/v1/users/{user_id} is implemented in app/main.py:88 but is not documented in any OpenAPI specification.",
-      "code_evidence": "Handler get_user_by_id at app/main.py:88",
-      "spec_evidence": "Missing from OpenAPI paths"
+      "description": "Endpoint GET /api/v1/users/{user_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/orders/{order_id}/status",
+      "method": "PATCH",
+      "description": "Endpoint PATCH /api/v1/orders/{order_id}/status is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
     },
     {
       "discrepancy_type": "undocumented_endpoint",
+      "endpoint_path": "/api/broken/method-mismatch",
+      "method": "POST",
+      "description": "Endpoint POST /api/broken/method-mismatch is implemented in main.py:208 but is not documented in any OpenAPI specification.",
+      "code_evidence": "Handler broken_method_mismatch at main.py:208",
+      "spec_evidence": "Missing from OpenAPI paths"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
       "endpoint_path": "/api/v1/orders",
       "method": "POST",
-      "description": "Endpoint POST /api/v1/orders is implemented in app/main.py:103 but is not documented in any OpenAPI specification.",
-      "code_evidence": "Handler create_order at app/main.py:103",
-      "spec_evidence": "Missing from OpenAPI paths"
+      "description": "Endpoint POST /api/v1/orders is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/payments",
+      "method": "POST",
+      "description": "Endpoint POST /api/v1/payments is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/products",
+      "method": "POST",
+      "description": "Endpoint POST /api/v1/products is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/users",
+      "method": "POST",
+      "description": "Endpoint POST /api/v1/users is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/products/{product_id}",
+      "method": "PUT",
+      "description": "Endpoint PUT /api/v1/products/{product_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
+    },
+    {
+      "discrepancy_type": "ghost_endpoint",
+      "endpoint_path": "/api/v1/users/{user_id}",
+      "method": "PUT",
+      "description": "Endpoint PUT /api/v1/users/{user_id} is documented in OpenAPI (contracts/openapi-v1.json) but was not found implemented in source code routes.",
+      "code_evidence": "No matching route handler found in source AST",
+      "spec_evidence": "Documented in contracts/openapi-v1.json"
     }
   ],
   "unsupported_frameworks": [],
   "unresolved_dynamic_routes": [],
   "test_coverage": {
-    "total_endpoints": 6,
-    "tested_endpoints": 3,
-    "untested_endpoints": 3,
-    "coverage_percentage": 50.0,
+    "total_endpoints": 27,
+    "tested_endpoints": 26,
+    "untested_endpoints": 1,
+    "coverage_percentage": 96.3,
     "endpoint_coverage_map": {
-      "GET /api/v1/health": [],
-      "GET /api/v1/legacy-analytics": [],
+      "DELETE /api/v1/products/{product_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "DELETE /api/v1/users/{user_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "GET /api/backend/health": [
+        "tests/test_localhost_integrations.py::test_self_health",
+        "tests/test_localhost_integrations.py::test_working_backend_health",
+        "tests/test_localhost_integrations.py::test_direct_client_health",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "GET /api/backend/projects": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "GET /api/backend/projects/{project_id}": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "GET /api/backend/projects/{project_id}/dependencies": [
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure"
+      ],
+      "GET /api/broken/invalid-path": [
+        "tests/test_localhost_integrations.py::test_broken_api_1_invalid_path",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift"
+      ],
+      "GET /api/broken/method-mismatch": [
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift"
+      ],
+      "GET /api/v1/orders": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "GET /api/v1/orders/{order_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "GET /api/v1/payments/{payment_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
+      "GET /api/v1/payments/{payment_id}/receipt": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
+      "GET /api/v1/products": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "GET /api/v1/products/{product_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
       "GET /api/v1/users": [
-        "tests/test_api.py::test_list_users",
-        "tests/test_api.py::test_create_user"
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
       ],
       "GET /api/v1/users/{user_id}": [
-        "tests/test_api.py::test_create_user"
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
       ],
-      "POST /api/v1/orders": [],
+      "GET /health": [
+        "tests/test_localhost_integrations.py::test_self_health",
+        "tests/test_localhost_integrations.py::test_working_backend_health",
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_localhost_integrations.py::test_direct_client_health",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "PATCH /api/v1/orders/{order_id}/status": [],
+      "POST /api/backend/projects": [
+        "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+        "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+        "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_working_endpoints_unaffected",
+        "tests/test_contract_drift.py::test_algorithmic_detector_drift_rules"
+      ],
+      "POST /api/broken/method-mismatch": [
+        "tests/test_localhost_integrations.py::test_broken_api_2_method_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_2_method_mismatch_drift"
+      ],
+      "POST /api/broken/payload-mismatch": [
+        "tests/test_localhost_integrations.py::test_broken_api_3_payload_mismatch",
+        "tests/test_contract_drift.py::test_openapi_contract_discovery_and_structure",
+        "tests/test_contract_drift.py::test_defect_3_payload_schema_mismatch_drift"
+      ],
+      "POST /api/v1/orders": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions"
+      ],
+      "POST /api/v1/payments": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt",
+        "generated-tests/test_approved_regression_v2.py::test_regression_enum_value_removed_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_request_field_api_v1_payments",
+        "generated-tests/test_approved_regression_v2.py::test_regression_field_type_amount_changed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_path_removed_api_v1_payments__payment_id__receipt"
+      ],
+      "POST /api/v1/products": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
       "POST /api/v1/users": [
-        "tests/test_api.py::test_create_user"
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
+      ],
+      "PUT /api/v1/products/{product_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_response_field_stock_removed",
+        "generated-tests/test_approved_regression_v2.py::test_regression_required_param_store_id_api_v1_products",
+        "generated-tests/test_approved_regression_v2.py::test_regression_method_removed_delete_api_v1_products__product_id",
+        "generated-tests/test_approved_regression_v2.py::test_regression_response_field_stock_removed"
+      ],
+      "PUT /api/v1/users/{user_id}": [
+        "tests/test_detection_assertions.py::test_algorithmic_comparison_assertions",
+        "generated-tests/test_candidate_regression_v2.py::test_regression_optional_param_search_supported",
+        "generated-tests/test_approved_regression_v2.py::test_regression_optional_param_search_supported"
       ]
     },
-    "integration_tests_found": []
+    "integration_tests_found": [
+      "tests/test_localhost_integrations.py::test_working_backend_health",
+      "tests/test_localhost_integrations.py::test_working_backend_projects_list",
+      "tests/test_localhost_integrations.py::test_working_backend_create_and_get_project",
+      "tests/test_localhost_integrations.py::test_working_backend_project_dependencies",
+      "tests/test_contract_drift.py::test_defect_1_path_mismatch_drift",
+      "tests/test_contract_drift.py::test_working_endpoints_unaffected"
+    ]
   },
   "ai_insights": null
 }

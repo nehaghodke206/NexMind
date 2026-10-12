@@ -32,6 +32,13 @@ class DetectionSource(str, Enum):
     HYBRID = "hybrid"
 
 
+class DetectionProvenance(str, Enum):
+    STATIC_AST = "static_ast"
+    CONTRACT_DIFF = "contract_diff"
+    LIVE_PROBE = "live_probe"
+    AI_INFERRED = "ai_inferred"
+
+
 class RuleId(str, Enum):
     PATH_REMOVED = "RULE-PATH-REMOVED"
     METHOD_REMOVED = "RULE-METHOD-REMOVED"
@@ -65,6 +72,9 @@ class Finding(BaseModel):
     source: DetectionSource = DetectionSource.ALGORITHMIC
     review_required: bool = False
     ai_reasoning: Optional[str] = None
+    provenance: str = "contract_diff"
+    recommended_action: Optional[str] = None
+    impact: Optional[Dict[str, Any]] = None
     created_at: Optional[datetime] = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
@@ -126,14 +136,27 @@ class Finding(BaseModel):
     ) -> Dict[str, Any]:
         """Map finding to the FastAPI IncidentCreate schema."""
         change_type = "unknown"
-        if "FIELD-REMOVED" in self.rule_id:
+        if "RENAME" in self.rule_id or "renamed_from" in self.evidence or "renamed_to" in self.evidence:
+            change_type = "field_rename"
+        elif "FIELD-REMOVED" in self.rule_id or "REMOVED" in self.rule_id:
             change_type = "field_removed"
         elif "TYPE-CHANGED" in self.rule_id:
             change_type = "type_change"
+        elif "PAGINATION" in self.rule_id:
+            change_type = "pagination_change"
         elif "STATUS-CODE" in self.rule_id:
             change_type = "status_change"
         elif "PARAM" in self.rule_id or "FIELD-ADDED" in self.rule_id:
             change_type = "tool_schema_change"
+        elif self.compatibility == CompatibilityClassification.UNKNOWN:
+            change_type = "semantic_change"
+
+        resolved_files = list(affected_files) if affected_files else []
+        if not resolved_files and self.evidence:
+            if self.evidence.get("file"):
+                resolved_files.append(str(self.evidence["file"]))
+            elif self.evidence.get("affected_files") and isinstance(self.evidence["affected_files"], list):
+                resolved_files.extend([str(f) for f in self.evidence["affected_files"]])
 
         method_prefix = f"[{self.method.upper()}] " if self.method else ""
         title = f"{method_prefix}{self.path} - {self.rule_id}"
@@ -154,7 +177,7 @@ class Finding(BaseModel):
             "fingerprint": self.fingerprint,
             "observation_ids": observation_ids or [],
             "affected_workflows": affected_workflows or [],
-            "affected_files": affected_files or [],
+            "affected_files": resolved_files,
             "evidence": {
                 "finding_id": self.id,
                 "rule_id": self.rule_id,

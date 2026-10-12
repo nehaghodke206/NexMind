@@ -21,6 +21,7 @@ class Project(Base):
 
     # Relationships
     dependencies = relationship("Dependency", back_populates="project", cascade="all, delete-orphan")
+    baselines = relationship("ProjectBaseline", back_populates="project", cascade="all, delete-orphan", order_by="ProjectBaseline.version_number.desc()")
     members = relationship("ProjectMember", back_populates="project", cascade="all, delete-orphan")
     scans = relationship("ScanRun", back_populates="project", cascade="all, delete-orphan")
     incidents = relationship("Incident", back_populates="project", cascade="all, delete-orphan")

@@ -162,3 +162,73 @@ def test_project_activity_and_dashboard_summary(client):
     assert summary["project_id"] == project_id
     assert summary["dependency_count"] == 1
     assert summary["open_incident_count"] == 1
+
+
+def test_repair_proposal_id_alias_and_prefix_resolution(client):
+    """
+    Regression test: Verifies repair proposals can be retrieved by:
+    1. Full canonical UUID
+    2. Short 8-character prefix
+    3. client_repair_id alias (e.g. rep_e1184dc5282c) without returning HTTP 404
+    4. Approving records patch_hash on the proposal
+    """
+    p = client.post("/api/v1/projects", json={"name": "Alias Test Project"}).json()
+    dep = client.post(f"/api/v1/projects/{p['id']}/dependencies", json={"name": "api-service"}).json()
+    inc = client.post(f"/api/v1/projects/{p['id']}/incidents", json={"dependency_id": dep["id"], "title": "Alias Incident"}).json()
+
+    # 1. Propose repair with client_repair_id metadata
+    client_id = "rep_e1184dc5282c"
+    res_prop = client.post(
+        f"/api/v1/incidents/{inc['id']}/repair-proposals",
+        json={
+            "rationale": "Backward compatibility adapter",
+            "strategy": "compatibility_adapter",
+            "diff_preview": "--- a/api.py\n+++ b/api.py",
+            "proposed_changes": {
+                "client_repair_id": client_id,
+                "repair_id": client_id,
+                "target_file": "api.py",
+            },
+        },
+    )
+    assert res_prop.status_code == 201
+    proposal = res_prop.json()
+    canonical_uuid = proposal["id"]
+    assert canonical_uuid != client_id
+
+    # 2. Lookup by canonical UUID -> 200 OK
+    res_uuid = client.get(f"/api/v1/repair-proposals/{canonical_uuid}")
+    assert res_uuid.status_code == 200
+    assert res_uuid.json()["id"] == canonical_uuid
+
+    # 3. Lookup by 8-char prefix -> 200 OK
+    prefix = canonical_uuid[:8]
+    res_prefix = client.get(f"/api/v1/repair-proposals/{prefix}")
+    assert res_prefix.status_code == 200
+    assert res_prefix.json()["id"] == canonical_uuid
+
+    # 4. Lookup by client_repair_id alias -> 200 OK (resolves 404 issue)
+    res_client = client.get(f"/api/v1/repair-proposals/{client_id}")
+    assert res_client.status_code == 200
+    assert res_client.json()["id"] == canonical_uuid
+
+    # 5. Approve with patch_hash -> binds patch_hash to proposal
+    patch_hash = "69781f59c51997fa04eb585c5314e8f545aaf1f0421002cb7d980f7cbb19ef2f"
+    res_appr = client.post(
+        f"/api/v1/repair-proposals/{canonical_uuid}/approvals",
+        json={
+            "reviewer_id": "00000000-0000-0000-0000-000000000099",
+            "decision": "approved",
+            "comment": f"Approved patch hash: {patch_hash}",
+            "patch_hash": patch_hash,
+        },
+    )
+    assert res_appr.status_code == 201
+
+    # Confirm proposal returned via alias has status approved and patch_hash set
+    res_client_updated = client.get(f"/api/v1/repair-proposals/{client_id}")
+    assert res_client_updated.status_code == 200
+    prop_data = res_client_updated.json()
+    assert prop_data["status"] == "approved"
+    assert prop_data["patch_hash"] == patch_hash
+

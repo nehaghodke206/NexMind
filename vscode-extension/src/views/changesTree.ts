@@ -14,6 +14,8 @@ export class ChangesTreeProvider implements vscode.TreeDataProvider<ChangeTreeIt
   refresh(changes?: ChangeItem[]): void {
     if (changes) {
       this.latestChanges = changes;
+    } else {
+      this.latestChanges = [];
     }
     this._onDidChangeTreeData.fire();
   }
@@ -72,9 +74,9 @@ export class ChangeTreeItem extends vscode.TreeItem {
       if (change.severity === "blocked" || change.change_type === "semantic_uncertainty") {
         this.iconPath = new vscode.ThemeIcon("shield", new vscode.ThemeColor("charts.orange"));
         this.description = "[BLOCKED UNCERTAIN]";
-      } else if (change.severity === "high") {
+      } else if (change.severity === "critical" || change.severity === "high") {
         this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("charts.red"));
-        this.description = "[HIGH RISK]";
+        this.description = `[${change.severity.toUpperCase()}]`;
       } else if (change.severity === "medium") {
         this.iconPath = new vscode.ThemeIcon("warning", new vscode.ThemeColor("charts.yellow"));
         this.description = "[MEDIUM]";
@@ -82,6 +84,12 @@ export class ChangeTreeItem extends vscode.TreeItem {
         this.iconPath = new vscode.ThemeIcon("info", new vscode.ThemeColor("charts.blue"));
         this.description = "[LOW]";
       }
+
+      const filesInfo = change.affected_files && change.affected_files.length > 0
+        ? `\nAffected Files: ${change.affected_files.join(", ")}`
+        : "";
+
+      this.tooltip = `Incident: ${change.id}\nType: ${change.change_type}\nSeverity: ${change.severity}\nStatus: ${change.status}${filesInfo}`;
 
       this.command = {
         command: "dependencyGuardian.openDashboard",

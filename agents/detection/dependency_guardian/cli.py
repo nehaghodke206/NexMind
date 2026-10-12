@@ -24,6 +24,14 @@ from .repo_intelligence import (
     RepositoryIntelligenceScanner,
     RepositoryInventory,
 )
+import asyncio
+from .api_intelligence import (
+    LiveApiValidator,
+    LiveProbeEndpoint,
+    LiveValidationOptions,
+    LiveValidationReport,
+    ProbeStatus,
+)
 
 logger = logging.getLogger("dependency_guardian.cli")
 
@@ -224,6 +232,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--sync-backend",
         action="store_true",
         help="Submit observations and incidents to the backend service",
+    )
+    parser.add_argument(
+        "--propose-repairs",
+        action="store_true",
+        help="Trigger Repair Agent for detected breaking changes and synchronize proposals to backend",
+    )
+    parser.add_argument(
+        "--test-cmd",
+        default=None,
+        help="Optional test command to run in sandbox validation for proposed repairs",
     )
     parser.add_argument(
         "--output",
@@ -475,8 +493,31 @@ def run_scan_repo(scan_args: List[str]) -> int:
         except Exception as exc:
             logger.warning(f"Failed to initialize AI provider '{args.ai_provider}': {exc}. Proceeding with deterministic scan.")
 
+    def on_progress(event: Dict[str, Any]) -> None:
+        progress_payload = {
+            "type": "progress",
+            "phase": event.get("phase", "scanning"),
+            "message": event.get("message", ""),
+            "files_discovered": event.get("files_discovered"),
+            "files_processed": event.get("files_processed"),
+            "total_files": event.get("total_files"),
+            "current_file": event.get("current_file"),
+            "dependencies_count": event.get("dependencies_count"),
+            "integrations_count": event.get("integrations_count"),
+            "endpoints_count": event.get("endpoints_count"),
+            "discrepancies_count": event.get("discrepancies_count"),
+            "coverage_percentage": event.get("coverage_percentage"),
+        }
+        cleaned = {k: v for k, v in progress_payload.items() if v is not None}
+        sys.stderr.write(json.dumps(cleaned) + "\n")
+        sys.stderr.flush()
+
     try:
-        scanner = RepositoryIntelligenceScanner(repo_path=repo_path, ai_provider=ai_provider)
+        scanner = RepositoryIntelligenceScanner(
+            repo_path=repo_path,
+            ai_provider=ai_provider,
+            on_progress=on_progress,
+        )
         inventory = scanner.scan(output_dir=output_dir, enrich_openapi=args.enrich_openapi)
     except Exception as exc:
         sys.stderr.write(f"Repository scanning failed: {exc}\n")
@@ -506,11 +547,384 @@ def run_scan_repo(scan_args: List[str]) -> int:
     return 0
 
 
+def build_validate_api_parser() -> argparse.ArgumentParser:
+    """Build argument parser for external API intelligence and live validation."""
+    parser = argparse.ArgumentParser(
+        prog="dependency-guardian validate-api",
+        description="Dependency Guardian Safe Live External API Intelligence & Contract Validator",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s 0.1.0",
+        help="Show program version number and exit",
+    )
+    parser.add_argument(
+        "target",
+        nargs="?",
+        default=None,
+        help="Path to dependency-guardian.yml or configuration file, or endpoint URL",
+    )
+    parser.add_argument(
+        "--config",
+        "-c",
+        default=None,
+        help="Path to dependency-guardian.yml specification file",
+    )
+    parser.add_argument(
+        "--url",
+        default=None,
+        help="Direct target API URL for single read-only probe",
+    )
+    parser.add_argument(
+        "--method",
+        default="GET",
+        help="HTTP method for single probe (GET, HEAD, OPTIONS only; mutating methods rejected)",
+    )
+    parser.add_argument(
+        "--service-name",
+        default="external-service",
+        help="Service identifier for target probe",
+    )
+    parser.add_argument(
+        "--auth-env-var",
+        default=None,
+        help="Environment variable containing authorization token",
+    )
+    parser.add_argument(
+        "--expected-status",
+        type=int,
+        default=None,
+        help="Expected HTTP response status code (e.g. 200)",
+    )
+    parser.add_argument(
+        "--expected-fields",
+        nargs="*",
+        default=[],
+        help="List of expected schema fields in JSON response",
+    )
+    parser.add_argument(
+        "--timeout",
+        dest="timeout_seconds",
+        type=float,
+        default=5.0,
+        help="HTTP timeout in seconds per probe (default: 5.0)",
+    )
+    parser.add_argument(
+        "--concurrency",
+        dest="max_concurrency",
+        type=int,
+        default=5,
+        help="Maximum concurrent probe requests (default: 5)",
+    )
+    parser.add_argument(
+        "--max-requests",
+        type=int,
+        default=25,
+        help="Maximum total probe requests to execute (safety bound, default: 25)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default=None,
+        help="Output file path for live validation JSON report",
+    )
+    parser.add_argument(
+        "--format",
+        "-f",
+        choices=["json", "summary", "both"],
+        default="json",
+        help="Console output format: json (default), summary, or both",
+    )
+    parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["algorithmic", "ai", "hybrid"],
+        default="algorithmic",
+        help="Detection mode: algorithmic (default offline), ai, or hybrid",
+    )
+    parser.add_argument(
+        "--provider",
+        dest="ai_provider",
+        choices=["mock", "ollama", "hosted"],
+        default=None,
+        help="AI provider identifier for explanation",
+    )
+    parser.add_argument(
+        "--model",
+        dest="ai_model",
+        default=None,
+        help="Target model identifier for AI provider",
+    )
+    parser.add_argument(
+        "--base-url",
+        dest="ai_base_url",
+        default=None,
+        help="Custom base URL for AI provider endpoint",
+    )
+    parser.add_argument(
+        "--api-key",
+        dest="ai_api_key",
+        default=None,
+        help="API key for hosted AI provider",
+    )
+    parser.add_argument(
+        "--fail-on-breaking",
+        action="store_true",
+        help="Exit with non-zero status code (1) if contract mismatches or high-severity errors occur",
+    )
+    parser.add_argument(
+        "--workspace-dir",
+        "-w",
+        default=None,
+        help="Directory to resolve workspace-level configuration",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable debug logging output",
+    )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        action="store_true",
+        help="Suppress informational console output",
+    )
+    return parser
+
+
+def _format_validate_api_summary(report: LiveValidationReport) -> str:
+    """Format live API validation summary report for terminal display."""
+    lines = [
+        "=" * 76,
+        " DEPENDENCY GUARDIAN — EXTERNAL API INTELLIGENCE & VALIDATION REPORT",
+        "=" * 76,
+        f" Total Probes:         {report.total_probes} | Duration: {report.duration_seconds:.2f}s",
+        f" Detection Mode:       {report.mode.upper()}",
+    ]
+    if report.ai_status and report.ai_status != "skipped":
+        lines.append(f" AI Model:             {report.ai_model or 'default'} (Status: {report.ai_status})")
+        if report.ai_error:
+            lines.append(f" AI Notice:            {report.ai_error}")
+    lines.extend([
+        "-" * 76,
+        " Probe Status Breakdown:",
+        f"   - Reachable:         {report.reachable_count}",
+        f"   - Auth Failure:      {report.auth_failure_count}",
+        f"   - Client Error:      {report.client_error_count}",
+        f"   - Server Failure:    {report.server_failure_count}",
+        f"   - Unreachable:       {report.unreachable_count}",
+        f"   - Contract Mismatch: {report.contract_mismatch_count}",
+        f"   - Security Blocked:  {report.security_blocked_count}",
+        "-" * 76,
+        f" Findings Identified:  {len(report.findings)}",
+    ])
+    if report.results:
+        lines.append("-" * 76)
+        lines.append(f" {'STATUS':<18} {'METHOD':<6} {'CODE':<6} {'ENDPOINT'}")
+        lines.append("-" * 76)
+        for r in report.results:
+            sc = str(r.status_code) if r.status_code else "-"
+            lines.append(f" {r.status.value:<18} {r.method:<6} {sc:<6} {r.url}")
+            if r.error_message:
+                lines.append(f"   Note: {r.error_message}")
+    if report.findings:
+        lines.append("-" * 76)
+        lines.append(" Findings & Discrepancies:")
+        for f in report.findings:
+            lines.append(f"   [{f.severity.value.upper()}] {f.rule_id} ({f.path}): {f.message}")
+            if f.recommended_action:
+                lines.append(f"     Action: {f.recommended_action}")
+    lines.append("=" * 76)
+    return "\n".join(lines)
+
+
+def run_validate_api(validate_args: List[str]) -> int:
+    """Execute external API intelligence and live validation."""
+    parser = build_validate_api_parser()
+    args = parser.parse_args(validate_args)
+
+    log_level = logging.DEBUG if args.verbose else (logging.ERROR if args.quiet else logging.INFO)
+    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
+    endpoints: List[LiveProbeEndpoint] = []
+    config_source: Optional[str] = None
+
+    if args.url:
+        endpoints.append(
+            LiveProbeEndpoint(
+                id=f"direct:{args.service_name}",
+                service_name=args.service_name,
+                base_url=args.url,
+                path="",
+                method=args.method or "GET",
+                auth_env_var=args.auth_env_var,
+                expected_status_code=args.expected_status or 200,
+                expected_fields=args.expected_fields or [],
+            )
+        )
+        config_source = f"direct-url:{args.url}"
+    else:
+        cfg_candidates = []
+        if args.config:
+            cfg_candidates.append(args.config)
+        if args.target and (args.target.endswith(".yml") or args.target.endswith(".yaml") or args.target.endswith(".json")):
+            cfg_candidates.append(args.target)
+        if args.target and Path(args.target).is_dir():
+            target_p = Path(args.target).resolve()
+            cfg_candidates.append(str(target_p / "dependency-guardian.yml"))
+            cfg_candidates.append(str(target_p / ".dependency-guardian.yml"))
+        if args.workspace_dir:
+            ws_p = Path(args.workspace_dir).resolve()
+            cfg_candidates.append(str(ws_p / "dependency-guardian.yml"))
+            cfg_candidates.append(str(ws_p / ".dependency-guardian.yml"))
+            cfg_candidates.append(str(ws_p / "demo/sample-api/dependency-guardian.yml"))
+            cfg_candidates.append(str(ws_p / "demo-app/dependency-guardian.yml"))
+            for parent in ws_p.parents:
+                cfg_candidates.append(str(parent / "dependency-guardian.yml"))
+                if (parent / ".git").exists():
+                    break
+        cfg_candidates.extend([
+            "dependency-guardian.yml",
+            ".dependency-guardian.yml",
+            "demo/sample-api/dependency-guardian.yml",
+            "demo-app/dependency-guardian.yml",
+        ])
+        for parent in Path.cwd().resolve().parents:
+            cfg_candidates.append(str(parent / "dependency-guardian.yml"))
+            if (parent / ".git").exists():
+                break
+
+        resolved_cfg = None
+        for cand in cfg_candidates:
+            if cand and Path(cand).is_file():
+                resolved_cfg = cand
+                break
+
+        if resolved_cfg:
+            try:
+                endpoints = LiveApiValidator.load_endpoints_from_yaml(resolved_cfg)
+                config_source = str(Path(resolved_cfg).resolve())
+            except Exception as exc:
+                sys.stderr.write(f"Failed to load probe configuration from '{resolved_cfg}': {exc}\n")
+                return 1
+        elif args.target and args.target.startswith(("http://", "https://")):
+            endpoints.append(
+                LiveProbeEndpoint(
+                    id=f"direct:{args.service_name}",
+                    service_name=args.service_name,
+                    base_url=args.target,
+                    path="",
+                    method=args.method or "GET",
+                    auth_env_var=args.auth_env_var,
+                    expected_status_code=args.expected_status or 200,
+                    expected_fields=args.expected_fields or [],
+                )
+            )
+            config_source = f"direct-target:{args.target}"
+        else:
+            sys.stderr.write("No external API probe targets configured. Specify a URL or dependency-guardian.yml config.\n")
+            return 1
+
+    ai_status = "skipped"
+    ai_error = None
+    ai_provider_name = args.ai_provider or "ollama"
+    ai_model_name = args.ai_model or "qwen2.5-coder:7b"
+
+    if args.mode in ("ai", "hybrid"):
+        cli_overrides: Dict[str, Any] = {}
+        if args.ai_provider:
+            cli_overrides["ai_provider"] = args.ai_provider
+        if args.ai_model:
+            cli_overrides["ai_model"] = args.ai_model
+        if args.ai_base_url:
+            cli_overrides["ai_base_url"] = args.ai_base_url
+
+        workspace_dir = Path(args.workspace_dir) if args.workspace_dir else Path.cwd()
+        detection_config = load_configuration(workspace_dir=workspace_dir, cli_overrides=cli_overrides)
+        if not detection_config.ai_provider:
+            detection_config.ai_provider = "ollama"
+
+        orchestrator = DetectionOrchestrator(detection_config)
+        provider = orchestrator._resolve_ai_provider()
+        ai_provider_name = detection_config.ai_provider
+        ai_model_name = detection_config.ai_model
+
+        try:
+            health = provider.check_health()
+            if health.is_available:
+                ai_status = "active"
+            else:
+                ai_status = "fallback" if args.mode == "hybrid" else "unavailable"
+                ai_error = health.message or "AI model endpoint unavailable."
+                if args.mode == "ai":
+                    sys.stderr.write(f"AI Detection Mode failed: {ai_error}\n")
+                    return 1
+        except Exception as exc:
+            ai_status = "fallback" if args.mode == "hybrid" else "failed"
+            ai_error = str(exc)
+            if args.mode == "ai":
+                sys.stderr.write(f"AI Detection Mode failed: {exc}\n")
+                return 1
+
+    options = LiveValidationOptions(
+        timeout_seconds=args.timeout_seconds,
+        max_concurrency=args.max_concurrency,
+        max_requests=args.max_requests,
+    )
+    validator = LiveApiValidator(options=options)
+
+    def on_progress(p: Dict[str, Any]) -> None:
+        if not args.quiet:
+            sys.stderr.write(f"[External API Validation] {p.get('message', '')}\n")
+            sys.stderr.flush()
+
+    try:
+        report = asyncio.run(validator.validate_endpoints(endpoints, on_progress=on_progress))
+        report.config_source = config_source
+        report.mode = args.mode
+        report.ai_status = ai_status
+        report.ai_provider = ai_provider_name if args.mode != "algorithmic" else None
+        report.ai_model = ai_model_name if args.mode != "algorithmic" else None
+        report.ai_error = ai_error
+    except Exception as exc:
+        sys.stderr.write(f"Validation execution failed: {exc}\n")
+        return 1
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(report.model_dump(mode="json"), indent=2), encoding="utf-8")
+
+    if args.format == "json":
+        print(json.dumps(report.model_dump(mode="json"), indent=2))
+    elif args.format == "summary":
+        if not args.quiet:
+            print(_format_validate_api_summary(report))
+    elif args.format == "both":
+        if not args.quiet:
+            print(_format_validate_api_summary(report))
+        print(json.dumps(report.model_dump(mode="json"), indent=2))
+
+    if args.fail_on_breaking:
+        has_breaking = (
+            report.contract_mismatch_count > 0
+            or any(f.severity in (SeverityLevel.CRITICAL, SeverityLevel.HIGH) for f in report.findings)
+        )
+        if has_breaking:
+            return 1
+
+    return 0
+
+
 def run(argv: Optional[List[str]] = None) -> int:
     """Execute detection CLI command."""
     effective_argv = list(sys.argv[1:]) if argv is None else list(argv)
     if effective_argv and effective_argv[0] == "scan-repo":
         return run_scan_repo(effective_argv[1:])
+    if effective_argv and effective_argv[0] == "validate-api":
+        return run_validate_api(effective_argv[1:])
 
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -651,18 +1065,92 @@ def run(argv: Optional[List[str]] = None) -> int:
         sys.stderr.write(f"Detection execution failed: {exc}\n")
         return 1
 
-    # Optional backend synchronization
-    if args.sync_backend or (args.backend_base_url and args.project_id and args.dependency_id):
-        backend_url = config.backend_base_url or "http://127.0.0.1:8000/api/v1"
+    # Backend synchronization and repair proposals
+    effective_project_id = args.project_id or os.getenv("DEPENDENCY_GUARDIAN_PROJECT_ID") or os.getenv("PROJECT_ID")
+    effective_dependency_id = args.dependency_id or os.getenv("DEPENDENCY_GUARDIAN_DEPENDENCY_ID") or os.getenv("DEPENDENCY_ID")
+
+    if args.sync_backend or args.propose_repairs or (args.backend_base_url and effective_project_id and effective_dependency_id):
+        if not effective_project_id or not effective_dependency_id:
+            sys.stderr.write("Error: Both --project-id and --dependency-id are required for backend synchronization or repair proposals.\n")
+            return 2
+
+        backend_url = args.backend_base_url or config.backend_base_url
         client = BackendClient(base_url=backend_url)
-        if args.project_id and args.dependency_id:
-            sync_res = client.sync_detection_result(
-                project_id=args.project_id,
-                dependency_id=args.dependency_id,
-                result=result,
-            )
+        sync_res = client.sync_detection_result(
+            project_id=effective_project_id,
+            dependency_id=effective_dependency_id,
+            result=result,
+        )
+
+        if not sync_res.get("synced"):
+            sys.stderr.write(f"[-] Backend synchronization failed: {sync_res.get('reason', 'Unknown error')}\n")
+            if sync_res.get("errors"):
+                for err in sync_res["errors"]:
+                    sys.stderr.write(f"    * {err}\n")
+        else:
             if not args.quiet:
-                sys.stderr.write(f"Backend synchronization: {sync_res}\n")
+                sys.stderr.write(
+                    f"[+] Backend synchronization successful:\n"
+                    f"    * Scan ID: {sync_res.get('scan_id')}\n"
+                    f"    * Observations recorded: {sync_res.get('observations_count')}\n"
+                    f"    * Incidents created/linked: {sync_res.get('incidents_created')}\n"
+                )
+
+        if args.propose_repairs:
+            if not sync_res.get("synced"):
+                sys.stderr.write("[-] Skipping repair proposal generation: backend synchronization failed.\n")
+            elif not sync_res.get("incident_records"):
+                if not args.quiet:
+                    sys.stderr.write("[*] No breaking-change incidents were recorded; no repair proposals generated.\n")
+            else:
+                try:
+                    from repair_agent import RepairPipeline, RepairRequest, FindingInput, RepairBackendClient
+
+                    repair_client = RepairBackendClient(base_url=backend_url)
+                    repair_pipeline = RepairPipeline()
+
+                    for rec in sync_res["incident_records"]:
+                        inc_id = rec["incident_id"]
+                        finding_obj = rec["finding"]
+                        target_file = None
+                        if rec.get("payload", {}).get("affected_files"):
+                            target_file = rec["payload"]["affected_files"][0]
+                        elif finding_obj.evidence.get("file"):
+                            target_file = str(finding_obj.evidence["file"])
+
+                        finding_input = FindingInput(
+                            id=str(finding_obj.id),
+                            rule_id=str(finding_obj.rule_id),
+                            path=finding_obj.path or "/",
+                            method=finding_obj.method,
+                            schema_location=finding_obj.schema_location or "",
+                            previous_value=finding_obj.previous_value,
+                            current_value=finding_obj.current_value,
+                            message=finding_obj.message,
+                            evidence=finding_obj.evidence,
+                            compatibility=finding_obj.compatibility.value,
+                            severity=finding_obj.severity.value,
+                        )
+                        rep_req = RepairRequest(
+                            finding=finding_input,
+                            target_file=target_file,
+                            workspace_dir=str(workspace_dir),
+                            test_command=args.test_cmd,
+                        )
+                        rep_res = repair_pipeline.run(rep_req)
+                        published = repair_client.publish_repair_lifecycle(
+                            incident_id=inc_id,
+                            result=rep_res,
+                            test_command=args.test_cmd,
+                        )
+                        if not args.quiet:
+                            sys.stderr.write(
+                                f"[+] Generated repair proposal '{published['repair_id']}' for incident '{inc_id}' "
+                                f"(Strategy: {rep_res.strategy}, Status: {rep_res.status.value}, Validated: {rep_res.is_validated})\n"
+                            )
+                except Exception as exc:
+                    logger.warning("Automated repair proposal generation failed: %s", exc)
+                    sys.stderr.write(f"[-] Repair generation failed: {exc}\n")
 
     # Output formatting
     result_dict = result.model_dump(mode="json")

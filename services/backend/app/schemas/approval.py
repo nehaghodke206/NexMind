@@ -7,6 +7,7 @@ class RepairApprovalCreate(BaseModel):
     reviewer_id: str
     decision: str = Field(default="approved", pattern="^(approved)$")
     comment: Optional[str] = None
+    patch_hash: Optional[str] = None
 
 
 class RepairRejectionCreate(BaseModel):

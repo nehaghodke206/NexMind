@@ -21,6 +21,11 @@ export class RepairsTreeProvider implements vscode.TreeDataProvider<RepairTreeIt
     this._onDidChangeTreeData.fire();
   }
 
+  setRepairs(repairs: RepairProposal[]) {
+    this.latestRepairs = repairs;
+    this._onDidChangeTreeData.fire();
+  }
+
   refresh(): void {
     this._onDidChangeTreeData.fire();
   }
@@ -31,6 +36,22 @@ export class RepairsTreeProvider implements vscode.TreeDataProvider<RepairTreeIt
 
   async getChildren(): Promise<RepairTreeItem[]> {
     if (this.latestRepairs.length === 0) {
+      try {
+        const changes = await this.client.getChanges();
+        const allProposals: RepairProposal[] = [];
+        for (const c of changes) {
+          const props = await this.client.getRepairProposals(c.id);
+          allProposals.push(...props);
+        }
+        if (allProposals.length > 0) {
+          this.latestRepairs = allProposals;
+        }
+      } catch {
+        // Ignore network errors
+      }
+    }
+
+    if (this.latestRepairs.length === 0) {
       return [
         new RepairTreeItem(
           "No repair proposals yet",
@@ -40,15 +61,19 @@ export class RepairsTreeProvider implements vscode.TreeDataProvider<RepairTreeIt
       ];
     }
 
-    return this.latestRepairs.map(
-      (r) =>
-        new RepairTreeItem(
-          `${r.repair_type} (${r.status})`,
-          vscode.TreeItemCollapsibleState.None,
-          "repair",
-          r
-        )
-    );
+    return this.latestRepairs.map((r) => {
+      let ctx = "repair";
+      if (r.status === "approved") ctx = "repair-approved";
+      else if (r.status === "applied") ctx = "repair-applied";
+      else if (r.status === "validated" || r.status === "validation_passed") ctx = "repair-validated";
+
+      return new RepairTreeItem(
+        `${r.repair_type || "repair"}: ${r.target_file || r.id}`,
+        vscode.TreeItemCollapsibleState.None,
+        ctx,
+        r
+      );
+    });
   }
 }
 
@@ -62,27 +87,33 @@ export class RepairTreeItem extends vscode.TreeItem {
     super(label, collapsibleState);
 
     if (repair) {
-      if (repair.status === "blocked_uncertain") {
-        this.iconPath = new vscode.ThemeIcon("lock", new vscode.ThemeColor("charts.orange"));
-        this.description = "[BLOCKED]";
-      } else if (repair.status === "applied") {
-        this.iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("charts.green"));
+      const st = (repair.status || "").toLowerCase();
+      if (st === "applied") {
+        this.iconPath = new vscode.ThemeIcon("pass-filled", new vscode.ThemeColor("charts.green"));
         this.description = "[APPLIED]";
-      } else if (repair.status === "validation_passed") {
+      } else if (st === "approved") {
+        this.iconPath = new vscode.ThemeIcon("verified", new vscode.ThemeColor("charts.green"));
+        this.description = "[APPROVED]";
+      } else if (st === "validated" || st === "validation_passed") {
         this.iconPath = new vscode.ThemeIcon("check", new vscode.ThemeColor("charts.green"));
         this.description = "[VALIDATED]";
-      } else if (repair.status === "validation_failed") {
+      } else if (st === "validation_failed" || st === "failed") {
         this.iconPath = new vscode.ThemeIcon("close", new vscode.ThemeColor("charts.red"));
         this.description = "[FAILED]";
+      } else if (st === "needs_review" || st === "blocked_uncertain" || st === "blocked") {
+        this.iconPath = new vscode.ThemeIcon("shield", new vscode.ThemeColor("charts.orange"));
+        this.description = "[NEEDS REVIEW]";
       } else {
         this.iconPath = new vscode.ThemeIcon("tools", new vscode.ThemeColor("charts.blue"));
-        this.description = `[${repair.status}]`;
+        this.description = `[${repair.status.toUpperCase()}]`;
       }
 
+      this.tooltip = `Repair: ${repair.id}\nTarget: ${repair.target_file || "N/A"}\nStatus: ${repair.status}\nClick to review diff`;
+
       this.command = {
-        command: "dependencyGuardian.openDashboard",
-        title: "View Repair in Dashboard",
-        arguments: [repair.change_id],
+        command: "dependencyGuardian.reviewRepair",
+        title: "Review Repair Diff",
+        arguments: [repair],
       };
     } else {
       this.iconPath = new vscode.ThemeIcon("info");

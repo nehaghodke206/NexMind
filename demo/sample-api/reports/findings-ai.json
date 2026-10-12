@@ -18,8 +18,8 @@
   "ai_status": "completed",
   "ai_error": null,
   "fallback_triggered": false,
-  "execution_time_ms": 89390.7,
-  "timestamp": "2026-10-11T07:58:50.169419Z",
+  "execution_time_ms": 78654.23,
+  "timestamp": "2026-10-12T02:24:59.733027Z",
   "ai_insights": {
     "executive_summary": "No breaking changes detected between v1.0.0 and v2.0.0.",
     "consumer_impact_analysis": "No consumers are expected to break due to the absence of breaking changes.",

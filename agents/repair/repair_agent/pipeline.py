@@ -89,11 +89,20 @@ class RepairPipeline:
             preferred_provider=request.provider,
         )
 
+        affected_symbols = (
+            inspection.affected_symbols
+            if getattr(inspection, "affected_symbols", None)
+            else ([inspection.enclosing_symbol] if getattr(inspection, "enclosing_symbol", None) else [])
+        )
+
         if not assessment.sufficient_evidence:
             return RepairResult(
                 finding_id=finding.id,
                 status=RepairStatus.NEEDS_REVIEW,
                 target_file=str(inspection.file_path),
+                likely_root_cause=finding.rule_id,
+                affected_symbols=affected_symbols,
+                file_changes=[],
                 proposal_generated=False,
                 original_content=inspection.content,
                 proposed_content=None,
@@ -139,6 +148,9 @@ class RepairPipeline:
                 status=RepairStatus.ERROR,
                 error_message=f"Patch generation failed: {exc}",
                 target_file=str(inspection.file_path),
+                likely_root_cause=finding.rule_id,
+                affected_symbols=affected_symbols,
+                file_changes=[],
                 proposal_generated=False,
                 requires_human_review=True,
             )
@@ -149,6 +161,9 @@ class RepairPipeline:
                 finding_id=finding.id,
                 status=RepairStatus.REJECTED,
                 target_file=str(inspection.file_path),
+                likely_root_cause=finding.rule_id,
+                affected_symbols=affected_symbols,
+                file_changes=[],
                 proposal_generated=False,
                 original_content=inspection.content,
                 proposed_content=None,
@@ -175,6 +190,7 @@ class RepairPipeline:
             proposed_content=patch_res.proposed_content,
             workspace_dir=ws_dir,
             test_command=request.test_command,
+            file_changes=patch_res.file_changes,
         )
 
         final_status = (
@@ -183,11 +199,26 @@ class RepairPipeline:
             else RepairStatus.VALIDATION_FAILED
         )
 
+        all_line_ranges: list = []
+        for fc in patch_res.file_changes:
+            all_line_ranges.extend(fc.line_ranges)
+        if not all_line_ranges and getattr(patch_res, "line_ranges", None):
+            all_line_ranges = patch_res.line_ranges
+
+        suggested_test_cmd = request.test_command
+        if not suggested_test_cmd and inspection.file_path:
+            suggested_test_cmd = f"pytest {inspection.file_path}"
+
         # 5. Return structured repair result
         return RepairResult(
             finding_id=finding.id,
             status=final_status,
             target_file=str(inspection.file_path),
+            likely_root_cause=finding.rule_id,
+            affected_symbols=affected_symbols,
+            file_changes=patch_res.file_changes,
+            line_ranges=all_line_ranges,
+            suggested_validation_command=suggested_test_cmd,
             proposal_generated=True,
             diff=patch_res.diff,
             original_content=inspection.content,

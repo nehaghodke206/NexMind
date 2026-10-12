@@ -1,0 +1,70 @@
+{
+  "description": "Developer test fixture for intentional API contract drift scenarios in demo/sample-api",
+  "defects": [
+    {
+      "id": "DEFECT-A",
+      "category": "response_schema_drift",
+      "affected_file": "demo/sample-api/versions/v2/app/services/order_service.py",
+      "endpoint": "GET /api/v1/products",
+      "consumer_symbol": "verify_product_stock_fulfillment",
+      "expected_contract": "ProductResponse contains stock: integer",
+      "actual_behavior": "stock removed from v2 response schema; consumer reading product['stock'] raises KeyError",
+      "reproduction_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_a_before_repair",
+      "expected_detector_rule": "RULE-RESPONSE-FIELD-REMOVED",
+      "expected_repair_pattern": "product.get('stock', 0)",
+      "validation_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_a_after_repair"
+    },
+    {
+      "id": "DEFECT-B",
+      "category": "request_contract_mismatch",
+      "affected_file": "demo/sample-api/versions/v2/app/services/product_service.py",
+      "endpoint": "GET /api/v1/products",
+      "consumer_symbol": "fetch_store_inventory",
+      "expected_contract": "GET /api/v1/products requires query parameter store_id",
+      "actual_behavior": "Client sends only category; endpoint returns HTTP 422 Unprocessable Entity",
+      "reproduction_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_b_before_repair",
+      "expected_detector_rule": "RULE-REQUIRED-PARAM-ADDED",
+      "expected_repair_pattern": "params={'category': category, 'store_id': 'default'}",
+      "validation_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_b_after_repair"
+    },
+    {
+      "id": "DEFECT-C",
+      "category": "broken_internal_integration",
+      "affected_file": "demo/sample-api/versions/v2/app/api/integrations.py",
+      "endpoint": "GET /api/v1/integrations/backend-telemetry",
+      "consumer_symbol": "get_backend_telemetry",
+      "expected_contract": "Upstream backend exposes /api/v1/health and /api/v1/projects",
+      "actual_behavior": "Calls non-existent /api/v1/partner-telemetry on backend returning 404 -> demo app returns 502",
+      "reproduction_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_c_before_repair",
+      "expected_detector_rule": "DISCREPANCY-EXTERNAL-HTTP-404",
+      "expected_repair_pattern": "call upstream /api/v1/health",
+      "validation_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_c_after_repair"
+    },
+    {
+      "id": "DEFECT-D",
+      "category": "incorrect_error_handling",
+      "affected_file": "demo/sample-api/versions/v2/app/api/integrations.py",
+      "endpoint": "GET /api/v1/integrations/upstream-sync",
+      "consumer_symbol": "upstream_sync",
+      "expected_contract": "Endpoint handles timeout gracefully and returns HTTP 504 Gateway Timeout",
+      "actual_behavior": "Lacks timeout handler, allowing unhandled httpx.ReadTimeout to crash request",
+      "reproduction_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_d_before_repair",
+      "expected_detector_rule": "UNHANDLED-UPSTREAM-TIMEOUT",
+      "expected_repair_pattern": "try/except (httpx.TimeoutException, httpx.RequestError) returning 504",
+      "validation_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_d_after_repair"
+    },
+    {
+      "id": "DEFECT-E",
+      "category": "missing_or_stale_contract",
+      "affected_file": "demo/sample-api/versions/v2/app/api/integrations.py",
+      "endpoint": "GET /api/v1/integrations/internal-diagnostics",
+      "consumer_symbol": "get_internal_diagnostics",
+      "expected_contract": "Every code route documented in OpenAPI and every contract path implemented in code",
+      "actual_behavior": "internal-diagnostics missing from OpenAPI (undocumented_endpoint) & /api/v1/discounts/validate missing from code (ghost_endpoint)",
+      "reproduction_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_e_contract_discrepancy",
+      "expected_detector_rule": "DISCREPANCY-UNDOCUMENTED-AND-GHOST",
+      "expected_repair_pattern": "generate_contracts.py OpenAPI spec synchronization",
+      "validation_command": "pytest demo/sample-api/tests/test_defect_scenarios.py -k test_defect_e_contract_discrepancy"
+    }
+  ]
+}

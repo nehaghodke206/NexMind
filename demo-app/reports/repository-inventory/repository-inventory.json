@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "scanner_name": "Dependency Guardian Repository Intelligence",
+    "scanner_version": "0.2.0",
+    "scanned_path": "/home/last-hope/Dnyaneshwar/HackWave/demo-app",
+    "scan_timestamp": "2026-10-11T19:20:14.168355+00:00",
+    "languages_detected": [
+      "Python"
+    ],
+    "frameworks_detected": [],
+    "total_files_scanned": 9,
+    "skipped_files": [],
+    "openapi_specs_found": []
+  },
+  "dependencies": [],
+  "internal_modules": [
+    "payment_service",
+    "search_service",
+    "src",
+    "test_payments",
+    "test_search",
+    "test_user_profile",
+    "tests",
+    "user_service"
+  ],
+  "unused_dependencies": [],
+  "integrations": [
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{base_url}/users/{user_id}",
+      "file_path": "src/services/user_service.py",
+      "line_number": 8,
+      "code_snippet": "httpx.get(\"{base_url}/users/{user_id}\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{base_url}/payments/{payment_id}",
+      "file_path": "src/services/payment_service.py",
+      "line_number": 8,
+      "code_snippet": "httpx.get(\"{base_url}/payments/{payment_id}\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    },
+    {
+      "integration_type": "http_service",
+      "service_name": "External HTTP Service",
+      "target_url_or_host": "{base_url}/search",
+      "file_path": "src/services/search_service.py",
+      "line_number": 8,
+      "code_snippet": "httpx.get(\"{base_url}/search\")",
+      "config_references": [],
+      "operations": [
+        "GET"
+      ],
+      "redacted_secrets_count": 0
+    }
+  ],
+  "endpoints": [],
+  "discrepancies": [],
+  "unsupported_frameworks": [],
+  "unresolved_dynamic_routes": [],
+  "test_coverage": {
+    "total_endpoints": 0,
+    "tested_endpoints": 0,
+    "untested_endpoints": 0,
+    "coverage_percentage": 0.0,
+    "endpoint_coverage_map": {},
+    "integration_tests_found": []
+  },
+  "ai_insights": null
+}

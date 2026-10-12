@@ -1,18 +1,18 @@
 # Dependency Guardian — Repository Dependency Report
 
-**Scanned Repository Path:** `/home/last-hope/Dnyaneshwar/HackWave/agents/detection/tests/fixtures/fixture_repo`  
-**Scan Timestamp:** `2026-10-11T07:54:40.667589+00:00`  
+**Scanned Repository Path:** `/home/last-hope/Dnyaneshwar/HackWave/demo/sample-api`  
+**Scan Timestamp:** `2026-10-12T04:51:26.082097+00:00`  
 **Scanner Engine:** `Dependency Guardian Repository Intelligence v0.2.0`  
 
 ## 1. Executive Summary
 
 | Metric | Count | Note |
 |---|---|---|
-| **Total Declared Dependencies** | 9 | Discovered across manifests and lockfiles |
-| **Active Dependencies in Code** | 8 | Imported or required in source code |
+| **Total Declared Dependencies** | 6 | Discovered across manifests and lockfiles |
+| **Active Dependencies in Code** | 5 | Imported or required in source code |
 | **Declared but Unused Packages** | 1 | Potential cleanup candidates |
-| **Internal Modules** | 4 | Local architectural modules |
-| **External Integrations** | 4 | Databases, queues, HTTP clients, SDKs |
+| **Internal Modules** | 14 | Local architectural modules |
+| **External Integrations** | 16 | Databases, queues, HTTP clients, SDKs |
 
 ---
 
@@ -22,41 +22,40 @@ All discovered third-party libraries, version constraints, resolved lockfile ver
 
 | Package Name | Ecosystem | Declared Constraint | Resolved Version | Used in Code | Purpose | Documentation URL | Vulnerabilities |
 |---|---|---|---|:---:|---|---|---|
-| **axios** | npm | `^1.6.0` | `1.6.2` | ✅ Yes | Promise-based HTTP client for the browser and Node.js | [Docs](https://axios-http.com/) | None verified |
-| **express** | npm | `^4.18.2` | `4.18.2` | ✅ Yes | Fast, unopinionated, minimalist web framework for Node.js | [Docs](https://expressjs.com/) | None verified |
-| **fastapi** | python | `>=0.100.0` | `0.104.1` | ✅ Yes | High-performance asynchronous web framework for building APIs | [Docs](https://fastapi.tiangolo.com/) | None verified |
-| **httpx** | python | `>=0.24.0` | `0.25.1` | ✅ Yes | Next-generation HTTP client with async support and HTTP/2 | [Docs](https://www.python-httpx.org/) | None verified |
-| **psycopg2-binary** | python | `>=2.9.0` | `2.9.9` | ✅ Yes | Standalone binary package for PostgreSQL database adapter | [Docs](https://www.psycopg.org/docs/) | None verified |
-| **pydantic** | python | `>=2.0.0` | `2.5.2` | ✅ Yes | Data validation and settings management using Python type annotations | [Docs](https://docs.pydantic.dev/) | None verified |
-| **redis** | python | `>=5.0.0` | `5.0.1` | ✅ Yes | Python interface to Redis in-memory data structure store | [Docs](https://redis-py.readthedocs.io/) | None verified |
-| **stripe** | python | `>=5.0.0` | `5.4.0` | ✅ Yes | Official Stripe Python API library for payment processing | [Docs](https://docs.stripe.com/api) | None verified |
-| **unused-lib** | python | `>=1.0.0` | `1.2.0` | ⚠️ No | Python library: unused-lib *(Inferred)* | [Docs](https://pypi.org/project/unused-lib/) | None verified |
+| **fastapi** | python | `>=0.110.0` | *Unresolved* | ✅ Yes | High-performance asynchronous web framework for building APIs | [Docs](https://fastapi.tiangolo.com/) | None verified |
+| **httpx** | python | `>=0.27.0` | *Unresolved* | ✅ Yes | Next-generation HTTP client with async support and HTTP/2 | [Docs](https://www.python-httpx.org/) | None verified |
+| **pydantic** | python | `>=2.7.0` | *Unresolved* | ✅ Yes | Data validation and settings management using Python type annotations | [Docs](https://docs.pydantic.dev/) | None verified |
+| **pytest** | python | `>=8.0.0` | *Unresolved* | ✅ Yes | Testing framework supporting unit, functional, and integration tests | [Docs](https://docs.pytest.org/) | None verified |
+| **uvicorn** | python | `>=0.28.0` | *Unresolved* | ✅ Yes | Lightning-fast ASGI web server implementation for Python | [Docs](https://www.uvicorn.org/) | None verified |
+| **pyyaml** | python | `>=6.0` | *Unresolved* | ⚠️ No | YAML parser and emitter for Python | [Docs](https://pyyaml.org/) | None verified |
 
 ### Dependency Usage Sites (Top Imported Packages)
 
-#### `fastapi` (1 import sites)
-- `app/main.py:7`: `from fastapi import Depends, FastAPI, HTTPException`
+#### `fastapi` (5 import sites)
+- `main.py:16`: `from fastapi import FastAPI, HTTPException, status`
+- `tests/test_localhost_integrations.py:12`: `from fastapi.testclient import TestClient`
+- `tests/test_contract_drift.py:16`: `from fastapi.testclient import TestClient`
+- `generated-tests/test_candidate_regression_v2.py:7`: `from fastapi.testclient import TestClient`
+- `generated-tests/test_approved_regression_v2.py:7`: `from fastapi.testclient import TestClient`
 
-#### `pydantic` (1 import sites)
-- `app/main.py:10`: `from pydantic import BaseModel, Field`
+#### `pytest` (5 import sites)
+- `tests/test_localhost_integrations.py:11`: `import pytest`
+- `tests/test_detection_assertions.py:7`: `import pytest`
+- `tests/test_contract_drift.py:15`: `import pytest`
+- `generated-tests/test_candidate_regression_v2.py:6`: `import pytest`
+- `generated-tests/test_approved_regression_v2.py:6`: `import pytest`
 
-#### `httpx` (1 import sites)
-- `app/main.py:8`: `import httpx`
+#### `pydantic` (3 import sites)
+- `main.py:17`: `from pydantic import BaseModel, Field`
+- `versions/v1/app/core/config.py:4`: `from pydantic import BaseModel`
+- `versions/v2/app/core/config.py:4`: `from pydantic import BaseModel`
 
-#### `psycopg2-binary` (1 import sites)
-- `app/main.py:9`: `import psycopg2`
+#### `httpx` (2 import sites)
+- `client.py:12`: `import httpx`
+- `main.py:18`: `import httpx`
 
-#### `redis` (1 import sites)
-- `app/main.py:11`: `import redis`
-
-#### `stripe` (1 import sites)
-- `app/main.py:12`: `import stripe`
-
-#### `express` (1 import sites)
-- `web/server.js:4`: `const express = require('express');`
-
-#### `axios` (1 import sites)
-- `web/server.js:5`: `const axios = require('axios');`
+#### `uvicorn` (1 import sites)
+- `main.py:259`: `import uvicorn`
 
 ---
 
@@ -65,7 +64,7 @@ All discovered third-party libraries, version constraints, resolved lockfile ver
 > [!NOTE]
 > The following packages are declared in dependency manifests but were not found imported or required anywhere in the scanned source code. Consider removing them to reduce attack surface and build times.
 
-- ⚠️ **unused-lib** — Declared in manifest but has 0 import references
+- ⚠️ **pyyaml** — Declared in manifest but has 0 import references
 
 ---
 
@@ -73,10 +72,20 @@ All discovered third-party libraries, version constraints, resolved lockfile ver
 
 Local packages and modules detected within the repository:
 
-- `app`
+- `client`
+- `config`
+- `conftest`
+- `generate_contracts`
+- `generated-tests`
 - `main`
-- `test_api`
+- `scripts`
+- `test_approved_regression_v2`
+- `test_candidate_regression_v2`
+- `test_contract_drift`
+- `test_detection_assertions`
+- `test_localhost_integrations`
 - `tests`
+- `versions`
 
 ---
 
@@ -88,10 +97,22 @@ Local packages and modules detected within the repository:
 
 | Integration Type | Service Name | Target / Host | File Location | Detected Operations | Redacted Secrets |
 |---|---|---|---|---|:---:|
-| **DATABASE** | PostgreSQL (psycopg2) | *Configuration-driven* | `app/main.py:63` | `connect, query` | 0 (Safe) |
-| **HTTP_SERVICE** | Stripe API | `https://api.stripe.com/v1/customers` | `app/main.py:69` | `POST` | 0 (Safe) |
-| **CACHE** | Redis Client | *Configuration-driven* | `app/main.py:76` | `connect, publish, query` | 0 (Safe) |
-| **DATABASE** | PostgreSQL (psycopg2) | *Configuration-driven* | `app/main.py:107` | `connect, query` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/nonexistent-service` | `client.py:113` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/health` | `client.py:124` | `POST` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/projects` | `client.py:136` | `POST` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/health` | `client.py:38` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/health` | `client.py:40` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/projects` | `client.py:51` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/projects` | `client.py:53` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/projects` | `client.py:69` | `POST` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/projects` | `client.py:71` | `POST` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/projects/{project_id}` | `client.py:82` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/projects/{project_id}` | `client.py:84` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/projects/{project_id}/dependencies` | `client.py:95` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External HTTP Service | `{var}/api/v1/projects/{project_id}/dependencies` | `client.py:97` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/nonexistent-service` | `client.py:112` | `GET` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/health` | `client.py:123` | `POST` | 0 (Safe) |
+| **HTTP_SERVICE** | External Service (localhost) | `http://localhost:8000/api/v1/projects` | `client.py:135` | `POST` | 0 (Safe) |
 
 ---
 

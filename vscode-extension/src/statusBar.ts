@@ -32,9 +32,9 @@ export class GuardianStatusBar {
     );
   }
 
-  setOffline() {
+  setOffline(url?: string) {
     this.statusBarItem.text = "$(error) Guardian: Offline";
-    this.statusBarItem.tooltip = "Local Dependency Guardian backend is not responding (127.0.0.1:8765).";
+    this.statusBarItem.tooltip = `Dependency Guardian backend is not responding (${url || "offline"}).`;
     this.statusBarItem.backgroundColor = new vscode.ThemeColor(
       "statusBarItem.errorBackground"
     );

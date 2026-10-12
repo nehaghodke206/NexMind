@@ -10,7 +10,7 @@ import logging
 import os
 from pathlib import Path
 import re
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import yaml
 
@@ -26,6 +26,7 @@ from .models import (
     SkippedFileDoc,
     UnsupportedItemDoc,
 )
+from .traversal import find_spec_files, safe_walk
 
 logger = logging.getLogger("dependency_guardian.repo_intelligence.endpoint_scanner")
 
@@ -33,8 +34,10 @@ logger = logging.getLogger("dependency_guardian.repo_intelligence.endpoint_scann
 class EndpointScanner:
     """Discovers and parses API endpoints across frameworks and OpenAPI documents."""
 
-    def __init__(self, repo_root: Path):
+    def __init__(self, repo_root: Path, output_dir: Optional[Path] = None, on_progress: Optional[Callable[[Dict[str, Any]], None]] = None):
         self.repo_root = repo_root.resolve()
+        self.output_dir = output_dir.resolve() if output_dir else None
+        self.on_progress = on_progress
         self.code_endpoints: List[EndpointDoc] = []
         self.openapi_endpoints: List[EndpointDoc] = []
         self.discrepancies: List[DiscrepancyDoc] = []
@@ -80,26 +83,9 @@ class EndpointScanner:
 
     def _scan_openapi_specs(self) -> None:
         """Find and parse OpenAPI/Swagger JSON and YAML files."""
-        spec_candidates = [
-            "openapi.json", "openapi.yaml", "openapi.yml",
-            "swagger.json", "swagger.yaml", "swagger.yml",
-        ]
-
-        found_files: List[Path] = []
-        for candidate in spec_candidates:
-            found_files.extend(list(self.repo_root.rglob(candidate)))
-
-        # Also search in docs/ or contracts/
-        for p in list(self.repo_root.glob("**/contracts/*.json")) + list(self.repo_root.glob("**/docs/*.yaml")):
-            if p not in found_files and any(x in p.name.lower() for x in ["api", "spec", "openapi", "swagger"]):
-                found_files.append(p)
-
-        ignore_dirs = {".git", ".venv", "venv", "node_modules", "__pycache__"}
+        found_files = find_spec_files(self.repo_root, output_dir=self.output_dir)
 
         for file_path in found_files:
-            if any(part in file_path.parts for part in ignore_dirs):
-                continue
-
             rel_path = str(file_path.relative_to(self.repo_root))
             try:
                 content = file_path.read_text(encoding="utf-8")
@@ -305,17 +291,11 @@ class EndpointScanner:
 
     def _scan_source_code_frameworks(self) -> None:
         """Scan source files using framework-specific AST parsers."""
-        ignore_dirs = {
-            ".git", ".venv", "venv", "node_modules", "__pycache__",
-            ".pytest_cache", ".idea", "dist", "build", "target"
-        }
-
         # Step A: Collect all Pydantic model definitions in Python files first
         self._collect_all_pydantic_models()
 
         # Step B: Walk files and parse endpoints
-        for root, dirs, files in os.walk(self.repo_root):
-            dirs[:] = [d for d in dirs if d not in ignore_dirs and not d.startswith(".")]
+        for root, _, files in safe_walk(self.repo_root, output_dir=self.output_dir):
             for f in files:
                 file_path = Path(root) / f
                 rel_path = str(file_path.relative_to(self.repo_root))
@@ -328,9 +308,7 @@ class EndpointScanner:
 
     def _collect_all_pydantic_models(self) -> None:
         """Parse all Python files to extract Pydantic BaseModel definitions and their fields."""
-        ignore_dirs = {".git", ".venv", "venv", "node_modules", "__pycache__"}
-        for root, dirs, files in os.walk(self.repo_root):
-            dirs[:] = [d for d in dirs if d not in ignore_dirs and not d.startswith(".")]
+        for root, _, files in safe_walk(self.repo_root, output_dir=self.output_dir):
             for f in files:
                 if f.endswith(".py"):
                     p = Path(root) / f

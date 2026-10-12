@@ -9,6 +9,8 @@ from app.schemas.incident import (
     IncidentUpdate,
     IncidentResponse,
     IncidentListResponse,
+    IncidentEventResponse,
+    IncidentTransitionRequest,
 )
 from app.schemas.observation import ObservationResponse
 from app.schemas.repair import RepairProposalCreate, RepairProposalResponse
@@ -62,6 +64,52 @@ def update_incident(incident_id: str, payload: IncidentUpdate, db: Session = Dep
     service = IncidentService(db)
     incident = service.update_incident(incident_id, payload)
     return IncidentResponse.model_validate(incident)
+
+
+@router.post("/incidents/{incident_id}/acknowledge", response_model=IncidentResponse, summary="Acknowledge an incident")
+def acknowledge_incident(
+    incident_id: str,
+    payload: Optional[IncidentTransitionRequest] = None,
+    db: Session = Depends(get_db),
+):
+    service = IncidentService(db)
+    notes = payload.notes if payload else None
+    actor_id = payload.actor_id if payload else None
+    incident = service.acknowledge_incident(incident_id, notes=notes, actor_id=actor_id)
+    return IncidentResponse.model_validate(incident)
+
+
+@router.post("/incidents/{incident_id}/resolve", response_model=IncidentResponse, summary="Resolve an incident with optional notes")
+def resolve_incident(
+    incident_id: str,
+    payload: Optional[IncidentTransitionRequest] = None,
+    db: Session = Depends(get_db),
+):
+    service = IncidentService(db)
+    notes = payload.notes if payload else None
+    actor_id = payload.actor_id if payload else None
+    incident = service.resolve_incident(incident_id, notes=notes, actor_id=actor_id)
+    return IncidentResponse.model_validate(incident)
+
+
+@router.post("/incidents/{incident_id}/reopen", response_model=IncidentResponse, summary="Reopen an incident with optional notes")
+def reopen_incident(
+    incident_id: str,
+    payload: Optional[IncidentTransitionRequest] = None,
+    db: Session = Depends(get_db),
+):
+    service = IncidentService(db)
+    notes = payload.notes if payload else None
+    actor_id = payload.actor_id if payload else None
+    incident = service.reopen_incident(incident_id, notes=notes, actor_id=actor_id)
+    return IncidentResponse.model_validate(incident)
+
+
+@router.get("/incidents/{incident_id}/events", response_model=List[IncidentEventResponse], summary="Get incident lifecycle event history")
+def list_incident_events(incident_id: str, db: Session = Depends(get_db)):
+    service = IncidentService(db)
+    events = service.list_incident_events(incident_id)
+    return [IncidentEventResponse.model_validate(e) for e in events]
 
 
 @router.get("/incidents/{incident_id}/observations", response_model=List[ObservationResponse], tags=["Observations"], summary="List evidence observations attached to an incident")

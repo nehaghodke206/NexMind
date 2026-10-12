@@ -1,0 +1,12 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Repository API \u2014 /home/last-hope/Dnyaneshwar/HackWave/demo-app",
+    "version": "1.0.0",
+    "description": "Generated and enriched by Dependency Guardian Repository Intelligence."
+  },
+  "paths": {},
+  "components": {
+    "schemas": {}
+  }
+}

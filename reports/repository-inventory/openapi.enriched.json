@@ -1,99 +1,373 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Fixture User Service API",
-    "version": "1.0.0",
-    "description": "Baseline API contract for repository scanner tests"
+    "title": "Dependency Guardian Demo API Contract",
+    "description": "Canonical OpenAPI contract specification for Dependency Guardian localhost integration demo services and client integrations.",
+    "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Localhost Demo API Server"
+    }
+  ],
   "paths": {
-    "/api/v1/users": {
+    "/health": {
       "get": {
-        "summary": "List all active users",
-        "description": "Retrieve paginated list of registered users.",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 10,
-              "minimum": 1,
-              "maximum": 100
-            },
-            "description": "Maximum number of items to return"
-          },
-          {
-            "name": "role",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter users by role"
-          }
-        ],
+        "summary": "Demo service self-health check",
+        "description": "Returns operational health status of the demo service.",
+        "operationId": "self_health",
         "responses": {
           "200": {
-            "description": "Successfully retrieved users list",
+            "description": "Service is healthy and operational",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserResponse"
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "service"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "dependency-guardian-demo-api"
+                    },
+                    "configured_backend_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "x-source-file": "app/main.py",
-        "x-source-line": 45,
-        "x-handler-name": "list_users",
+        "x-source-file": "main.py",
+        "x-source-line": 49,
+        "x-handler-name": "self_health",
         "x-discovery-method": "hybrid",
-        "x-confidence": 1.0
+        "x-confidence": 1.0,
+        "parameters": []
+      }
+    },
+    "/api/backend/health": {
+      "get": {
+        "summary": "Verify upstream backend health",
+        "description": "Working API 1: Queries upstream GET /api/v1/health on Dependency Guardian backend.",
+        "operationId": "backend_health",
+        "responses": {
+          "200": {
+            "description": "Upstream backend is reachable and healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "backend_service",
+                    "upstream_url"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "connected"
+                    },
+                    "backend_service": {
+                      "type": "string",
+                      "example": "dependency-guardian-backend"
+                    },
+                    "backend_version": {
+                      "type": "string",
+                      "example": "1.1.0"
+                    },
+                    "upstream_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000/api/v1/health"
+                    },
+                    "raw_response": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream backend unreachable or gateway error"
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 61,
+        "x-handler-name": "backend_health",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0,
+        "parameters": []
+      }
+    },
+    "/api/backend/projects": {
+      "get": {
+        "summary": "List projects from upstream backend",
+        "description": "Working API 2: Queries upstream GET /api/v1/projects from Dependency Guardian backend.",
+        "operationId": "backend_projects",
+        "responses": {
+          "200": {
+            "description": "Project listing retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "total",
+                    "items"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000/api/v1/projects"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProjectItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 89,
+        "x-handler-name": "backend_projects",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0,
+        "parameters": []
       },
       "post": {
-        "summary": "Register a new user",
-        "description": "Create a new user record in the database.",
+        "summary": "Create a project on upstream backend",
+        "description": "Working API 3: Posts valid ProjectCreate payload to upstream POST /api/v1/projects.",
+        "operationId": "backend_create_project",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserCreate"
+                "$ref": "#/components/schemas/CreateProjectRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "User created successfully",
+            "description": "Project created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "project"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "created"
+                    },
+                    "upstream_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000/api/v1/projects"
+                    },
+                    "project": {
+                      "$ref": "#/components/schemas/ProjectItem"
+                    }
+                  }
                 }
               }
             }
+          },
+          "502": {
+            "description": "Upstream error creating project"
           }
         },
-        "x-source-file": "app/main.py",
-        "x-source-line": 54,
-        "x-handler-name": "create_user",
+        "x-source-file": "main.py",
+        "x-source-line": 111,
+        "x-handler-name": "backend_create_project",
         "x-discovery-method": "hybrid",
         "x-confidence": 1.0,
         "parameters": []
       }
     },
-    "/api/v1/legacy-analytics": {
+    "/api/backend/projects/{project_id}": {
       "get": {
-        "summary": "Legacy analytics summary (Ghost Endpoint)",
-        "description": "Deprecated endpoint documented in spec but no longer implemented in code.",
+        "summary": "Get project details from upstream backend",
+        "description": "Working API 4: Queries upstream GET /api/v1/projects/{project_id}.",
+        "operationId": "backend_get_project",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique project identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Analytics summary"
+            "description": "Project details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "project"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string"
+                    },
+                    "project": {
+                      "$ref": "#/components/schemas/ProjectItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found on upstream backend"
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 136,
+        "x-handler-name": "backend_get_project",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0
+      }
+    },
+    "/api/backend/projects/{project_id}/dependencies": {
+      "get": {
+        "summary": "List dependencies from upstream backend",
+        "description": "Working API 5: Queries upstream GET /api/v1/projects/{project_id}/dependencies.",
+        "operationId": "backend_project_dependencies",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique project identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project dependencies retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "dependencies"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string"
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 162,
+        "x-handler-name": "backend_project_dependencies",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0
+      }
+    },
+    "/api/broken/invalid-path": {
+      "get": {
+        "summary": "Integration route with intentional path mismatch",
+        "description": "Expected contract specifies valid upstream health integration. Intentional mismatch: client calls nonexistent route /api/v1/nonexistent-service resulting in 404/502.",
+        "operationId": "broken_invalid_path",
+        "responses": {
+          "200": {
+            "description": "Expected successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream route not found (404 forwarded as 502 Bad Gateway)"
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 187,
+        "x-handler-name": "broken_invalid_path",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0,
+        "parameters": []
+      }
+    },
+    "/api/broken/method-mismatch": {
+      "get": {
+        "summary": "Health status probe integration with method mismatch",
+        "description": "Expected contract specifies HTTP method GET for health verification. Intentional mismatch: client integration and endpoint use POST causing 405 Method Not Allowed.",
+        "operationId": "broken_method_mismatch",
+        "responses": {
+          "200": {
+            "description": "Expected successful health check response"
+          },
+          "502": {
+            "description": "Upstream method not allowed (405 forwarded as 502 Bad Gateway)"
           }
         },
         "x-source-file": "openapi.json",
@@ -102,19 +376,19 @@
         "x-discovery-method": "openapi_spec",
         "x-confidence": 1.0,
         "parameters": []
-      }
-    },
-    "/api/v1/health": {
-      "get": {
-        "x-source-file": "web/server.js",
-        "x-source-line": 11,
-        "x-handler-name": "anonymous_handler",
+      },
+      "post": {
+        "summary": "Broken API 2 (Incorrect HTTP Method):\nCalls upstream POST /api/v1/health. The backend health endpoint only supports GET.\nThe upstream backend returns HTTP 405 Method Not Allowed.\nThis endpoint catches the upstream failure and returns HTTP 502 with diagnostic details.",
+        "description": "Broken API 2 (Incorrect HTTP Method):\nCalls upstream POST /api/v1/health. The backend health endpoint only supports GET.\nThe upstream backend returns HTTP 405 Method Not Allowed.\nThis endpoint catches the upstream failure and returns HTTP 502 with diagnostic details.",
+        "x-source-file": "main.py",
+        "x-source-line": 208,
+        "x-handler-name": "broken_method_mismatch",
         "x-discovery-method": "framework_ast",
-        "x-confidence": 0.95,
+        "x-confidence": 1.0,
         "parameters": [],
         "responses": {
           "200": {
-            "description": "OK response",
+            "description": "Successful response (200)",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,14 +401,180 @@
         }
       }
     },
-    "/api/v1/users/{user_id}": {
+    "/api/broken/payload-mismatch": {
+      "post": {
+        "summary": "Project creation integration with schema drift",
+        "description": "Expected contract requires CreateProjectRequest with mandatory field 'name'. Intentional mismatch: client sends invalid keys without 'name', causing 400 Bad Request.",
+        "operationId": "broken_payload_mismatch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully"
+          },
+          "502": {
+            "description": "Upstream payload validation failed (400 forwarded as 502 Bad Gateway)"
+          }
+        },
+        "x-source-file": "main.py",
+        "x-source-line": 230,
+        "x-handler-name": "broken_payload_mismatch",
+        "x-discovery-method": "hybrid",
+        "x-confidence": 1.0,
+        "parameters": []
+      }
+    },
+    "/api/v1/products/{product_id}": {
+      "delete": {
+        "summary": "Delete product",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
-        "summary": "Fetch single user by unique identifier.",
-        "description": "Fetch single user by unique identifier.",
-        "x-source-file": "app/main.py",
-        "x-source-line": 88,
-        "x-handler-name": "get_user_by_id",
-        "x-discovery-method": "framework_ast",
+        "summary": "Get product by ID",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update product",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}": {
+      "delete": {
+        "summary": "Delete user",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
         "x-confidence": 1.0,
         "parameters": [
           {
@@ -142,18 +582,121 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
-            "description": "Target user identifier"
+            "description": null
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get user by ID",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response (200)",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -162,13 +705,62 @@
       }
     },
     "/api/v1/orders": {
+      "get": {
+        "summary": "List orders",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by order status"
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by user ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
-        "summary": "Undocumented route implemented in source code but missing from OpenAPI spec.",
-        "description": "Undocumented route implemented in source code but missing from OpenAPI spec.",
-        "x-source-file": "app/main.py",
-        "x-source-line": 103,
-        "x-handler-name": "create_order",
-        "x-discovery-method": "framework_ast",
+        "summary": "Create order",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
         "x-confidence": 1.0,
         "parameters": [],
         "requestBody": {
@@ -183,12 +775,465 @@
         },
         "responses": {
           "201": {
-            "description": "Successful response (201)",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {}
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}": {
+      "get": {
+        "summary": "Get order by ID",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/{payment_id}": {
+      "get": {
+        "summary": "Get payment status",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/{payment_id}/receipt": {
+      "get": {
+        "summary": "Get payment receipt",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceiptResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "summary": "List products",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by product category"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Minimum price filter"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Page limit"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Page offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create product",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "List users",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by user role"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Page limit"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Page offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create user",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}/status": {
+      "patch": {
+        "summary": "Update order status",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": null
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments": {
+      "post": {
+        "summary": "Process payment",
+        "x-source-file": "contracts/openapi-v1.json",
+        "x-source-line": null,
+        "x-handler-name": null,
+        "x-discovery-method": "openapi_spec",
+        "x-confidence": 1.0,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -199,12 +1244,262 @@
   },
   "components": {
     "schemas": {
-      "UserCreate": {
+      "CreateProjectRequest": {
         "type": "object",
         "required": [
-          "username",
-          "email"
+          "name"
         ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description"
+          },
+          "repository_url": {
+            "type": "string",
+            "description": "Repository URL",
+            "default": "https://github.com/demo/sample-repo"
+          }
+        }
+      },
+      "ProjectItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "repository_url": {
+            "type": "string"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "items": {
+            "type": "string"
+          },
+          "total_amount": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "order_id": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "payment_method": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentReceiptResponse": {
+        "type": "object",
+        "properties": {
+          "receipt_id": {
+            "type": "string"
+          },
+          "payment_id": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "issued_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "ProductResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "stock": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OrderUpdateStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Target status"
+          }
+        }
+      },
+      "OrderCreate": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional customer notes"
+          }
+        }
+      },
+      "PaymentCreate": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "payment_method": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price in USD"
+          },
+          "category": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "minimum": 0.0
+          }
+        }
+      },
+      "UserCreate": {
+        "type": "object",
         "properties": {
           "username": {
             "type": "string",
@@ -214,55 +1509,48 @@
           },
           "email": {
             "type": "string",
-            "description": "User primary email address"
+            "description": "User email address"
           },
-          "age": {
-            "type": "integer",
-            "minimum": 18,
-            "maximum": 120,
-            "description": "User age in years"
-          },
-          "status": {
+          "role": {
             "type": "string",
-            "enum": [
-              "active",
-              "pending",
-              "suspended"
-            ],
-            "default": "pending",
-            "description": "Account status"
+            "description": "Account permission role"
           }
         }
       },
-      "UserResponse": {
+      "ProductUpdate": {
         "type": "object",
         "properties": {
-          "id": {
+          "name": {
             "type": "string"
           },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "string"
+          }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "properties": {
           "username": {
             "type": "string"
           },
           "email": {
             "type": "string"
           },
-          "created_at": {
+          "role": {
             "type": "string"
-          }
-        }
-      },
-      "OrderCreate": {
-        "type": "object",
-        "properties": {
-          "item_name": {
-            "type": "string",
-            "min_length": 1,
-            "description": "Item identifier"
           },
-          "amount": {
-            "type": "string",
-            "gt": 0,
-            "description": "Order total in USD"
+          "is_active": {
+            "type": "string"
           }
         }
       }

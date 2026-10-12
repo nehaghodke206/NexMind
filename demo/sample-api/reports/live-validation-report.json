@@ -1,0 +1,287 @@
+{
+  "total_probes": 7,
+  "reachable_count": 6,
+  "auth_failure_count": 0,
+  "client_error_count": 0,
+  "server_failure_count": 1,
+  "unreachable_count": 0,
+  "contract_mismatch_count": 0,
+  "security_blocked_count": 0,
+  "duration_seconds": 0.51,
+  "results": [
+    {
+      "endpoint_id": "demo-api:service-health",
+      "service_name": "Demo Application",
+      "url": "http://localhost:8080/health",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 47.78,
+      "error_message": null,
+      "fingerprint": "9e2d084785d7bb8b",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "105",
+        "content-type": "application/json"
+      },
+      "structural_schema": {
+        "status": "string",
+        "service": "string",
+        "configured_backend_url": "string"
+      },
+      "observed_at": "2026-10-12T04:59:45.442455+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "demo-api:backend-health-integration",
+      "service_name": "Demo Application",
+      "url": "http://localhost:8080/api/backend/health",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 35.99,
+      "error_message": null,
+      "fingerprint": "a818e727d728bb25",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "198",
+        "content-type": "application/json"
+      },
+      "structural_schema": {
+        "status": "string",
+        "backend_service": "string",
+        "backend_version": "string",
+        "upstream_url": "string",
+        "raw_response": {
+          "status": "string",
+          "version": "string"
+        }
+      },
+      "observed_at": "2026-10-12T04:59:45.457797+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "demo-api:backend-projects-integration",
+      "service_name": "Demo Application",
+      "url": "http://localhost:8080/api/backend/projects",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 40.48,
+      "error_message": null,
+      "fingerprint": "8fedb0e0d7c66832",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "5462",
+        "content-type": "application/json"
+      },
+      "structural_schema": {
+        "status": "string",
+        "upstream_url": "string",
+        "total": "integer",
+        "items": [
+          {
+            "name": "string",
+            "description": "string",
+            "repository_url": "string",
+            "id": "string",
+            "created_at": "string",
+            "updated_at": "string"
+          }
+        ]
+      },
+      "observed_at": "2026-10-12T04:59:45.462864+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "demo-api:broken-invalid-path",
+      "service_name": "Demo Application",
+      "url": "http://localhost:8080/api/broken/invalid-path",
+      "method": "GET",
+      "status_code": 502,
+      "status": "server_failure",
+      "latency_ms": 33.61,
+      "error_message": "Upstream service 'Demo Application' returned server failure 502: Configured upstream path '/api/v1/nonexistent-service' was not found on backend (404 Not Found).",
+      "fingerprint": "b0d8496f0d0713a4",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "241",
+        "content-type": "application/json"
+      },
+      "structural_schema": {
+        "detail": {
+          "error": "string",
+          "target_url": "string",
+          "upstream_status": "integer",
+          "message": "string"
+        }
+      },
+      "observed_at": "2026-10-12T04:59:45.456403+00:00",
+      "findings": [
+        {
+          "id": "find_085a3214-c847-4bd7-b366-f2afddbf92fb",
+          "rule_id": "RULE-API-SERVER-FAILURE",
+          "fingerprint": "live:server:demo-api:broken-invalid-path:502",
+          "compatibility": "breaking",
+          "severity": "high",
+          "path": "/api/broken/invalid-path",
+          "method": "GET",
+          "schema_location": "response.status",
+          "previous_value": 200,
+          "current_value": 502,
+          "message": "Upstream service 'Demo Application' returned server failure 502: Configured upstream path '/api/v1/nonexistent-service' was not found on backend (404 Not Found).",
+          "evidence": {
+            "url": "http://localhost:8080/api/broken/invalid-path",
+            "status_code": 502,
+            "error": "upstream_path_not_found",
+            "target_url": "http://localhost:8000/api/v1/nonexistent-service",
+            "upstream_status": 404,
+            "message": "Configured upstream path '/api/v1/nonexistent-service' was not found on backend (404 Not Found).",
+            "invalid_path": "/api/v1/nonexistent-service"
+          },
+          "confidence": 1.0,
+          "source": "algorithmic",
+          "review_required": false,
+          "ai_reasoning": null,
+          "provenance": "live_probe",
+          "recommended_action": "Check Demo Application service health and logs.",
+          "impact": null,
+          "created_at": "2026-10-12T04:59:45.456363Z"
+        }
+      ],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "guardian-backend:backend-health",
+      "service_name": "Guardian Backend",
+      "url": "http://localhost:8000/api/v1/health",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 9.04,
+      "error_message": null,
+      "fingerprint": "0aea2c4676a8ab9e",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "33",
+        "content-type": "application/json",
+        "vary": "Origin"
+      },
+      "structural_schema": {
+        "status": "string",
+        "version": "string"
+      },
+      "observed_at": "2026-10-12T04:59:45.431966+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "guardian-backend:backend-projects",
+      "service_name": "Guardian Backend",
+      "url": "http://localhost:8000/api/v1/projects",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 8.77,
+      "error_message": null,
+      "fingerprint": "e1ad2a4355f9f8be",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "5412",
+        "content-type": "application/json",
+        "vary": "Origin"
+      },
+      "structural_schema": {
+        "items": [
+          {
+            "name": "string",
+            "description": "string",
+            "repository_url": "string",
+            "id": "string",
+            "created_at": "string",
+            "updated_at": "string"
+          }
+        ],
+        "page": "integer",
+        "page_size": "integer",
+        "total": "integer"
+      },
+      "observed_at": "2026-10-12T04:59:45.441048+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    },
+    {
+      "endpoint_id": "guardian-backend:backend-docs",
+      "service_name": "Guardian Backend",
+      "url": "http://localhost:8000/docs",
+      "method": "GET",
+      "status_code": 200,
+      "status": "reachable",
+      "latency_ms": 3.48,
+      "error_message": null,
+      "fingerprint": "719f2c00134a3a91",
+      "safe_headers": {
+        "date": "Mon, 12 Oct 2026 04:59:44 GMT",
+        "server": "uvicorn",
+        "content-length": "1022",
+        "content-type": "text/html; charset=utf-8",
+        "vary": "Origin"
+      },
+      "structural_schema": {
+        "type": "non_json",
+        "content_type": "text/html; charset=utf-8"
+      },
+      "observed_at": "2026-10-12T04:59:45.445349+00:00",
+      "findings": [],
+      "provenance": "live_probe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "find_085a3214-c847-4bd7-b366-f2afddbf92fb",
+      "rule_id": "RULE-API-SERVER-FAILURE",
+      "fingerprint": "live:server:demo-api:broken-invalid-path:502",
+      "compatibility": "breaking",
+      "severity": "high",
+      "path": "/api/broken/invalid-path",
+      "method": "GET",
+      "schema_location": "response.status",
+      "previous_value": 200,
+      "current_value": 502,
+      "message": "Upstream service 'Demo Application' returned server failure 502: Configured upstream path '/api/v1/nonexistent-service' was not found on backend (404 Not Found).",
+      "evidence": {
+        "url": "http://localhost:8080/api/broken/invalid-path",
+        "status_code": 502,
+        "error": "upstream_path_not_found",
+        "target_url": "http://localhost:8000/api/v1/nonexistent-service",
+        "upstream_status": 404,
+        "message": "Configured upstream path '/api/v1/nonexistent-service' was not found on backend (404 Not Found).",
+        "invalid_path": "/api/v1/nonexistent-service"
+      },
+      "confidence": 1.0,
+      "source": "algorithmic",
+      "review_required": false,
+      "ai_reasoning": null,
+      "provenance": "live_probe",
+      "recommended_action": "Check Demo Application service health and logs.",
+      "impact": null,
+      "created_at": "2026-10-12T04:59:45.456363Z"
+    }
+  ],
+  "config_source": "/home/last-hope/Dnyaneshwar/HackWave/demo/sample-api/dependency-guardian.yml",
+  "mode": "algorithmic",
+  "ai_status": "skipped",
+  "ai_provider": null,
+  "ai_model": null,
+  "ai_error": null,
+  "timestamp": "2026-10-12T04:59:45.463220+00:00"
+}

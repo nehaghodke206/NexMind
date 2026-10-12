@@ -1,5 +1,7 @@
+import re
 from datetime import datetime, timezone
 from typing import List, Optional
+from sqlalchemy import cast, String
 from sqlalchemy.orm import Session
 from app.models.repair import (
     RepairProposal,
@@ -18,7 +20,49 @@ class RepairRepository:
         self.db = db
 
     def get_proposal_by_id(self, repair_id: str) -> Optional[RepairProposal]:
-        return self.db.query(RepairProposal).filter(RepairProposal.id == repair_id).first()
+        if not repair_id:
+            return None
+
+        # 1. Exact primary key match
+        prop = self.db.query(RepairProposal).filter(RepairProposal.id == repair_id).first()
+        if prop:
+            return prop
+
+        # 2. Prefix match (e.g., 8-character truncated hash)
+        if len(repair_id) >= 6:
+            prop = (
+                self.db.query(RepairProposal)
+                .filter(RepairProposal.id.startswith(repair_id))
+                .first()
+            )
+            if prop:
+                return prop
+
+        # 3. Look up by client_repair_id or repair_id in proposed_changes JSON
+        try:
+            prop = (
+                self.db.query(RepairProposal)
+                .filter(
+                    (cast(RepairProposal.proposed_changes["client_repair_id"], String) == f'"{repair_id}"')
+                    | (cast(RepairProposal.proposed_changes["repair_id"], String) == f'"{repair_id}"')
+                )
+                .first()
+            )
+            if prop:
+                return prop
+        except Exception:
+            pass
+
+        # 4. Fallback in-memory search across proposals (for dialects without json cast support)
+        for p in self.db.query(RepairProposal).all():
+            if p.proposed_changes and isinstance(p.proposed_changes, dict):
+                if (
+                    p.proposed_changes.get("client_repair_id") == repair_id
+                    or p.proposed_changes.get("repair_id") == repair_id
+                ):
+                    return p
+
+        return None
 
     def list_proposals_by_incident(self, incident_id: str) -> List[RepairProposal]:
         return (
@@ -108,6 +152,15 @@ class RepairRepository:
         )
         self.db.add(approval)
         proposal.status = "approved"
+
+        # Bind patch_hash directly to proposal if provided in request or comment
+        if getattr(data, "patch_hash", None):
+            proposal.patch_hash = data.patch_hash
+        elif data.comment:
+            match = re.search(r"Approved patch hash:\s*([a-f0-9]+)", data.comment, re.IGNORECASE)
+            if match:
+                proposal.patch_hash = match.group(1)
+
         self.db.commit()
         self.db.refresh(approval)
         self.db.refresh(proposal)
@@ -159,3 +212,12 @@ class RepairRepository:
         self.db.refresh(app_record)
         self.db.refresh(proposal)
         return app_record
+
+    def rollback_application(self, proposal: RepairProposal) -> RepairProposal:
+        proposal.status = "rolled_back"
+        proposal.applied_at = None
+        if proposal.incident:
+            proposal.incident.status = "reopened"
+        self.db.commit()
+        self.db.refresh(proposal)
+        return proposal

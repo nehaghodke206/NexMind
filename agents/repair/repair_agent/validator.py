@@ -6,9 +6,9 @@ import shutil
 import subprocess
 import tempfile
 import time
-from typing import Optional, Set
+from typing import List, Optional, Set
 
-from .models import ValidationDetails, ValidationStatus
+from .models import FileChange, ValidationDetails, ValidationStatus
 
 logger = logging.getLogger("repair_agent.validator")
 
@@ -25,52 +25,100 @@ class PatchValidator:
         proposed_content: str,
         workspace_dir: Optional[Path] = None,
         test_command: Optional[str] = None,
+        file_changes: Optional[List[FileChange]] = None,
     ) -> ValidationDetails:
         """Execute AST syntax and sandbox validation without touching original files."""
         start_time = time.perf_counter()
         target_resolved = target_file.resolve()
         workspace_resolved = workspace_dir.resolve() if workspace_dir else None
 
-        # Step 1: AST Syntax and safety check for Python files
-        if target_resolved.suffix == ".py":
-            ast_ok, syntax_err = self._check_python_ast(proposed_content)
-            if not ast_ok:
-                elapsed = (time.perf_counter() - start_time) * 1000
-                return ValidationDetails(
-                    status=ValidationStatus.FAILED,
-                    ast_valid=False,
-                    syntax_error=syntax_err,
-                    validation_time_ms=round(elapsed, 2),
-                )
+        # Step 1: AST Syntax and safety check for all changed Python files
+        if file_changes:
+            for fc in file_changes:
+                fc_path = Path(fc.file_path)
+                if fc_path.suffix == ".py":
+                    ast_ok, syntax_err = self._check_python_ast(fc.proposed_content)
+                    fc.ast_valid = ast_ok
+                    fc.syntax_error = syntax_err
+                    if not ast_ok:
+                        elapsed = (time.perf_counter() - start_time) * 1000
+                        return ValidationDetails(
+                            status=ValidationStatus.FAILED,
+                            ast_valid=False,
+                            syntax_error=f"{fc_path.name}: {syntax_err}",
+                            validation_time_ms=round(elapsed, 2),
+                        )
+        else:
+            if target_resolved.suffix == ".py":
+                ast_ok, syntax_err = self._check_python_ast(proposed_content)
+                if not ast_ok:
+                    elapsed = (time.perf_counter() - start_time) * 1000
+                    return ValidationDetails(
+                        status=ValidationStatus.FAILED,
+                        ast_valid=False,
+                        syntax_error=syntax_err,
+                        validation_time_ms=round(elapsed, 2),
+                    )
 
         # Step 2: Sandbox copy validation
         with tempfile.TemporaryDirectory() as temp_dir_str:
             temp_dir = Path(temp_dir_str)
+            temp_dir_resolved = temp_dir.resolve()
 
-            # Copy target file to temp directory
-            rel_path = target_resolved.name
-            temp_target = temp_dir / rel_path
-            temp_target.write_text(proposed_content, encoding="utf-8")
-
-            # If workspace has test files, copy them over for execution
-            if workspace_resolved and workspace_resolved.is_dir() and test_command:
-                # Copy workspace files to temp directory (excluding venvs, git)
+            # If workspace is provided, copy it over for test execution
+            if workspace_resolved and workspace_resolved.is_dir():
                 for item in workspace_resolved.iterdir():
-                    if item.name in {".git", ".venv", "venv", "__pycache__", ".pytest_cache"}:
+                    if item.name in {".git", ".venv", "venv", "__pycache__", ".pytest_cache", "node_modules"}:
                         continue
                     dest = temp_dir / item.name
                     if item.is_dir():
-                        shutil.copytree(item, dest, ignore=shutil.ignore_patterns(".venv", "__pycache__", "*.pyc"))
-                    else:
+                        shutil.copytree(
+                            item,
+                            dest,
+                            symlinks=True,
+                            ignore_dangling_symlinks=True,
+                            ignore=shutil.ignore_patterns(".venv", "__pycache__", "*.pyc", "*.sock"),
+                        )
+                    elif item.is_file():
                         shutil.copy2(item, dest)
-                # Overwrite the modified target file in the temp copy
-                try:
-                    rel_to_workspace = target_resolved.relative_to(workspace_resolved)
-                    sandbox_file = temp_dir / rel_to_workspace
-                    sandbox_file.parent.mkdir(parents=True, exist_ok=True)
-                    sandbox_file.write_text(proposed_content, encoding="utf-8")
-                except ValueError:
-                    temp_target.write_text(proposed_content, encoding="utf-8")
+
+                # Apply proposed file changes into temp copy
+                changes_to_apply = file_changes if file_changes else [
+                    FileChange(
+                        file_path=str(target_resolved),
+                        proposed_content=proposed_content,
+                    )
+                ]
+
+                for fc in changes_to_apply:
+                    fc_p = Path(fc.file_path)
+                    try:
+                        if fc_p.is_absolute():
+                            rel = fc_p.resolve().relative_to(workspace_resolved)
+                        else:
+                            rel = fc_p
+                    except ValueError:
+                        rel = Path(fc_p.name)
+
+                    dest_sandbox_file = (temp_dir / rel).resolve()
+                    # Security check: ensure file path cannot escape sandbox directory
+                    try:
+                        dest_sandbox_file.relative_to(temp_dir_resolved)
+                    except ValueError:
+                        elapsed = (time.perf_counter() - start_time) * 1000
+                        return ValidationDetails(
+                            status=ValidationStatus.FAILED,
+                            ast_valid=False,
+                            syntax_error=f"Sandbox security violation: path traversal detected for '{fc.file_path}'",
+                            validation_time_ms=round(elapsed, 2),
+                        )
+
+                    dest_sandbox_file.parent.mkdir(parents=True, exist_ok=True)
+                    dest_sandbox_file.write_text(fc.proposed_content, encoding="utf-8")
+            else:
+                # No workspace directory, write primary target file directly in temp sandbox
+                temp_target = temp_dir / target_resolved.name
+                temp_target.write_text(proposed_content, encoding="utf-8")
 
             # Step 3: Run test command if provided
             test_passed = None
@@ -79,7 +127,6 @@ class PatchValidator:
             if test_command:
                 test_executed = True
                 sandbox_env = os.environ.copy()
-                # Prepend temp_dir to PYTHONPATH so imports strictly resolve inside sandbox first
                 existing_pythonpath = sandbox_env.get("PYTHONPATH", "")
                 sandbox_env["PYTHONPATH"] = (
                     f"{temp_dir_str}:{existing_pythonpath}".rstrip(":")

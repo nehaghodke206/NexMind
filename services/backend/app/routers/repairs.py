@@ -51,6 +51,7 @@ def approve_repair(repair_id: str, payload: RepairApprovalCreate, db: Session = 
 
 
 @router.post("/repair-proposals/{repair_id}/rejection", response_model=RepairProposalResponse, tags=["Approvals"], summary="Reject a repair proposal")
+@router.post("/repairs/{repair_id}/reject", response_model=RepairProposalResponse, tags=["Approvals"], include_in_schema=False)
 def reject_repair(repair_id: str, payload: RepairRejectionCreate, db: Session = Depends(get_db)):
     service = RepairService(db)
     proposal = service.reject_proposal(repair_id, payload)
@@ -63,3 +64,11 @@ def record_repair_application(repair_id: str, payload: RepairApplicationCreate, 
     service = RepairService(db)
     app_record = service.record_application(repair_id, payload)
     return RepairApplicationResponse.model_validate(app_record)
+
+
+@router.post("/repair-proposals/{repair_id}/rollback", response_model=RepairProposalResponse, tags=["Applications"], summary="Rollback an applied repair proposal")
+@router.post("/repairs/{repair_id}/rollback", response_model=RepairProposalResponse, tags=["Applications"], include_in_schema=False)
+def rollback_repair(repair_id: str, db: Session = Depends(get_db)):
+    service = RepairService(db)
+    proposal = service.rollback_application(repair_id)
+    return RepairProposalResponse.model_validate(proposal)

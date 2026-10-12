@@ -102,3 +102,71 @@ def test_cli_nonexistent_file(capsys):
     captured = capsys.readouterr()
     assert "Specification file not found" in captured.err
 
+
+def test_cli_sync_backend_missing_ids(capsys):
+    ret = run([BASELINE_PATH, IDENTICAL_PATH, "--sync-backend"])
+    assert ret == 2
+    captured = capsys.readouterr()
+    assert "Error: Both --project-id and --dependency-id are required for backend synchronization or repair proposals." in captured.err
+
+
+def test_cli_sync_backend_with_valid_ids(capsys, monkeypatch):
+    called = {}
+
+    def mock_sync(self, project_id, dependency_id, result):
+        called["project_id"] = project_id
+        called["dependency_id"] = dependency_id
+        return {
+            "synced": True,
+            "scan_id": "scan_test_123",
+            "observations_count": 0,
+            "incidents_created": 0,
+            "incident_records": [],
+        }
+
+    from dependency_guardian.client.backend import BackendClient
+    monkeypatch.setattr(BackendClient, "sync_detection_result", mock_sync)
+
+    ret = run([
+        BASELINE_PATH,
+        IDENTICAL_PATH,
+        "--sync-backend",
+        "--project-id", "proj-uuid-123",
+        "--dependency-id", "dep-uuid-456",
+        "--quiet",
+    ])
+    assert ret == 0
+    assert called["project_id"] == "proj-uuid-123"
+    assert called["dependency_id"] == "dep-uuid-456"
+
+
+def test_cli_sync_backend_with_env_var_ids(capsys, monkeypatch):
+    called = {}
+
+    def mock_sync(self, project_id, dependency_id, result):
+        called["project_id"] = project_id
+        called["dependency_id"] = dependency_id
+        return {
+            "synced": True,
+            "scan_id": "scan_test_456",
+            "observations_count": 0,
+            "incidents_created": 0,
+            "incident_records": [],
+        }
+
+    from dependency_guardian.client.backend import BackendClient
+    monkeypatch.setattr(BackendClient, "sync_detection_result", mock_sync)
+    monkeypatch.setenv("DEPENDENCY_GUARDIAN_PROJECT_ID", "env-proj-789")
+    monkeypatch.setenv("DEPENDENCY_GUARDIAN_DEPENDENCY_ID", "env-dep-101")
+
+    ret = run([
+        BASELINE_PATH,
+        IDENTICAL_PATH,
+        "--sync-backend",
+        "--quiet",
+    ])
+    assert ret == 0
+    assert called["project_id"] == "env-proj-789"
+    assert called["dependency_id"] == "env-dep-101"
+
+

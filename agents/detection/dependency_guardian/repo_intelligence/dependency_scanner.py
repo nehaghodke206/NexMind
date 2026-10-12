@@ -9,7 +9,7 @@ import logging
 import os
 from pathlib import Path
 import re
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import yaml
 
@@ -19,6 +19,7 @@ from .models import (
     ImportLocation,
     SkippedFileDoc,
 )
+from .traversal import DEFAULT_IGNORE_DIRS, get_effective_ignore_dirs, safe_walk
 
 logger = logging.getLogger("dependency_guardian.repo_intelligence.dependency_scanner")
 
@@ -197,8 +198,10 @@ VERIFIED_VULNERABILITY_DB: Dict[str, List[Dict[str, Any]]] = {
 class DependencyScanner:
     """Scans repository for declared and resolved dependencies, imports, and integrations."""
 
-    def __init__(self, repo_root: Path):
+    def __init__(self, repo_root: Path, output_dir: Optional[Path] = None, on_progress: Optional[Callable[[Dict[str, Any]], None]] = None):
         self.repo_root = repo_root.resolve()
+        self.output_dir = output_dir.resolve() if output_dir else None
+        self.on_progress = on_progress
         self.import_map: Dict[str, List[ImportLocation]] = {}
         self.internal_modules: Set[str] = set()
         self.integrations: List[ExternalIntegrationDoc] = []
@@ -250,15 +253,7 @@ class DependencyScanner:
 
     def _scan_source_tree(self) -> None:
         """Walk source tree to collect AST imports, require calls, and internal module names."""
-        ignore_dirs = {
-            ".git", ".venv", "venv", "node_modules", "__pycache__",
-            ".pytest_cache", ".idea", "dist", "build", ".next", ".nuxt", "target"
-        }
-
-        for root, dirs, files in os.walk(self.repo_root):
-            # Prune ignored directories
-            dirs[:] = [d for d in dirs if d not in ignore_dirs and not d.startswith(".")]
-
+        for root, _, files in safe_walk(self.repo_root, output_dir=self.output_dir):
             rel_root = Path(root).relative_to(self.repo_root)
             for f in files:
                 file_path = Path(root) / f
@@ -344,22 +339,46 @@ class DependencyScanner:
     def _discover_manifest_dependencies(self) -> List[DependencyDoc]:
         """Discover dependencies from all found manifests and lockfiles."""
         dependencies: Dict[str, DependencyDoc] = {}
+        manifest_files = self._find_manifest_files()
 
         # 1. Python: requirements.txt, pyproject.toml, poetry.lock, Pipfile.lock
-        self._scan_python_manifests(dependencies)
+        self._scan_python_manifests(dependencies, manifest_files.get("requirements", []))
 
         # 2. Node.js: package.json, package-lock.json, yarn.lock
-        self._scan_node_manifests(dependencies)
+        self._scan_node_manifests(dependencies, manifest_files.get("package_json", []))
 
         # 3. Go: go.mod, go.sum
-        self._scan_go_manifests(dependencies)
+        self._scan_go_manifests(dependencies, manifest_files.get("go_mod", []))
 
         # 4. Cargo: Cargo.toml, Cargo.lock
-        self._scan_cargo_manifests(dependencies)
+        self._scan_cargo_manifests(dependencies, manifest_files.get("cargo_toml", []))
 
         return list(dependencies.values())
 
-    def _scan_python_manifests(self, deps: Dict[str, DependencyDoc]) -> None:
+    def _find_manifest_files(self) -> Dict[str, List[Path]]:
+        """Collect all manifest files in a single pruned walk pass."""
+        manifests: Dict[str, List[Path]] = {
+            "requirements": [],
+            "package_json": [],
+            "go_mod": [],
+            "cargo_toml": [],
+        }
+        for root, _, files in safe_walk(self.repo_root, output_dir=self.output_dir):
+            root_path = Path(root)
+            for f in files:
+                f_lower = f.lower()
+                fp = root_path / f
+                if "requirements" in f_lower and f_lower.endswith(".txt"):
+                    manifests["requirements"].append(fp)
+                elif f_lower == "package.json":
+                    manifests["package_json"].append(fp)
+                elif f_lower == "go.mod":
+                    manifests["go_mod"].append(fp)
+                elif f_lower == "cargo.toml":
+                    manifests["cargo_toml"].append(fp)
+        return manifests
+
+    def _scan_python_manifests(self, deps: Dict[str, DependencyDoc], req_files: List[Path]) -> None:
         """Scan Python dependency files."""
         # Check poetry.lock or Pipfile.lock first to get resolved versions
         poetry_lock = self.repo_root / "poetry.lock"
@@ -378,9 +397,7 @@ class DependencyScanner:
                 logger.debug(f"Failed parsing poetry.lock: {exc}")
 
         # Scan requirements.txt (and variants)
-        for req_file in self.repo_root.rglob("*requirements*.txt"):
-            if any(part in req_file.parts for part in [".venv", "venv", "node_modules", ".git"]):
-                continue
+        for req_file in req_files:
             try:
                 rel_manifest = str(req_file.relative_to(self.repo_root))
                 for line in req_file.read_text(encoding="utf-8").splitlines():
@@ -465,11 +482,9 @@ class DependencyScanner:
             except Exception as exc:
                 logger.debug(f"Error reading pyproject.toml: {exc}")
 
-    def _scan_node_manifests(self, deps: Dict[str, DependencyDoc]) -> None:
+    def _scan_node_manifests(self, deps: Dict[str, DependencyDoc], pkg_json_files: List[Path]) -> None:
         """Scan Node.js package.json and lockfiles."""
-        for pkg_json_path in self.repo_root.rglob("package.json"):
-            if any(part in pkg_json_path.parts for part in ["node_modules", ".git", ".venv"]):
-                continue
+        for pkg_json_path in pkg_json_files:
             try:
                 rel_manifest = str(pkg_json_path.relative_to(self.repo_root))
                 data = json.loads(pkg_json_path.read_text(encoding="utf-8"))
@@ -522,11 +537,9 @@ class DependencyScanner:
             except Exception as exc:
                 logger.debug(f"Error reading package.json at {pkg_json_path}: {exc}")
 
-    def _scan_go_manifests(self, deps: Dict[str, DependencyDoc]) -> None:
+    def _scan_go_manifests(self, deps: Dict[str, DependencyDoc], go_mod_files: List[Path]) -> None:
         """Scan Go go.mod manifests."""
-        for go_mod in self.repo_root.rglob("go.mod"):
-            if any(part in go_mod.parts for part in [".git", "vendor"]):
-                continue
+        for go_mod in go_mod_files:
             try:
                 rel_manifest = str(go_mod.relative_to(self.repo_root))
                 content = go_mod.read_text(encoding="utf-8")
@@ -554,11 +567,9 @@ class DependencyScanner:
             except Exception as exc:
                 logger.debug(f"Error parsing go.mod: {exc}")
 
-    def _scan_cargo_manifests(self, deps: Dict[str, DependencyDoc]) -> None:
+    def _scan_cargo_manifests(self, deps: Dict[str, DependencyDoc], cargo_files: List[Path]) -> None:
         """Scan Rust Cargo.toml manifests."""
-        for cargo_toml in self.repo_root.rglob("Cargo.toml"):
-            if any(part in cargo_toml.parts for part in [".git", "target"]):
-                continue
+        for cargo_toml in cargo_files:
             try:
                 rel_manifest = str(cargo_toml.relative_to(self.repo_root))
                 content = cargo_toml.read_text(encoding="utf-8")
@@ -661,8 +672,7 @@ class DependencyScanner:
             (re.compile(r"""@celery\.task|\.apply_async\s*\("""), "Celery Task Broker", "message_broker"),
         ]
 
-        for root, dirs, files in os.walk(self.repo_root):
-            dirs[:] = [d for d in dirs if d not in ignore_dirs and not d.startswith(".")]
+        for root, _, files in safe_walk(self.repo_root, output_dir=self.output_dir):
             for f in files:
                 file_path = Path(root) / f
                 rel_path = str(file_path.relative_to(self.repo_root))
@@ -687,6 +697,15 @@ class DependencyScanner:
                                                 raw_url = None
                                                 if node.args and isinstance(node.args[0], ast.Constant):
                                                     raw_url = str(node.args[0].value)
+                                                elif node.args and isinstance(node.args[0], ast.JoinedStr):
+                                                    parts = []
+                                                    for val in node.args[0].values:
+                                                        if isinstance(val, ast.Constant):
+                                                            parts.append(str(val.value))
+                                                        elif isinstance(val, ast.FormattedValue):
+                                                            expr_id = getattr(val.value, "id", None) or "var"
+                                                            parts.append(f"{{{expr_id}}}")
+                                                    raw_url = "".join(parts)
                                                 elif node.keywords:
                                                     for kw in node.keywords:
                                                         if kw.arg in ["url", "target"] and isinstance(kw.value, ast.Constant):

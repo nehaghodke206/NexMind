@@ -3,3 +3,11 @@
 src/**
 node_modules/**
 tsconfig.json
+*.vsix
+.venv/**
+venv/**
+__pycache__/**
+*.pyc
+.git/**
+.env*
+test/**

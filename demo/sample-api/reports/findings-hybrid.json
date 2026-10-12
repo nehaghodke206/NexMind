@@ -3,7 +3,7 @@
   "mode": "hybrid",
   "findings": [
     {
-      "id": "find_0b22c267-00c3-41d8-8a5a-543d74689863",
+      "id": "find_bab9974d-5150-4e70-ab8e-894451cc2dfd",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:22663834207a46e2",
       "compatibility": "non_breaking",
@@ -47,10 +47,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'discount_amount' was added at paths./api/v1/orders.get.responses.200.content.application/json.schema.properties.items.items.properties.discount_amount.",
-      "created_at": "2026-10-11T07:59:09.809549Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061733Z"
     },
     {
-      "id": "find_10e9bdbd-0b2e-41ea-a6d4-a2e5da98f260",
+      "id": "find_87498e7f-cac5-402a-ac72-f02cbee03184",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e2ea2f4c52368a15",
       "compatibility": "non_breaking",
@@ -94,10 +97,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'discount_amount' was added at paths./api/v1/orders.post.responses.201.content.application/json.schema.properties.discount_amount.",
-      "created_at": "2026-10-11T07:59:09.809612Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061788Z"
     },
     {
-      "id": "find_13e1923d-46e5-4dca-b3cf-7be63c2d18c2",
+      "id": "find_5ff17367-7a4f-49ce-bdaf-37538bea5f67",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:cf92810f63463ccf",
       "compatibility": "non_breaking",
@@ -141,10 +147,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}.get.responses.200.content.application/json.schema.properties.discount_amount.",
-      "created_at": "2026-10-11T07:59:09.809664Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061836Z"
     },
     {
-      "id": "find_8cd42299-0737-40bc-83a3-18d97f71d13a",
+      "id": "find_d3421c31-efba-419e-9123-783d7ff2fb81",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2dddf5a6f772e73f",
       "compatibility": "non_breaking",
@@ -188,10 +197,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'discount_amount' was added at paths./api/v1/orders/{order_id}/status.patch.responses.200.content.application/json.schema.properties.discount_amount.",
-      "created_at": "2026-10-11T07:59:09.809719Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061885Z"
     },
     {
-      "id": "find_9fe4921e-07c1-4b0b-a348-45e7d2aaa03f",
+      "id": "find_675c6713-bca0-4c8a-a813-5f68d516d01f",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:5f19bb342f44fa3c",
       "compatibility": "non_breaking",
@@ -223,10 +235,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'currency' was added at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.currency.",
-      "created_at": "2026-10-11T07:59:09.809777Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061932Z"
     },
     {
-      "id": "find_fd558f22-0963-4ece-8473-d99a0b6a52eb",
+      "id": "find_bd8bdf65-36c9-4cfc-a539-03a02c6cf61e",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:2bf0d6a6a70681dc",
       "compatibility": "breaking",
@@ -255,11 +270,14 @@
       "confidence": 1.0,
       "source": "hybrid",
       "review_required": false,
-      "ai_reasoning": "Removing enum values can lead to invalid requests if clients do not adhere to the new schema.",
-      "created_at": "2026-10-11T07:59:09.809763Z"
+      "ai_reasoning": "Enum values 'crypto' are no longer valid for payment methods.",
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061921Z"
     },
     {
-      "id": "find_c7eddb29-5dff-43b1-a84d-60d480aa5111",
+      "id": "find_7c12d813-7468-4279-9c9c-13a54f9db99a",
       "rule_id": "RULE-REQUIRED-FIELD-ADDED",
       "fingerprint": "dg:rule-required-field-added:081743be0365cb6d",
       "compatibility": "breaking",
@@ -277,11 +295,14 @@
       "confidence": 1.0,
       "source": "hybrid",
       "review_required": false,
-      "ai_reasoning": "Adding a required field can break existing clients that do not provide this field in their requests.",
-      "created_at": "2026-10-11T07:59:09.809792Z"
+      "ai_reasoning": "Currency field is now mandatory for payment requests.",
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061944Z"
     },
     {
-      "id": "find_3b965fba-c237-46a2-9004-84ab90d6fb49",
+      "id": "find_a390e883-698b-468f-a053-e0ebff6c21f8",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:add00f9dae7c178e",
       "compatibility": "breaking",
@@ -301,10 +322,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.amount.",
-      "created_at": "2026-10-11T07:59:09.809814Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061962Z"
     },
     {
-      "id": "find_c9b5a516-79f4-4065-a76e-55d756e77975",
+      "id": "find_af8e3e8e-6ede-4962-82a4-b0cba580b3ba",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:d4219cfd1f2cbe48",
       "compatibility": "non_breaking",
@@ -334,10 +358,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'currency' was added at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.currency.",
-      "created_at": "2026-10-11T07:59:09.809851Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061992Z"
     },
     {
-      "id": "find_16a4a173-6520-4740-b3da-1fdfc263ae83",
+      "id": "find_c7fda0cc-6cc4-4c31-8165-341cbd28b036",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:a4bcecee92b7e009",
       "compatibility": "potentially_breaking",
@@ -367,10 +394,13 @@
       "source": "hybrid",
       "review_required": true,
       "ai_reasoning": "Enum values removed at paths./api/v1/payments.post.responses.201.content.application/json.schema.properties.payment_method.enum: ['crypto'].",
-      "created_at": "2026-10-11T07:59:09.809830Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061976Z"
     },
     {
-      "id": "find_eb9dbeef-b651-4a42-a4dd-79da799dad23",
+      "id": "find_5c2c41c5-432a-4881-a154-279e916e94ca",
       "rule_id": "RULE-FIELD-TYPE-CHANGED",
       "fingerprint": "dg:rule-field-type-changed:f7ace9b2f17f4d40",
       "compatibility": "breaking",
@@ -390,10 +420,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Schema type changed incompatibly from 'number' to 'string' at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.amount.",
-      "created_at": "2026-10-11T07:59:09.809894Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.062030Z"
     },
     {
-      "id": "find_c24ab8d7-699f-4af3-b82f-2a2c4e6cd9da",
+      "id": "find_f94038a0-7d6e-4a1f-90ac-97982b2ef7bb",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:744ba98b47c293e2",
       "compatibility": "non_breaking",
@@ -423,10 +456,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'currency' was added at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.currency.",
-      "created_at": "2026-10-11T07:59:09.809926Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.062057Z"
     },
     {
-      "id": "find_574c4771-50c2-48a4-8d32-172dd6fc3f79",
+      "id": "find_60867cc4-f00d-47a5-91f8-f77ee0652cba",
       "rule_id": "RULE-ENUM-VALUE-REMOVED",
       "fingerprint": "dg:rule-enum-value-removed:245a9cddcedf3dcd",
       "compatibility": "potentially_breaking",
@@ -456,10 +492,13 @@
       "source": "hybrid",
       "review_required": true,
       "ai_reasoning": "Enum values removed at paths./api/v1/payments/{payment_id}.get.responses.200.content.application/json.schema.properties.payment_method.enum: ['crypto'].",
-      "created_at": "2026-10-11T07:59:09.809909Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.062042Z"
     },
     {
-      "id": "find_fd87faeb-758b-4f50-8ee2-1f92591a70bf",
+      "id": "find_f4b3511c-42e5-432c-9c0a-c29f0db1f0b4",
       "rule_id": "RULE-PATH-REMOVED",
       "fingerprint": "dg:rule-path-removed:1ad5b95ab2b40db9",
       "compatibility": "breaking",
@@ -484,10 +523,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "API path '/api/v1/payments/{payment_id}/receipt' was removed from the specification.",
-      "created_at": "2026-10-11T07:59:09.809959Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.062085Z"
     },
     {
-      "id": "find_49a03443-8cc0-4248-8ac0-6095d5b4e116",
+      "id": "find_bae4e10c-bc0b-45ff-9ffc-3afca14730ba",
       "rule_id": "RULE-REQUIRED-PARAM-ADDED",
       "fingerprint": "dg:rule-required-param-added:68f33c3dc19dd594",
       "compatibility": "breaking",
@@ -512,10 +554,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Newly required query parameter 'store_id' was added to GET /api/v1/products.",
-      "created_at": "2026-10-11T07:59:09.809194Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061407Z"
     },
     {
-      "id": "find_4827b604-6709-4aca-b36b-565bdc626ee1",
+      "id": "find_c2887cd1-1fc2-4673-8b84-98d862f3abfa",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:56b2cdaea4e00d72",
       "compatibility": "non_breaking",
@@ -557,10 +602,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809246Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061449Z"
     },
     {
-      "id": "find_a439a56d-b889-4c3d-9bd6-3df7726a396f",
+      "id": "find_e3c382aa-7759-4b22-bb85-8f62ac233883",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:21ae22555c945a2a",
       "compatibility": "breaking",
@@ -588,10 +636,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Property 'stock' was removed from response schema at paths./api/v1/products.get.responses.200.content.application/json.schema.properties.items.items.properties.stock.",
-      "created_at": "2026-10-11T07:59:09.809233Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061438Z"
     },
     {
-      "id": "find_c585feca-f953-4176-9926-9c77f40abeaf",
+      "id": "find_c2fca3f9-20c1-4b1a-8c50-65e2df3967dd",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2c726225cd1ccbb8",
       "compatibility": "non_breaking",
@@ -622,10 +673,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional query parameter 'store_id' was added to POST /api/v1/products.",
-      "created_at": "2026-10-11T07:59:09.809281Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061493Z"
     },
     {
-      "id": "find_85b13360-c828-49b5-977b-5b564eb5c97e",
+      "id": "find_d8ec25f1-e7f1-40a6-b260-aa4eba3b61a9",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:44eb5d55af457f77",
       "compatibility": "non_breaking",
@@ -667,10 +721,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products.post.requestBody.content.application/json.schema.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809307Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061515Z"
     },
     {
-      "id": "find_cfdeaa96-a1f4-4183-9f2e-f1834c42474e",
+      "id": "find_b05e5fcd-f93e-4279-be9d-b28d294e0282",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:42a30a123e2f6037",
       "compatibility": "non_breaking",
@@ -712,10 +769,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809342Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061548Z"
     },
     {
-      "id": "find_f00ac2a5-37c2-4241-886d-ddb4e25b52ef",
+      "id": "find_fb049a39-82d1-4424-aa57-28eec7b30337",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:6d1726e4a3e2e419",
       "compatibility": "breaking",
@@ -743,10 +803,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Property 'stock' was removed from response schema at paths./api/v1/products.post.responses.201.content.application/json.schema.properties.stock.",
-      "created_at": "2026-10-11T07:59:09.809330Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061538Z"
     },
     {
-      "id": "find_2b8da368-bc92-48dd-a269-8c2e964e821e",
+      "id": "find_7d1a222b-bda9-42ba-a3d9-d66db28610e0",
       "rule_id": "RULE-METHOD-REMOVED",
       "fingerprint": "dg:rule-method-removed:df468951ca058ba4",
       "compatibility": "breaking",
@@ -767,10 +830,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "HTTP method 'DELETE' was removed from path '/api/v1/products/{product_id}'.",
-      "created_at": "2026-10-11T07:59:09.809503Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061693Z"
     },
     {
-      "id": "find_db604d29-ab95-4026-82fe-865f077bb037",
+      "id": "find_d0445b67-4a86-41a6-9ff2-99d2273a347a",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:e1908b6c907aab97",
       "compatibility": "non_breaking",
@@ -812,10 +878,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809403Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061603Z"
     },
     {
-      "id": "find_b67c5b1a-9bdc-4eba-ae93-0eed6e42d6b8",
+      "id": "find_c91312cc-b85a-432f-965b-957a58728d3a",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:d911fd76cb98be39",
       "compatibility": "breaking",
@@ -843,10 +912,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.get.responses.200.content.application/json.schema.properties.stock.",
-      "created_at": "2026-10-11T07:59:09.809390Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061592Z"
     },
     {
-      "id": "find_3c8e3f32-f91c-4476-9bca-07da13b79f12",
+      "id": "find_2bf03f0b-56cd-4b26-922f-2977cccc9c0c",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:b66b579349776fcf",
       "compatibility": "non_breaking",
@@ -888,10 +960,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.requestBody.content.application/json.schema.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809443Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061639Z"
     },
     {
-      "id": "find_2eab38f4-87c7-48d5-b7e5-4a477a2046d0",
+      "id": "find_b14389e5-8220-4dd5-b66d-945c5a4f0bbb",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:1dad56b95732c644",
       "compatibility": "non_breaking",
@@ -933,10 +1008,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'sku' was added at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.sku.",
-      "created_at": "2026-10-11T07:59:09.809474Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061667Z"
     },
     {
-      "id": "find_70536b83-ac9b-49c5-aecd-a472678253a1",
+      "id": "find_1b3ecc0f-73e4-4edf-9326-24e916da7741",
       "rule_id": "RULE-RESPONSE-FIELD-REMOVED",
       "fingerprint": "dg:rule-response-field-removed:72c50e236592a891",
       "compatibility": "breaking",
@@ -964,10 +1042,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "Property 'stock' was removed from response schema at paths./api/v1/products/{product_id}.put.responses.200.content.application/json.schema.properties.stock.",
-      "created_at": "2026-10-11T07:59:09.809465Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061659Z"
     },
     {
-      "id": "find_e0d2c471-1b5c-430f-97a7-b59c6665405f",
+      "id": "find_9e139de1-e6f0-4aa2-873c-06fe368235d1",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:371d3ac92e04e012",
       "compatibility": "non_breaking",
@@ -1004,10 +1085,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional query parameter 'search' was added to GET /api/v1/users.",
-      "created_at": "2026-10-11T07:59:09.808858Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061118Z"
     },
     {
-      "id": "find_c8195165-4421-4dec-b553-4f76388254ea",
+      "id": "find_e7875944-9075-491a-a6de-ac835b6337ac",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6581398a269eca8",
       "compatibility": "non_breaking",
@@ -1049,10 +1133,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'notes' was added at paths./api/v1/users.get.responses.200.content.application/json.schema.properties.items.items.properties.notes.",
-      "created_at": "2026-10-11T07:59:09.808943Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061195Z"
     },
     {
-      "id": "find_6e441e81-91eb-46b7-a60e-e0a7e256a581",
+      "id": "find_ad4f6937-91ec-4510-a086-6b8bbc0bb953",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:2beccc594b89a7c8",
       "compatibility": "non_breaking",
@@ -1094,10 +1181,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'notes' was added at paths./api/v1/users.post.responses.201.content.application/json.schema.properties.notes.",
-      "created_at": "2026-10-11T07:59:09.809017Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061259Z"
     },
     {
-      "id": "find_94a82910-b3fe-4987-a42a-bf52851a6bd6",
+      "id": "find_4bbffce1-047a-44c8-be34-e73a00eee5c1",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:288b2c45b4917842",
       "compatibility": "non_breaking",
@@ -1139,10 +1229,13 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'notes' was added at paths./api/v1/users/{user_id}.get.responses.200.content.application/json.schema.properties.notes.",
-      "created_at": "2026-10-11T07:59:09.809076Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061307Z"
     },
     {
-      "id": "find_84185115-2d8b-4d2b-84c0-d282380a432e",
+      "id": "find_052da2e0-fbbc-4001-b52b-6da7b5078bf8",
       "rule_id": "RULE-FIELD-ADDED-OPTIONAL",
       "fingerprint": "dg:rule-field-added-optional:a6dad80d42ec2b64",
       "compatibility": "non_breaking",
@@ -1184,7 +1277,10 @@
       "source": "hybrid",
       "review_required": false,
       "ai_reasoning": "New optional field 'notes' was added at paths./api/v1/users/{user_id}.put.responses.200.content.application/json.schema.properties.notes.",
-      "created_at": "2026-10-11T07:59:09.809133Z"
+      "provenance": "contract_diff",
+      "recommended_action": null,
+      "impact": null,
+      "created_at": "2026-10-12T02:25:16.061354Z"
     }
   ],
   "summary": {
@@ -1203,8 +1299,8 @@
   "ai_status": "completed",
   "ai_error": null,
   "fallback_triggered": false,
-  "execution_time_ms": 80004.38,
-  "timestamp": "2026-10-11T08:00:29.808518Z",
+  "execution_time_ms": 90612.55,
+  "timestamp": "2026-10-12T02:26:46.667356Z",
   "ai_insights": {
     "executive_summary": "The Dependency Guardian Sample API v2.0.0 introduces breaking changes by removing enum values and adding a required field, while also adding a non-breaking change by adding an optional field.",
     "consumer_impact_analysis": "Consumers using the API will need to update their applications to handle the new required field and remove the removed enum values.",
@@ -1213,24 +1309,24 @@
       "RULE-REQUIRED-FIELD-ADDED"
     ],
     "recommended_fixes": [
-      "Update application to handle new required field",
-      "Remove removed enum values"
+      "Update application logic to handle the new required field.",
+      "Modify the API contract to reflect the removed enum values."
     ],
     "recommended_order_of_resolution": [
       "RULE-REQUIRED-FIELD-ADDED",
       "RULE-ENUM-VALUE-REMOVED"
     ],
     "recommended_regression_tests": [
-      "Test POST /api/v1/payments with new required field",
-      "Test GET /api/v1/orders with new optional field"
+      "Test the API with the new required field to ensure it works as expected.",
+      "Verify that the API contract is updated to reflect the removed enum values."
     ],
     "assumptions_and_limitations": "Assumes that consumers will update their applications to handle the new required field and remove the removed enum values.",
     "facts_extracted_from_openapi": [
-      "Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto']",
-      "Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema"
+      "POST /api/v1/payments: Enum values removed at paths./api/v1/payments.post.requestBody.content.application/json.schema.properties.payment_method.enum: ['crypto']",
+      "POST /api/v1/payments: Field 'currency' is newly required in request payload at paths./api/v1/payments.post.requestBody.content.application/json.schema"
     ],
     "ai_generated_hypotheses": [
-      "Consumers using the API may experience errors if they do not update their applications to handle the new required field and remove the removed enum values."
+      "Consumers may experience errors or crashes if they do not update their applications to handle the new required field."
     ],
     "model": "qwen2.5-coder:3b",
     "provider": "ollama"

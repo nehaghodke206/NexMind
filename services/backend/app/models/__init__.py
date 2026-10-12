@@ -3,9 +3,10 @@ from app.models.base import generate_uuid, utc_now
 from app.models.user import User
 from app.models.project import Project, ProjectMember
 from app.models.dependency import Dependency, BaselineVersion
+from app.models.baseline import ProjectBaseline
 from app.models.scan import ScanRun
 from app.models.observation import Observation, incident_observations
-from app.models.incident import Incident
+from app.models.incident import Incident, IncidentEvent
 from app.models.repair import (
     RepairProposal,
     ValidationRun,
@@ -23,10 +24,12 @@ __all__ = [
     "ProjectMember",
     "Dependency",
     "BaselineVersion",
+    "ProjectBaseline",
     "ScanRun",
     "Observation",
     "incident_observations",
     "Incident",
+    "IncidentEvent",
     "RepairProposal",
     "ValidationRun",
     "RepairApproval",

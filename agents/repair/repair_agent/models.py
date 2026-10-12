@@ -40,6 +40,20 @@ class FindingInput(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
 
+class FileChange(BaseModel):
+    """Represents a proposed change to a specific file within the workspace."""
+
+    file_path: str = Field(description="Workspace-relative or absolute path to the modified file")
+    diff: str = Field(default="", description="Unified diff for this file")
+    original_content: str = Field(default="", description="Original file content")
+    proposed_content: str = Field(default="", description="Repaired file content")
+    ast_valid: bool = Field(default=True, description="Whether proposed content is syntactically valid Python")
+    syntax_error: Optional[str] = Field(default=None, description="Syntax error details if ast_valid is False")
+    line_ranges: List[str] = Field(default_factory=list, description="Target line ranges modified in this file")
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class ValidationDetails(BaseModel):
     """Detailed results from validating the candidate patch in a temporary sandbox."""
 
@@ -60,6 +74,7 @@ class RepairRequest(BaseModel):
     finding: FindingInput
     target_file: Optional[str] = None
     workspace_dir: Optional[str] = None
+    affected_files: Optional[List[str]] = Field(default=None, description="Optional list of multiple affected files")
     provider: str = Field(default="deterministic", description="Patch generation provider: deterministic or ollama")
     model: str = Field(default_factory=lambda: get_settings().ollama_model, description="Model name if using local Ollama")
     base_url: str = Field(default_factory=lambda: get_settings().ollama_base_url, description="Ollama API base URL")
@@ -75,6 +90,11 @@ class RepairResult(BaseModel):
     finding_id: str
     status: RepairStatus
     target_file: Optional[str] = None
+    likely_root_cause: Optional[str] = Field(default=None, description="Diagnosed root cause category")
+    affected_symbols: List[str] = Field(default_factory=list, description="Target functions, classes, or symbols affected")
+    file_changes: List[FileChange] = Field(default_factory=list, description="Explicit list of all proposed file changes")
+    line_ranges: List[str] = Field(default_factory=list, description="Line ranges modified across target files")
+    suggested_validation_command: Optional[str] = Field(default=None, description="Suggested test or validation command")
 
     # Stage 1: Proposal Generation
     proposal_generated: bool = Field(default=False, description="Stage 1: True if a candidate patch proposal was generated")

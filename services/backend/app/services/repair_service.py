@@ -144,3 +144,19 @@ class RepairService:
             resource_id=application.id,
         )
         return application
+
+    def rollback_application(self, repair_id: str) -> RepairProposal:
+        proposal = self.get_proposal(repair_id)
+        if proposal.status != "applied":
+            raise ConflictException(
+                f"Cannot roll back repair proposal '{repair_id}': proposal is in '{proposal.status}' status, expected 'applied'."
+            )
+        rolled_back = self.repair_repo.rollback_application(proposal)
+        self.activity_repo.create(
+            project_id=proposal.incident.project_id,
+            event_type="repair.rolled_back",
+            message=f"Repair proposal {repair_id} rolled back; restored files and reopened incident",
+            resource_type="repair_proposal",
+            resource_id=proposal.id,
+        )
+        return rolled_back

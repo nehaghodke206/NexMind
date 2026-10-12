@@ -1,0 +1,407 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Dependency Guardian Demo API Contract",
+    "description": "Canonical OpenAPI contract specification for Dependency Guardian localhost integration demo services and client integrations.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Localhost Demo API Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Demo service self-health check",
+        "description": "Returns operational health status of the demo service.",
+        "operationId": "self_health",
+        "responses": {
+          "200": {
+            "description": "Service is healthy and operational",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "service"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "dependency-guardian-demo-api"
+                    },
+                    "configured_backend_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/backend/health": {
+      "get": {
+        "summary": "Verify upstream backend health",
+        "description": "Working API 1: Queries upstream GET /api/v1/health on Dependency Guardian backend.",
+        "operationId": "backend_health",
+        "responses": {
+          "200": {
+            "description": "Upstream backend is reachable and healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "backend_service",
+                    "upstream_url"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "connected"
+                    },
+                    "backend_service": {
+                      "type": "string",
+                      "example": "dependency-guardian-backend"
+                    },
+                    "backend_version": {
+                      "type": "string",
+                      "example": "1.1.0"
+                    },
+                    "upstream_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000/api/v1/health"
+                    },
+                    "raw_response": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream backend unreachable or gateway error"
+          }
+        }
+      }
+    },
+    "/api/backend/projects": {
+      "get": {
+        "summary": "List projects from upstream backend",
+        "description": "Working API 2: Queries upstream GET /api/v1/projects from Dependency Guardian backend.",
+        "operationId": "backend_projects",
+        "responses": {
+          "200": {
+            "description": "Project listing retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "total",
+                    "items"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string",
+                      "example": "http://localhost:8000/api/v1/projects"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProjectItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+          "summary": "Create a project on upstream backend",
+          "description": "Working API 3: Posts valid ProjectCreate payload to upstream POST /api/v1/projects.",
+          "operationId": "backend_create_project",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Project created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "required": [
+                      "status",
+                      "upstream_url",
+                      "project"
+                    ],
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "example": "created"
+                      },
+                      "upstream_url": {
+                        "type": "string",
+                        "example": "http://localhost:8000/api/v1/projects"
+                      },
+                      "project": {
+                        "$ref": "#/components/schemas/ProjectItem"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "502": {
+              "description": "Upstream error creating project"
+            }
+          }
+        }
+    },
+    "/api/backend/projects/{project_id}": {
+      "get": {
+        "summary": "Get project details from upstream backend",
+        "description": "Working API 4: Queries upstream GET /api/v1/projects/{project_id}.",
+        "operationId": "backend_get_project",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique project identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "project"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string"
+                    },
+                    "project": {
+                      "$ref": "#/components/schemas/ProjectItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found on upstream backend"
+          }
+        }
+      }
+    },
+    "/api/backend/projects/{project_id}/dependencies": {
+      "get": {
+        "summary": "List dependencies from upstream backend",
+        "description": "Working API 5: Queries upstream GET /api/v1/projects/{project_id}/dependencies.",
+        "operationId": "backend_project_dependencies",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique project identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project dependencies retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "upstream_url",
+                    "dependencies"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "upstream_url": {
+                      "type": "string"
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/broken/invalid-path": {
+      "get": {
+        "summary": "Integration route with intentional path mismatch",
+        "description": "Expected contract specifies valid upstream health integration. Intentional mismatch: client calls nonexistent route /api/v1/nonexistent-service resulting in 404/502.",
+        "operationId": "broken_invalid_path",
+        "responses": {
+          "200": {
+            "description": "Expected successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream route not found (404 forwarded as 502 Bad Gateway)"
+          }
+        }
+      }
+    },
+    "/api/broken/method-mismatch": {
+      "get": {
+        "summary": "Health status probe integration with method mismatch",
+        "description": "Expected contract specifies HTTP method GET for health verification. Intentional mismatch: client integration and endpoint use POST causing 405 Method Not Allowed.",
+        "operationId": "broken_method_mismatch",
+        "responses": {
+          "200": {
+            "description": "Expected successful health check response"
+          },
+          "502": {
+            "description": "Upstream method not allowed (405 forwarded as 502 Bad Gateway)"
+          }
+        }
+      }
+    },
+    "/api/broken/payload-mismatch": {
+      "post": {
+        "summary": "Project creation integration with schema drift",
+        "description": "Expected contract requires CreateProjectRequest with mandatory field 'name'. Intentional mismatch: client sends invalid keys without 'name', causing 400 Bad Request.",
+        "operationId": "broken_payload_mismatch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully"
+          },
+          "502": {
+            "description": "Upstream payload validation failed (400 forwarded as 502 Bad Gateway)"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateProjectRequest": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description"
+          },
+          "repository_url": {
+            "type": "string",
+            "description": "Repository URL",
+            "default": "https://github.com/demo/sample-repo"
+          }
+        }
+      },
+      "ProjectItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "repository_url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

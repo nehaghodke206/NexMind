@@ -8,9 +8,10 @@ import logging
 import os
 from pathlib import Path
 import re
-from typing import Dict, List, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 from .models import EndpointDoc, ExternalIntegrationDoc, TestCoverageSummary
+from .traversal import safe_walk
 
 logger = logging.getLogger("dependency_guardian.repo_intelligence.test_coverage_scanner")
 
@@ -19,8 +20,15 @@ class TestCoverageScanner:
     """Discovers tests and computes endpoint and integration coverage."""
     __test__ = False
 
-    def __init__(self, repo_root: Path):
+    def __init__(
+        self,
+        repo_root: Path,
+        output_dir: Optional[Path] = None,
+        on_progress: Optional[Callable[[Dict[str, Any]], None]] = None,
+    ):
         self.repo_root = repo_root.resolve()
+        self.output_dir = output_dir.resolve() if output_dir else None
+        self.on_progress = on_progress
         self.test_files: List[Path] = []
         self.test_functions_by_file: Dict[str, List[Dict[str, Any]]] = {}
 
@@ -96,14 +104,11 @@ class TestCoverageScanner:
 
     def _discover_test_files(self) -> None:
         """Find test files across Python and JavaScript/TypeScript test directories."""
-        ignore_dirs = {".git", ".venv", "venv", "node_modules", "__pycache__", ".idea", "dist", "build"}
-
-        for root, dirs, files in os.walk(self.repo_root):
-            dirs[:] = [d for d in dirs if d not in ignore_dirs and not d.startswith(".")]
-            rel_root = Path(root).relative_to(self.repo_root)
+        for root, dirs, files in safe_walk(self.repo_root, output_dir=self.output_dir):
+            rel_root = root.relative_to(self.repo_root)
 
             for f in files:
-                f_path = Path(root) / f
+                f_path = root / f
                 f_lower = f.lower()
                 is_test_dir = any(part in ["tests", "test", "__tests__"] for part in rel_root.parts)
                 is_test_file = (
@@ -120,8 +125,17 @@ class TestCoverageScanner:
 
     def _parse_test_functions(self) -> None:
         """Extract test function names and body text from test files."""
-        for t_file in self.test_files:
+        total = len(self.test_files)
+        for idx, t_file in enumerate(self.test_files, start=1):
             rel_file = str(t_file.relative_to(self.repo_root))
+            if self.on_progress:
+                self.on_progress({
+                    "phase": "evaluating_tests",
+                    "message": f"Analyzing test file ({idx}/{total}): {rel_file}",
+                    "current_file": rel_file,
+                    "files_processed": idx,
+                    "total_files": total,
+                })
             ext = t_file.suffix.lower()
 
             try:

@@ -309,15 +309,15 @@ def test_workspace_auto_discovery_of_affected_file(tmp_path: Path):
     service_file = src_dir / "user_service.py"
     service_file.write_text(
         "def fetch():\n"
-        "    return {'path': '/api/v1/orders', 'discount': 0}\n",
+        "    return {'path': '/api/v1/orders', 'params': {'limit': 10}}\n",
         encoding="utf-8",
     )
 
     finding = FindingInput(
         id="find_auto_discover",
-        rule_id="RULE-FIELD-ADDED-OPTIONAL",
+        rule_id="RULE-PARAM-ADDED",
         path="/api/v1/orders",
-        evidence={"added_property": "discount"},
+        evidence={"parameter_name": "discount"},
     )
 
     pipeline = RepairPipeline()
